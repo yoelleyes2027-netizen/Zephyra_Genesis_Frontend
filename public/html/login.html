@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - CRM</title>
+  <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+  <div class="login-container">
+    <h2>Iniciar sesión</h2>
+    <form id="login-form">
+      <label for="cedula">Cédula</label>
+      <input type="text" id="cedula" name="cedula" required>
+
+      <label for="contraseña">Contraseña</label>
+      <input type="password" id="contraseña" name="contraseña" required>
+
+      <button type="submit">Ingresar</button>
+    </form>
+    <div id="mensaje-error"></div>
+  </div>
+  <script src="../js/login.js"></script>
+</body>
+</html>
