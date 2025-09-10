@@ -3,7 +3,7 @@ const router = express.Router();
 
 // Importar rutas individuales
 const productosRoutes = require('./productos.routes');
-const proveedoresRoutes = require('./proveedores.routes');
+const proveedoresRoutes = require('./proveedor.routes');
 const clientesRoutes = require('./clientes.routes');
 const usuariosRoutes = require('./usuarios.routes');
 

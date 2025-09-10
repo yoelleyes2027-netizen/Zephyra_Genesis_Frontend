@@ -14,8 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
           fila.innerHTML = `
             <td>${producto.codigo}</td>
             <td>${producto.descripcion}</td>
-            <td>${producto.precio_venta}</td>
-            <td>${producto.precio_compra}</td>
+            <td>$${producto.precio_venta}</td>
+            <td>$${producto.precio_compra}</td>
             <td>${producto.stock}</td>
             <td>${producto.unidad_medida}</td>
           `;
