@@ -7,10 +7,21 @@
   <link rel="stylesheet" href="../css/dashboard.css" />
 </head>
 <body>
-  <div class="dashboard-container">
-    <h1>Bienvenido al CRM</h1>
-    <p>Estás logueado correctamente.</p>
-    <button id="logout-btn">Cerrar sesión</button>
+  <div class="dashboard-header">
+    <div class="logo">G</div>
+    <h1>Genesis - CRM</h1>
+  </div>
+  
+  <div class="dashboard-section">
+    <h2>Panel principal</h2>
+    <div class="dashboard-menu">
+      <button onclick="window.location.href='./productos.html'">🛒 Productos</button>
+      <button onclick="window.location.href='./proveedores.html'">🚚 Proveedores</button>
+      <button onclick="window.location.href='./tickets.html'">🧾 Tickets</button>
+      <button onclick="window.location.href='./clientes.html'">👥 Clientes</button>
+      <button onclick="window.location.href='./estadisticas.html'">📊 Estadísticas</button>
+      <button onclick="window.location.href='./configuracion.html'">⚙️ Configuración</button>
+    </div>
   </div>
 
   <script src="../js/dashboard.js"></script>

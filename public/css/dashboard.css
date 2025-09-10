@@ -54,3 +54,39 @@ button:hover {
   background-color: var(--color4);
   color: var(--color1);
 }
+
+.logo {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color2);
+    background-color: var(--color3);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.dashboard-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.dashboard-menu button {
+    flex: 1 1 200px;
+    padding: 1rem;
+    font-size: 1rem;
+    background-color: var(--color3);
+    color: var(--color2);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+    transition: background-color 0.3s ease;
+}
+
+.dashboard-menu button:hover {
+    background-color: var(--color4);
+    color: var(--color1);
+}
