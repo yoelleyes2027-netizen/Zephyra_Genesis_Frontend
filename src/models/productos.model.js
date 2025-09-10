@@ -22,6 +22,37 @@ const Producto = {
     const [rows] = await db.query(query); // <- esta es la forma correcta con mysql2/promise
     return rows;
   }
+  ,
+  insertar: async (data) => {
+    const {
+      codigo,
+      descripcion,
+      precio_venta,
+      precio_compra,
+      unidad_medida,
+      etiqueta_id,
+      proveedor_id
+    } = data;
+  
+    const query = `
+      INSERT INTO productos
+      (codigo, descripcion, precio_venta, precio_compra, unidad_medida, etiqueta_id, proveedor_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+  
+    const [result] = await db.query(query, [
+      codigo,
+      descripcion,
+      precio_venta,
+      precio_compra,
+      unidad_medida,
+      etiqueta_id,
+      proveedor_id
+    ]);
+  
+    return { id: result.insertId, ...data };
+  }
+
 };
 
 module.exports = Producto;

@@ -14,6 +14,24 @@ const obtenerProductos = async (req, res) => {
   }
 };
 
+const agregarProducto = async (req, res) => {
+  try {
+    const nuevoProducto = await Producto.insertar(req.body);
+    res.status(201).json({
+      ok: true,
+      mensaje: 'Producto agregado correctamente',
+      producto: nuevoProducto,
+    });
+  } catch (error) {
+    console.error('Error al agregar producto:', error);
+    res.status(500).json({
+      ok: false,
+      mensaje: 'Error al agregar producto',
+    });
+  }
+};
+
 module.exports = {
   obtenerProductos,
+  agregarProducto,
 };
