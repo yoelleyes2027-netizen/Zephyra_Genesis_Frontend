@@ -31,7 +31,30 @@ const agregarProducto = async (req, res) => {
   }
 };
 
+const obtenerProductoPorCodigo = async (req, res) => {
+  const { codigo } = req.params;
+  try {
+    const producto = await Producto.obtenerPorCodigo(codigo);
+
+    if (!producto) {
+      return res.status(404).json({
+        ok: false,
+        mensaje: 'Producto no encontrado',
+      });
+    }
+
+    res.json(producto);
+  } catch (error) {
+    console.error('Error al obtener producto por código:', error);
+    res.status(500).json({
+      ok: false,
+      mensaje: 'Error interno al obtener el producto',
+    });
+  }
+};
+
 module.exports = {
   obtenerProductos,
   agregarProducto,
+  obtenerProductoPorCodigo,
 };
