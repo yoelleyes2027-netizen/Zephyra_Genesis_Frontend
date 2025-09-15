@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Venta de Ticket</title>
+  <link rel="stylesheet" href="../css/ticket.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Venta en Caja</h1>
+
+    <form id="producto-form">
+      <input type="text" id="codigo" placeholder="Código del producto" required>
+      <input type="number" id="cantidad" placeholder="Cantidad" min="1" value="1" required>
+      <button type="submit">Agregar</button>
+    </form>
+
+    <table id="tabla-productos">
+      <thead>
+        <tr>
+          <th>Descripción</th>
+          <th>Precio unitario</th>
+          <th>Cantidad</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="ticket-info">
+      <label for="tipo-pago">Tipo de pago:</label>
+      <select id="tipo-pago">
+        <option value="efectivo">Efectivo</option>
+        <option value="debito">Debito</option>
+      </select>
+
+      <p>Total: $<span id="total">0.00</span></p>
+      <button id="cerrar-ticket">Cerrar Ticket</button>
+    </div>
+  </div>
+
+  <script src="../js/ticket.js"></script>
+</body>
+</html>

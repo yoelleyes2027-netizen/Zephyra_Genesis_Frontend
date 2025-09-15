@@ -37,3 +37,5 @@ app.use(cors({
   origin: 'http://localhost:5173', // Cambiá esto al dominio real del frontend cuando lo tengas
   credentials: true                // Esto permite enviar cookies
 }));
+
+app.use('/api/tickets', require('./routes/ticket.routes'));
