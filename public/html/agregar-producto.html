@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agregar Producto</title>
   <link rel="stylesheet" href="../css/agregar-producto.css" />
 </head>
+
 <body>
   <div class="form-container">
     <h1>Agregar nuevo producto</h1>
@@ -25,11 +27,15 @@
       <label for="unidad_medida">Unidad de medida:</label>
       <input type="text" id="unidad_medida" name="unidad_medida" required />
 
-      <label for="etiqueta_id">ID de etiqueta:</label>
-      <input type="number" id="etiqueta_id" name="etiqueta_id" required />
+      <label for="etiqueta_id">Etiqueta:</label>
+      <select id="etiqueta_id" name="etiqueta_id" required>
+        <option value="">Seleccionar etiqueta</option>
+      </select>
 
-      <label for="proveedor_id">ID de proveedor:</label>
-      <input type="number" id="proveedor_id" name="proveedor_id" required />
+      <label for="proveedor_id">Proveedor:</label>
+      <select id="proveedor_id" name="proveedor_id" required>
+        <option value="">Seleccionar proveedor</option>
+      </select>
 
       <button type="submit">Agregar producto</button>
     </form>
@@ -38,4 +44,5 @@
 
   <script src="../js/agregar-producto.js"></script>
 </body>
+
 </html>

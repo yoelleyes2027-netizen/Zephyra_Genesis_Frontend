@@ -22,6 +22,9 @@ app.use(express.json());
 
 // Rutas de la app
 app.use('/api', rutas);
+app.use('/api/auth', authRoutes);
+app.use('/api/tickets', require('./routes/ticket.routes'));
+app.use('/api/etiquetas', require('./routes/etiquetas.routes'));
 
 // Puerto
 const PORT = process.env.PORT || 3001;
@@ -30,12 +33,9 @@ app.listen(PORT, () => {
   console.log(`Servidor CRM corriendo en http://localhost:${PORT}`);
 });
 
-app.use('/api/auth', authRoutes);
 
 
 app.use(cors({
   origin: 'http://localhost:5173', // Cambiá esto al dominio real del frontend cuando lo tengas
   credentials: true                // Esto permite enviar cookies
 }));
-
-app.use('/api/tickets', require('./routes/ticket.routes'));
