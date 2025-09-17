@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clientes - CRM</title>
+  <link rel="stylesheet" href="../css/clientes.css" />
+</head>
+<body>
+  <div class="clientes-container">
+    <h1>👥 Clientes</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Dirección</th>
+          <th>Teléfono</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-clientes-body">
+        <!-- Clientes se cargan acá -->
+      </tbody>
+    </table>
+  </div>
+
+  <button onclick="window.location.href='./agregar-cliente.html'">Agregar Cliente</button>
+
+  <script src="../js/clientes.js"></script>
+</body>
+</html>
