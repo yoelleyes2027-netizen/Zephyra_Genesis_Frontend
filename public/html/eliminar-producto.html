@@ -1,0 +1,41 @@
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eliminar Producto</title>
+  <link rel="stylesheet" href="../css/eliminar-producto.css" />
+</head>
+
+<body>
+  <div class="form-container">
+    <h1>Eliminar Producto</h1>
+
+    <form id="formBuscar">
+      <label for="codigoBuscar">Buscar por código:</label>
+      <input type="text" id="codigoBuscar" required />
+      <button type="submit">Buscar</button>
+    </form>
+
+    <div id="productoInfo" style="display: none; margin-top: 2rem;">
+      <h2>Producto encontrado</h2>
+      <p><strong>Código:</strong> <span id="codigo"></span></p>
+      <p><strong>Descripción:</strong> <span id="descripcion"></span></p>
+      <p><strong>Precio de venta:</strong> <span id="precio_venta"></span></p>
+      <p><strong>Precio de compra:</strong> <span id="precio_compra"></span></p>
+      <p><strong>Stock:</strong> <span id="stock"></span></p>
+      <p><strong>Unidad de medida:</strong> <span id="unidad_medida"></span></p>
+      <p><strong>Etiqueta:</strong> <span id="etiqueta"></span></p>
+      <p><strong>Proveedor:</strong> <span id="proveedor"></span></p>
+      <p><strong>Código de barras:</strong> <span id="cod_barra"></span></p>
+
+      <button id="btnEliminar">Eliminar Producto</button>
+    </div>
+
+    <p id="mensaje"></p>
+  </div>
+
+  <script src="../js/eliminar-producto.js"></script>
+</body>
+
+</html>

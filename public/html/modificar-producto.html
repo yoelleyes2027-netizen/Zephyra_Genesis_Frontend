@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modificar Producto</title>
+  <link rel="stylesheet" href="../css/modificar-producto.css" />
+</head>
+
+<body>
+  <div class="form-container">
+    <h1>Modificar Producto</h1>
+
+    <!-- Buscador -->
+    <form id="formBuscar">
+      <label for="codigoBuscar">Buscar por código:</label>
+      <input type="text" id="codigoBuscar" required />
+      <button type="submit">Buscar</button>
+    </form>
+
+    <!-- Formulario de modificación -->
+    <form id="formModificar" style="display: none; margin-top: 20px;">
+
+      <div class="form-group">
+        <label for="codigo">Código</label>
+        <input type="text" id="codigo" required />
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <input type="text" id="descripcion" required />
+      </div>
+
+      <div class="form-group">
+        <label for="precio_venta">Precio de venta</label>
+        <input type="number" id="precio_venta" step="0.01" />
+      </div>
+
+      <div class="form-group">
+        <label for="precio_compra">Precio de compra</label>
+        <input type="number" id="precio_compra" step="0.01" />
+      </div>
+
+      <div class="form-group">
+        <label for="stock">Stock</label>
+        <input type="number" id="stock" />
+      </div>
+
+      <div class="form-group">
+        <label for="unidad_medida">Unidad de medida</label>
+        <input type="text" id="unidad_medida" />
+      </div>
+
+      <div class="form-group">
+        <label for="etiqueta_id">Etiqueta:</label>
+        <select id="etiqueta_id" required></select>
+      </div>
+
+      <div class="form-group">
+        <label for="proveedor_id">Proveedor:</label>
+        <select id="proveedor_id" required></select>
+      </div>
+
+      <div class="form-group">
+        <label for="cod_barra">Código de barras</label>
+        <input type="text" id="cod_barra" />
+      </div>
+
+      <button type="submit">Actualizar Producto</button>
+    </form>
+
+    <!-- Mensajes -->
+    <p id="mensaje"></p>
+  </div>
+
+  <script src="../js/modificar-producto.js"></script>
+</body>
+
+</html>

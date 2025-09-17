@@ -53,8 +53,63 @@ const obtenerProductoPorCodigo = async (req, res) => {
   }
 };
 
+const modificarProductoPorCodigo = async (req, res) => {
+  const { codigo } = req.params;
+  const camposActualizados = req.body;
+
+  try {
+    const resultado = await Producto.actualizarPorCodigo(codigo, camposActualizados);
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({
+        ok: false,
+        mensaje: 'Producto no encontrado',
+      });
+    }
+
+    res.json({
+      ok: true,
+      mensaje: 'Producto actualizado correctamente',
+    });
+  } catch (error) {
+    console.error('Error al modificar producto:', error);
+    res.status(500).json({
+      ok: false,
+      mensaje: 'Error al modificar producto',
+    });
+  }
+};
+
+const eliminarProductoPorCodigo = async (req, res) => {
+  const { codigo } = req.params;
+
+  try {
+    const resultado = await Producto.eliminarPorCodigo(codigo);
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({
+        ok: false,
+        mensaje: 'Producto no encontrado',
+      });
+    }
+
+    res.json({
+      ok: true,
+      mensaje: 'Producto eliminado correctamente',
+    });
+  } catch (error) {
+    console.error('Error al eliminar producto:', error);
+    res.status(500).json({
+      ok: false,
+      mensaje: 'Error al eliminar el producto',
+    });
+  }
+};
+
 module.exports = {
   obtenerProductos,
   agregarProducto,
   obtenerProductoPorCodigo,
+  modificarProductoPorCodigo,
+  eliminarProductoPorCodigo,
 };
