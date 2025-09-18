@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crear Cliente</title>
+  <link rel="stylesheet" href="../css/crear_cliente.css" />
+</head>
+<body>
+  <div class="clientes-container">
+    <h1>🧾 Crear nuevo cliente</h1>
+    <form id="cliente-form">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" required />
+
+      <label for="telefono">Teléfono:</label>
+      <input type="text" id="telefono" required />
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" required />
+
+      <label for="direccion">Dirección:</label>
+      <input type="text" id="direccion" required />
+
+      <label for="tipo_documento">Tipo de documento:</label>
+      <input type="number" id="tipo_documento" value="2" required />
+
+      <label for="codigo_pais">Código de país:</label>
+      <input type="text" id="codigo_pais" value="UY" required />
+
+      <label for="denominacion">Denominación:</label>
+      <input type="text" id="denominacion" required />
+
+      <label for="numero_doc">Número de documento:</label>
+      <input type="text" id="numero_doc" required />
+
+      <button type="submit">➕ Crear Cliente</button>
+    </form>
+    <p id="mensaje"></p>
+  </div>
+
+  <script src="../js/crear_cliente.js"></script>
+</body>
+</html>
+

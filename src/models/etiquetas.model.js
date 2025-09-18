@@ -9,3 +9,4 @@ const Etiqueta = {
 };
 
 module.exports = Etiqueta;
+

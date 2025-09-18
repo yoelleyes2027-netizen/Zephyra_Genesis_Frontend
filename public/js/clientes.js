@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <td>${cliente.nombre}</td>
           <td>${cliente.direccion}</td>
           <td>${cliente.telefono}</td>
+          <td>${cliente.numero_doc}</td>
         `;
         tbody.appendChild(fila);
       });
