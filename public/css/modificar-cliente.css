@@ -1,0 +1,48 @@
+@import url('./vars.css');
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--color1);
+  color: var(--color2);
+  padding: 2rem;
+}
+
+.form-container {
+  max-width: 800px;
+  margin: auto;
+  background-color: var(--color2);
+  color: var(--color1);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+  margin-bottom: 1rem;
+}
+
+input[type="text"],
+input[type="email"] {
+  padding: 0.5rem;
+  width: 250px;
+  margin-right: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background-color: var(--color3);
+  color: var(--color2);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--color3-dark);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
