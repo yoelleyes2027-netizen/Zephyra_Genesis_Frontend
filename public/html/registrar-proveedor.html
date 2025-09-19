@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrar Proveedor</title>
+  <link rel="stylesheet" href="../css/registrar-proveedor.css" />
+</head>
+<body>
+  <div class="proveedor-container">
+    <h1>➕ Registrar nuevo proveedor</h1>
+
+    <form id="proveedor-form">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" required />
+
+      <label for="telefono">Teléfono:</label>
+      <input type="text" id="telefono" required />
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" required />
+
+      <label for="direccion">Dirección:</label>
+      <input type="text" id="direccion" required />
+
+      <label for="documento">Documento:</label>
+      <input type="text" id="documento" required />
+
+      <label for="denominacion">Denominación:</label>
+      <input type="text" id="denominacion" required />
+
+      <button type="submit">Registrar Proveedor</button>
+    </form>
+
+    <p id="mensaje"></p>
+  </div>
+
+  <script src="../js/registrar-proveedor.js"></script>
+</body>
+</html>

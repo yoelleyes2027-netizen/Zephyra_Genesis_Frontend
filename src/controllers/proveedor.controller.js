@@ -1,15 +1,44 @@
 const ProveedorModel = require('../models/proveedor.model');
 
-const ProveedorController = {
-  obtenerProveedores: async (req, res) => {
-    try {
-      const proveedores = await ProveedorModel.obtenerTodos();
-      res.json({ ok: true, data: proveedores });
-    } catch (error) {
-      console.error('Error al obtener proveedores:', error);
-      res.status(500).json({ ok: false, msg: 'Error al obtener proveedores' });
-    }
+const obtenerProveedores = async (req, res) => {
+  try {
+    const proveedores = await ProveedorModel.obtenerTodos();
+    res.json({ ok: true, data: proveedores });
+  } catch (error) {
+    console.error('Error al obtener proveedores:', error);
+    res.status(500).json({ ok: false, msg: 'Error al obtener proveedores' });
   }
 };
 
-module.exports = ProveedorController;
+const crearProveedor = async (req, res) => {
+  try {
+    const datos = req.body;
+    await ProveedorModel.insertarProveedor(datos);
+    res.status(201).json({ mensaje: 'Proveedor creado correctamente' });
+  } catch (error) {
+    console.error('Error al crear proveedor:', error);
+    res.status(500).json({ mensaje: 'Error al crear el proveedor' });
+  }
+};
+
+const buscarProveedorPorDocumento = async (req, res) => {
+  try {
+    const { documento } = req.params;
+    const proveedor = await ProveedorModel.buscarPorDocumento(documento);
+
+    if (!proveedor) {
+      return res.status(404).json({ ok: false, mensaje: 'Proveedor no encontrado' });
+    }
+
+    res.json({ ok: true, data: proveedor });
+  } catch (error) {
+    console.error('❌ Error al buscar proveedor por documento:', error);
+    res.status(500).json({ ok: false, mensaje: 'Error al buscar proveedor' });
+  }
+};
+
+module.exports = {
+  obtenerProveedores,
+  crearProveedor,
+  buscarProveedorPorDocumento,
+};

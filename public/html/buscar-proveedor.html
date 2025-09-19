@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buscar Proveedor</title>
+  <link rel="stylesheet" href="../css/buscar-cliente.css" />
+</head>
+<body>
+  <div class="cliente-container">
+    <h1>Buscar Proveedor</h1>
+
+    <input type="text" id="documento-input" placeholder="Número de documento" />
+    <button onclick="buscarProveedor()">Buscar</button>
+
+    <table id="tabla-proveedor" style="display: none;">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Denominación</th>
+          <th>Documento</th>
+          <th>Teléfono</th>
+          <th>Email</th>
+          <th>Dirección</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-proveedor-body"></tbody>
+    </table>
+
+    <p id="mensaje-error" style="color: red; display: none;"></p>
+  </div>
+
+  <script src="../js/buscar-proveedor.js"></script>
+</body>
+</html>
