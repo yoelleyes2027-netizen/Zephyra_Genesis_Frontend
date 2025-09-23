@@ -37,6 +37,22 @@ const buscarProveedorPorDocumento = async (req, res) => {
   }
 };
 
+const buscarProveedorPorDenominacion = async (req, res) => {
+  try {
+    const { denominacion } = req.params;
+    const proveedor = await ProveedorModel.buscarPorDenominacion(denominacion);
+
+    if (!proveedor) {
+      return res.status(404).json({ ok: false, mensaje: 'Proveedor no encontrado' });
+    }
+
+    res.json({ ok: true, data: proveedor });
+  } catch (error) {
+    console.error('❌ Error al buscar proveedor por denominación:', error);
+    res.status(500).json({ ok: false, mensaje: 'Error al buscar proveedor' });
+  }
+};
+
 const modificarProveedorPorDocumento = async (req, res) => {
   const { documento } = req.params;
   const camposActualizados = req.body;
@@ -95,6 +111,7 @@ module.exports = {
   obtenerProveedores,
   crearProveedor,
   buscarProveedorPorDocumento,
+  buscarProveedorPorDenominacion,
   modificarProveedorPorDocumento,
   desactivarProveedor,
 };

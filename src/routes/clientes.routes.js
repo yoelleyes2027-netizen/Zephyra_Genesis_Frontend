@@ -13,6 +13,9 @@ router.post('/', verificarToken, ClienteController.crearCliente);
 // Ruta: GET /api/clientes/buscar/:numero_doc
 router.get('/buscar/:numero_doc', verificarToken, ClienteController.buscarClientePorDocumento);
 
+// Ruta: GET /api/clientes/buscar-denominacion/:denominacion
+router.get('/buscar/denominacion/:denominacion', verificarToken, ClienteController.buscarClientePorDenominacion);
+
 // Ruta: PUT /api/clientes/:numero_doc
 router.put('/:numero_doc', verificarToken, soloAdmin, ClienteController.modificarClientePorDocumento);
 

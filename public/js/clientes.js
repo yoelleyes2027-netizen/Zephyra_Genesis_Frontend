@@ -19,11 +19,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       clientes.forEach(cliente => {
         const fila = document.createElement('tr');
         fila.innerHTML = `
-          <td>${cliente.id}</td>
-          <td>${cliente.nombre}</td>
+          <td>${cliente.denominacion}</td>
+          <td>${cliente.numero_doc}</td>
+          <td>${cliente.email}</td>
           <td>${cliente.direccion}</td>
           <td>${cliente.telefono}</td>
-          <td>${cliente.numero_doc}</td>
+          <td>${cliente.nombre}</td>
         `;
         tbody.appendChild(fila);
       });

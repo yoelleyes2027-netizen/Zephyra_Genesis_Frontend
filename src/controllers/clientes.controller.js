@@ -49,6 +49,27 @@ const buscarClientePorDocumento = async (req, res) => {
   }
 };
 
+const buscarClientePorDenominacion = async (req, res) => {
+  try {
+    const { denominacion } = req.params;
+
+    if (!denominacion || denominacion.trim() === "") {
+      return res.status(400).json({ mensaje: 'Denominación inválida' });
+    }
+
+    const cliente = await Cliente.buscarPorDenominacion(denominacion);
+
+    if (!cliente) {
+      return res.status(404).json({ mensaje: 'Cliente no encontrado' });
+    }
+
+    res.status(200).json(cliente);
+  } catch (error) {
+    console.error('Error al buscar cliente por denominación:', error);
+    res.status(500).json({ mensaje: 'Error al buscar el cliente' });
+  }
+};
+
 const modificarClientePorDocumento = async (req, res) => {
   const { numero_doc } = req.params;
   const camposActualizados = req.body;
@@ -106,6 +127,7 @@ module.exports = {
   obtenerClientes,
   crearCliente,
   buscarClientePorDocumento,
+  buscarClientePorDenominacion,
   modificarClientePorDocumento,
   desactivarCliente,
  };

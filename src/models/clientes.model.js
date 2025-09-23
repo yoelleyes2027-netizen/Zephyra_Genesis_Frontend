@@ -23,6 +23,17 @@ const Cliente = {
     return rows[0] || null;
   },
 
+  buscarPorDenominacion: async (denominacion) => {
+    const query = `
+      SELECT * FROM clientes 
+      WHERE denominacion LIKE ? 
+        AND activo = 1 
+      LIMIT 1
+    `;
+    const [rows] = await db.query(query, [denominacion]);
+    return rows[0] || null;
+  },
+
   actualizarPorDocumento: async (numero_doc, camposActualizados) => {
     const campos = Object.keys(camposActualizados);
     const valores = Object.values(camposActualizados);

@@ -3,7 +3,7 @@ const router = express.Router();
 const verificarToken = require('../middlewares/auth.middleware');
 const validarProducto = require('../middlewares/validarProducto.middleware');
 const soloAdmin = require('../middlewares/soloAdmin.middleware');
-const { obtenerProductos, agregarProducto, obtenerProductoPorCodigo, modificarProductoPorCodigo, eliminarProductoPorCodigo } = require('../controllers/productos.controller');
+const { obtenerProductos, agregarProducto, obtenerProductoPorCodigo, obtenerProductoPorDescripcion, modificarProductoPorCodigo, eliminarProductoPorCodigo } = require('../controllers/productos.controller');
 
 // Obtener todos los productos (protegido con JWT)
 router.get('/', verificarToken, obtenerProductos);
@@ -13,6 +13,9 @@ router.post('/', verificarToken, validarProducto, agregarProducto);
 
 // Obtener un producto por código (protegido con JWT)
 router.get('/:codigo', verificarToken, obtenerProductoPorCodigo);
+
+// Obtener un producto por descripción (protegido con JWT)
+router.get('/descripcion/:descripcion', verificarToken, obtenerProductoPorDescripcion);
 
 // Modificar producto por código (solo admin)
 router.put('/:codigo', verificarToken, soloAdmin, modificarProductoPorCodigo);

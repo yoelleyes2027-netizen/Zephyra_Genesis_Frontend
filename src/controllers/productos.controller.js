@@ -53,6 +53,28 @@ const obtenerProductoPorCodigo = async (req, res) => {
   }
 };
 
+const obtenerProductoPorDescripcion = async (req, res) => {
+  const { descripcion } = req.params;
+  try {
+    const producto = await Producto.obtenerPorDescripcion(descripcion);
+
+    if (!producto) {
+      return res.status(404).json({
+        ok: false,
+        mensaje: 'Producto no encontrado',
+      });
+    }
+
+    res.json(producto);
+  } catch (error) {
+    console.error('Error al obtener producto por descripción:', error);
+    res.status(500).json({
+      ok: false,
+      mensaje: 'Error interno al obtener el producto',
+    });
+  }
+};
+
 const modificarProductoPorCodigo = async (req, res) => {
   const { codigo } = req.params;
   const camposActualizados = req.body;
@@ -110,6 +132,7 @@ module.exports = {
   obtenerProductos,
   agregarProducto,
   obtenerProductoPorCodigo,
+  obtenerProductoPorDescripcion,
   modificarProductoPorCodigo,
   eliminarProductoPorCodigo,
 };

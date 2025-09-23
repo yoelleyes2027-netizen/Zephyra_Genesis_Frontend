@@ -2,7 +2,7 @@ const pool = require('../config/db');
 
 const ProveedorModel = {
   obtenerTodos: async () => {
-    const [rows] = await pool.query('SELECT * FROM proveedores');
+    const [rows] = await pool.query('SELECT * FROM proveedores WHERE activo = 1');
     return rows;
   },
 
@@ -18,6 +18,12 @@ const ProveedorModel = {
   buscarPorDocumento: async (documento) => {
     const query = 'SELECT * FROM proveedores WHERE documento = ? AND activo = 1';
     const [rows] = await pool.query(query, [documento]);
+    return rows[0];
+  },
+
+  buscarPorDenominacion: async (denominacion) => {
+    const query = 'SELECT * FROM proveedores WHERE denominacion LIKE ? AND activo = 1';
+    const [rows] = await pool.query(query, [denominacion]);
     return rows[0];
   },
 

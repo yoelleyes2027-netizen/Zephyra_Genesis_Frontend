@@ -13,6 +13,9 @@ router.post('/', verificarToken, ProveedorController.crearProveedor);
 //buscar proveedor por documento
 router.get('/buscar/:documento', verificarToken, ProveedorController.buscarProveedorPorDocumento);
 
+// buscar proveedor por denominación
+router.get('/buscar/denominacion/:denominacion', verificarToken, ProveedorController.buscarProveedorPorDenominacion);
+
 // Ruta: PUT /api/proveedores/:documento
 router.put('/:documento', verificarToken, soloAdmin, ProveedorController.modificarProveedorPorDocumento);
 
