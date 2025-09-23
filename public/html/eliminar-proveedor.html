@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eliminar Proveedor</title>
+  <link rel="stylesheet" href="../css/eliminar-proveedor.css" />
+</head>
+<body>
+  <div class="form-container">
+    <h1>Eliminar Proveedor</h1>
+
+    <form id="formBuscar">
+      <label for="documentoBuscar">Buscar por documento:</label>
+      <input type="text" id="documentoBuscar" required />
+      <button type="submit">Buscar</button>
+    </form>
+
+    <div id="proveedorInfo" style="display: none; margin-top: 2rem;">
+      <h2>Proveedor encontrado</h2>
+      <p><strong>Nombre:</strong> <span id="nombre"></span></p>
+      <p><strong>Email:</strong> <span id="email"></span></p>
+      <p><strong>Teléfono:</strong> <span id="telefono"></span></p>
+      <p><strong>Dirección:</strong> <span id="direccion"></span></p>
+      <p><strong>Documento:</strong> <span id="documento"></span></p>
+
+      <button id="btnEliminar">Eliminar Proveedor</button>
+    </div>
+
+    <p id="mensaje"></p>
+  </div>
+
+  <script src="../js/eliminar-proveedor.js"></script>
+</body>
+</html>

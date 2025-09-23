@@ -22,10 +22,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       const row = document.createElement('tr');
 
       row.innerHTML = `
-          <td>${proveedor.id}</td>
           <td>${proveedor.nombre}</td>
+          <td>${proveedor.documento}</td>
           <td>${proveedor.direccion}</td>
           <td>${proveedor.telefono}</td>
+          <td>${proveedor.email}</td>
+          <td>${proveedor.denominacion}</td>
         `;
 
       tbody.appendChild(row);

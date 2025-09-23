@@ -20,6 +20,30 @@ const ProveedorModel = {
     const [rows] = await pool.query(query, [documento]);
     return rows[0];
   },
+
+  actualizarPorDocumento: async (documento, camposActualizados) => {
+    const campos = Object.keys(camposActualizados);
+    const valores = Object.values(camposActualizados);
+
+    if (campos.length === 0) {
+      throw new Error('No se proporcionaron campos para actualizar');
+    }
+
+    const setClause = campos.map(campo => `${campo} = ?`).join(', ');
+    const query = `UPDATE proveedores SET ${setClause} WHERE documento = ?`;
+
+    valores.push(documento); // El documento va al final para el WHERE
+
+    const [result] = await pool.query(query, valores);
+    return result;
+  },
+
+  // Eliminar (inactivar) proveedor por documento
+  desactivarProveedorPorDocumento: async (documento) => {
+    const query = 'UPDATE proveedores SET activo = 0 WHERE documento = ?';
+    const [result] = await pool.query(query, [documento]);
+    return result;
+  }
 };
 
 module.exports = ProveedorModel;

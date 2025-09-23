@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modificar Proveedor</title>
+  <link rel="stylesheet" href="../css/modificar-proveedor.css" />
+</head>
+<body>
+  <div class="form-container">
+    <h1>Modificar Proveedor</h1>
+
+    <!-- Buscador -->
+    <form id="formBuscar">
+      <label for="documentoBuscar">Buscar por documento:</label>
+      <input type="text" id="documentoBuscar" required />
+      <button type="submit">Buscar</button>
+    </form>
+
+    <!-- Formulario de modificación -->
+    <form id="formModificar" style="display: none; margin-top: 20px;">
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" required />
+      </div>
+
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input type="text" id="telefono" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" />
+      </div>
+
+      <div class="form-group">
+        <label for="direccion">Dirección</label>
+        <input type="text" id="direccion" />
+      </div>
+
+      <div class="form-group">
+        <label for="denominacion">Denominación</label>
+        <input type="text" id="denominacion" />
+      </div>
+
+      <button type="submit">Actualizar Proveedor</button>
+    </form>
+
+    <!-- Mensajes -->
+    <p id="mensaje"></p>
+  </div>
+
+  <script src="../js/modificar-proveedor.js"></script>
+</body>
+</html>

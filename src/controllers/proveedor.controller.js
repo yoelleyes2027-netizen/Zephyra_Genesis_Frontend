@@ -37,8 +37,64 @@ const buscarProveedorPorDocumento = async (req, res) => {
   }
 };
 
+const modificarProveedorPorDocumento = async (req, res) => {
+  const { documento } = req.params;
+  const camposActualizados = req.body;
+
+  try {
+    const resultado = await ProveedorModel.actualizarPorDocumento(documento, camposActualizados);
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({
+        ok: false,
+        mensaje: 'Proveedor no encontrado',
+      });
+    }
+
+    res.json({
+      ok: true,
+      mensaje: 'Proveedor actualizado correctamente',
+    });
+  } catch (error) {
+    console.error('Error al modificar proveedor:', error);
+    res.status(500).json({
+      ok: false,
+      mensaje: 'Error al modificar proveedor',
+    });
+  }
+};
+
+const desactivarProveedor = async (req, res) => {
+  const { documento } = req.params;
+
+  try {
+    const resultado = await ProveedorModel.desactivarProveedorPorDocumento(documento);
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({
+        ok: false,
+        mensaje: 'Proveedor no encontrado o ya estaba inactivo',
+      });
+    }
+
+    res.json({
+      ok: true,
+      mensaje: 'Proveedor eliminado correctamente',
+    });
+
+  } catch (error) {
+    console.error('Error al eliminar proveedor:', error);
+    res.status(500).json({
+      ok: false,
+      mensaje: 'Error al eliminar proveedor',
+    });
+  }
+};
+
 module.exports = {
   obtenerProveedores,
   crearProveedor,
   buscarProveedorPorDocumento,
+  modificarProveedorPorDocumento,
+  desactivarProveedor,
 };
