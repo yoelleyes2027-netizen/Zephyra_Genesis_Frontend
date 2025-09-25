@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
-  <div class="login-container">
+  <div class="login-container" id="login-container">
     <h2>Iniciar sesión</h2>
     <form id="login-form">
       <label for="cedula">Cédula</label>
@@ -19,8 +19,11 @@
       <button type="submit">Ingresar</button>
     </form>
     <div id="mensaje-error"></div>
-    <div id="mensaje-bienvenida" style="display: none;"></div>
   </div>
+
+  <!-- Movido fuera del login-container -->
+  <div id="mensaje-bienvenida" style="display: none;"></div>
+
   <script src="../js/login.js"></script>
 </body>
 </html>

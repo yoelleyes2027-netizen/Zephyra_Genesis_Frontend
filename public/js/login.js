@@ -21,11 +21,14 @@ document.getElementById('login-form').addEventListener('submit', async function 
       const rol = data.user.rol;
       const nombre = data.user.nombre;
     
-      const mensajeBienvenida = document.getElementById('mensaje-bienvenida');
-      mensajeBienvenida.textContent = `✅ Bienvenido, ${nombre}!`;
-      mensajeBienvenida.style.display = 'block';
+      const loginContainer = document.querySelector('.login-container');
+      loginContainer.innerHTML = `
+        <div class="bienvenida">
+          ✅ Bienvenido, <strong>${nombre}</strong>!
+        </div>
+      `;
     
-      // Esperar 2 segundos antes de redirigir
+      // Redirigir según rol después de 2 segundos
       setTimeout(() => {
         if (rol === 'admin' || rol === 'gerente') {
           window.location.href = '../html/dashboard.html';
@@ -34,7 +37,7 @@ document.getElementById('login-form').addEventListener('submit', async function 
         } else {
           window.location.href = '../html/usuario.html';
         }
-      }, 2000); // 2000 milisegundos = 2 segundos
+      }, 2000);
     
     } else {
       document.getElementById('mensaje-error').textContent = data.msg || 'Error al iniciar sesión';
