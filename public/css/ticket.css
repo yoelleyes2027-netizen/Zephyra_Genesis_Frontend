@@ -108,3 +108,11 @@ button:hover {
   margin-top: 1rem;
   text-align: right;
 }
+
+.eliminar-producto {
+  background-color: transparent;
+  border: none;
+  color: red;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
