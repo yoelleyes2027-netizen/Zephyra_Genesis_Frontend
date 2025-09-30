@@ -135,12 +135,13 @@ document.getElementById('confirmar-cliente').addEventListener('click', () => {
   document.getElementById('modal-moneda').style.display = 'block';
 });
 
-// V4.1 Volver a tipo de comprobante
+// V4.1 Volver a tipo de comprobante desde cliente con rut
 document.getElementById('volver-tipo-comprobante').addEventListener('click', () => {
   document.getElementById('modal-comprobante').style.display = 'block';
   document.getElementById('modal-cliente').style.display = 'none';
 });
 
+// V4.1 Volver a tipo de comprobante desde moneda
 document.getElementById('volver-tipo-comprobante-moneda').addEventListener('click', () => {
   document.getElementById('modal-comprobante').style.display = 'block';
   document.getElementById('modal-moneda').style.display = 'none';
