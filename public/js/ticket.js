@@ -147,7 +147,7 @@ document.getElementById('volver-tipo-comprobante-moneda').addEventListener('clic
   document.getElementById('modal-moneda').style.display = 'none';
 });
 
-
+// Llamada para encontrar el cliente por documento
 document.getElementById('buscar-cliente').addEventListener('click', async () => {
   const documento = document.getElementById('documento-cliente').value.trim();
   const mensaje = document.getElementById('mensaje-cliente');
