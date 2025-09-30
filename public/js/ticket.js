@@ -77,10 +77,17 @@ document.getElementById('cerrar-ticket').addEventListener('click', () => {
     alert("⚠️ No hay productos en el ticket.");
     return;
   }
+  // Mostrar el selector de tipo de pago (efectivo / tarjeta) y ocultar boton
+  document.getElementById('ticket-info').style.display = 'block';
+  document.getElementById('cerrar-ticket').style.display = 'none';
+  document.getElementById('producto-form').style.display = 'none';
+});
 
-  // Mostrar el primer modal del flujo
+// V1. Volver a agregar productos
+document.getElementById('volver-agregar-productos').addEventListener('click', () => {
   document.getElementById('ticket-info').style.display = 'none';
-  document.getElementById('modal-forma-pago').style.display = 'block';
+  document.getElementById('cerrar-ticket').style.display = 'block';
+  document.getElementById('producto-form').style.display = 'block';
 });
 
 // 2. Confirmar tipo de pago y mostrar siguiente modal
@@ -89,11 +96,24 @@ document.getElementById('confirmar-tipo-pago').addEventListener('click', () => {
   document.getElementById('modal-forma-pago').style.display = 'block';
 });
 
+// V2. Volver a tipo pago
+document.getElementById('volver-tipo-pago').addEventListener('click', () => {
+  document.getElementById('ticket-info').style.display = 'block';
+  document.getElementById('modal-forma-pago').style.display = 'none';
+});
+
 // 3. Confirmar forma de pago y mostrar siguiente modal
 document.getElementById('confirmar-forma-pago').addEventListener('click', () => {
   formaPagoSeleccionada = document.getElementById('forma-pago').value;
   document.getElementById('modal-forma-pago').style.display = 'none';
   document.getElementById('modal-comprobante').style.display = 'block';
+});
+
+// V3. Volver a forma de pago
+document.getElementById('volver-forma-pago').addEventListener('click', () => {
+  formaPagoSeleccionada = document.getElementById('forma-pago').value;
+  document.getElementById('modal-forma-pago').style.display = 'block';
+  document.getElementById('modal-comprobante').style.display = 'none';
 });
 
 // 4. Confirmar tipo de comprobante y mostrar siguiente modal
@@ -113,6 +133,17 @@ document.getElementById('confirmar-comprobante').addEventListener('click', () =>
 document.getElementById('confirmar-cliente').addEventListener('click', () => {
   document.getElementById('modal-cliente').style.display = 'none';
   document.getElementById('modal-moneda').style.display = 'block';
+});
+
+// V4.1 Volver a tipo de comprobante
+document.getElementById('volver-tipo-comprobante').addEventListener('click', () => {
+  document.getElementById('modal-comprobante').style.display = 'block';
+  document.getElementById('modal-cliente').style.display = 'none';
+});
+
+document.getElementById('volver-tipo-comprobante-moneda').addEventListener('click', () => {
+  document.getElementById('modal-comprobante').style.display = 'block';
+  document.getElementById('modal-moneda').style.display = 'none';
 });
 
 
