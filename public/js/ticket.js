@@ -72,9 +72,15 @@ let cliente_id = 1; // ahora lo vamos a actualizar dinámicamente
 
 // 1. Mostrar modal de forma de pago
 document.getElementById('cerrar-ticket').addEventListener('click', () => {
-  // Mostrar el selector de tipo de pago (efectivo / tarjeta) y ocultar boton
-  document.getElementById('ticket-info').style.display = 'block';
-  document.getElementById('cerrar-ticket').style.display = 'none';
+  // ⚠️ Validar si hay productos
+  if (productosSeleccionados.length === 0) {
+    alert("⚠️ No hay productos en el ticket.");
+    return;
+  }
+
+  // Mostrar el primer modal del flujo
+  document.getElementById('ticket-info').style.display = 'none';
+  document.getElementById('modal-forma-pago').style.display = 'block';
 });
 
 // 2. Confirmar tipo de pago y mostrar siguiente modal
