@@ -65,13 +65,99 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-document.getElementById('cerrar-ticket').addEventListener('click', async () => {
+let formaPagoSeleccionada = 'contado';
+let tipoComprobanteSeleccionado = '101';
+let monedaSeleccionada = 'UYU';
+let cliente_id = 1; // ahora lo vamos a actualizar dinámicamente
+
+// 1. Mostrar modal de forma de pago
+document.getElementById('cerrar-ticket').addEventListener('click', () => {
+  // Mostrar el selector de tipo de pago (efectivo / tarjeta) y ocultar boton
+  document.getElementById('ticket-info').style.display = 'block';
+  document.getElementById('cerrar-ticket').style.display = 'none';
+});
+
+// 2. Confirmar tipo de pago y mostrar siguiente modal
+document.getElementById('confirmar-tipo-pago').addEventListener('click', () => {
+  document.getElementById('ticket-info').style.display = 'none';
+  document.getElementById('modal-forma-pago').style.display = 'block';
+});
+
+// 3. Confirmar forma de pago y mostrar siguiente modal
+document.getElementById('confirmar-forma-pago').addEventListener('click', () => {
+  formaPagoSeleccionada = document.getElementById('forma-pago').value;
+  document.getElementById('modal-forma-pago').style.display = 'none';
+  document.getElementById('modal-comprobante').style.display = 'block';
+});
+
+// 4. Confirmar tipo de comprobante y mostrar siguiente modal
+document.getElementById('confirmar-comprobante').addEventListener('click', () => {
+  tipoComprobanteSeleccionado = document.getElementById('tipo-comprobante').value;
+  document.getElementById('modal-comprobante').style.display = 'none';
+
+  // Si es factura con RUT, mostramos el modal para buscar cliente
+  if (tipoComprobanteSeleccionado === '111') {
+    document.getElementById('modal-cliente').style.display = 'block';
+  } else {
+    document.getElementById('modal-moneda').style.display = 'block';
+  }
+});
+
+// 4.1 confirmar cliente y contuniuar con moneda
+document.getElementById('confirmar-cliente').addEventListener('click', () => {
+  document.getElementById('modal-cliente').style.display = 'none';
+  document.getElementById('modal-moneda').style.display = 'block';
+});
+
+
+document.getElementById('buscar-cliente').addEventListener('click', async () => {
+  const documento = document.getElementById('documento-cliente').value.trim();
+  const mensaje = document.getElementById('mensaje-cliente');
+  const confirmBtn = document.getElementById('confirmar-cliente');
+  const infoCliente = document.getElementById('cliente-encontrado');
+  const denominacionSpan = document.getElementById('cliente-denominacion');
+
+  mensaje.style.display = 'none';
+  confirmBtn.style.display = 'none';
+  infoCliente.style.display = 'none';
+
+  if (!documento) {
+    mensaje.textContent = "⚠️ Ingresá un documento válido.";
+    mensaje.style.display = 'block';
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/clientes/buscar/${documento}`, {
+      method: 'GET',
+      credentials: 'include'
+    });
+
+    if (!res.ok) throw new Error("Cliente no encontrado");
+
+    const cliente = await res.json();
+    cliente_id = cliente.id; // ✅ actualizar el id a enviar
+    denominacionSpan.textContent = cliente.denominacion;
+    infoCliente.style.display = 'block';
+    confirmBtn.style.display = 'inline-block';
+  } catch (err) {
+    mensaje.textContent = "❌ Cliente no registrado.";
+    mensaje.style.display = 'block';
+  }
+});
+
+// 5. Confirmar moneda y enviar ticket al backend
+document.getElementById('confirmar-moneda').addEventListener('click', async () => {
+  monedaSeleccionada = document.getElementById('moneda').value;
+
   const tipo_pago = document.getElementById('tipo-pago').value;
-  const cliente_id = 1; // O podrías tener un input más adelante para elegir cliente
 
   const body = {
     cliente_id,
     tipo_pago,
+    forma_pago: formaPagoSeleccionada,
+    tipo_comprobante: tipoComprobanteSeleccionado,
+    moneda: monedaSeleccionada,
     total,
     productos: productosSeleccionados
   };
@@ -79,7 +165,9 @@ document.getElementById('cerrar-ticket').addEventListener('click', async () => {
   try {
     const res = await fetch('/api/tickets', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json'
+      },
       credentials: 'include',
       body: JSON.stringify(body)
     });
@@ -91,4 +179,7 @@ document.getElementById('cerrar-ticket').addEventListener('click', async () => {
     console.error(err);
     alert('❌ ' + err.message);
   }
+
+  // Ocultar el último modal
+  document.getElementById('modal-moneda').style.display = 'none';
 });

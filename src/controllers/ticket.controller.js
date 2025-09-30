@@ -3,7 +3,7 @@ const DetallesTicket = require('../models/detallesTicket.model');
 
 const crearTicket = async (req, res) => {
   try {
-    const { cliente_id, tipo_pago, productos } = req.body;
+    const { cliente_id, tipo_pago, productos, forma_pago, tipo_comprobante, moneda } = req.body;
     const usuario_id = req.usuario.id;
 
     // Calcular el total en el backend
@@ -15,6 +15,9 @@ const crearTicket = async (req, res) => {
       usuario_id,
       total,
       tipo_pago,
+      forma_pago,
+      tipo_comprobante,
+      moneda,
     });
 
     // Insertar detalles
