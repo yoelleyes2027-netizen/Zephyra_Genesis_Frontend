@@ -34,15 +34,19 @@
 
     <button style="display: block;" id="cerrar-ticket">Cerrar Ticket</button>
 
-    <!-- Modal para tipo de pago -->
-    <div id="ticket-info" class="ticket-info" style="display: none;">
+    <!-- Modal: Tipo de Pago -->
+    <div id="ticket-info" class="modal" style="display: none;">
       <div class="modal-content">
         <h3>Tipo de pago</h3>
-        <select id="tipo-pago">
-          <option value="efectivo">Efectivo</option>
-          <option value="Tarjeta">Tarjeta</option>
-        </select>
-        <br><br>
+
+        <div class="opciones" id="tipo-pago-opciones" data-input-id="tipo-pago">
+          <div class="opcion selected" data-value="efectivo">Efectivo</div>
+          <div class="opcion" data-value="Tarjeta">Tarjeta</div>
+        </div>
+
+        <input type="hidden" id="tipo-pago" value="efectivo" />
+
+        <br>
         <button id="confirmar-tipo-pago">Confirmar</button>
         <button id="volver-agregar-productos">⬅</button>
       </div>
@@ -51,12 +55,16 @@
     <!-- Modal para forma de pago -->
     <div id="modal-forma-pago" class="modal" style="display: none;">
       <div class="modal-content">
-        <h3>Seleccionar forma de pago</h3>
-        <select id="forma-pago">
-          <option value="1" selected>Contado</option>
-          <option value="2">Crédito</option>
-        </select>
-        <br><br>
+        <h3>Seleccioná forma de pago</h3>
+
+        <div class="opciones" id="forma-pago-opciones" data-input-id="forma-pago">
+          <div class="opcion selected" data-value="1">Contado</div>
+          <div class="opcion" data-value="2">Crédito</div>
+        </div>
+
+        <input type="hidden" id="forma-pago" value="1" /> <!-- Conservamos ID original -->
+
+        <br />
         <button id="confirmar-forma-pago">Confirmar</button>
         <button id="volver-tipo-pago">⬅</button>
       </div>
@@ -66,12 +74,15 @@
     <div id="modal-comprobante" class="modal" style="display: none;">
       <div class="modal-content">
         <h3>Factura con RUT</h3>
-        <select id="tipo-comprobante">
-          <option value="101" selected>Consumidor final</option>
-          <option value="111">Factura con RUT</option>
-          <!-- Agregá más si querés -->
-        </select>
-        <br><br>
+
+        <div class="opciones" id="tipo-comprobante-opciones" data-input-id="tipo-comprobante">
+          <div class="opcion selected" data-value="101">Consumidor final</div>
+          <div class="opcion" data-value="111">Factura con RUT</div>
+        </div>
+
+        <input type="hidden" id="tipo-comprobante" value="101" />
+
+        <br>
         <button id="confirmar-comprobante">Confirmar</button>
         <button id="volver-forma-pago">⬅</button>
       </div>
@@ -81,12 +92,18 @@
     <div id="modal-cliente" class="modal" style="display: none;">
       <div class="modal-content">
         <h3>Buscar Cliente por Documento</h3>
+
         <input type="text" id="documento-cliente" placeholder="Ingrese RUT o documento" />
         <br><br>
+
         <button id="buscar-cliente">Buscar</button>
+
         <p id="mensaje-cliente" style="color: red; display: none;"></p>
-        <p id="cliente-encontrado" style="display: none;">Cliente: <span id="cliente-denominacion"></span></p>
+        <p id="cliente-encontrado" style="display: none;">
+          Cliente: <span id="cliente-denominacion"></span>
+        </p>
         <br>
+
         <button id="confirmar-cliente" style="display: none;">Confirmar Cliente</button>
         <button id="volver-tipo-comprobante">⬅</button>
       </div>
@@ -96,17 +113,23 @@
     <div id="modal-moneda" class="modal" style="display: none;">
       <div class="modal-content">
         <h3>Seleccionar moneda</h3>
-        <select id="moneda">
-          <option value="UYU" selected>Pesos Uruguayos (UYU)</option>
-          <option value="USD">Dólares (USD)</option>
-        </select>
-        <br><br>
+
+        <div class="opciones" id="moneda-opciones" data-input-id="moneda">
+          <div class="opcion selected" data-value="UYU">Pesos Uruguayos (UYU)</div>
+          <div class="opcion" data-value="USD">Dólares (USD)</div>
+        </div>
+
+        <input type="hidden" id="moneda" value="UYU" />
+
+        <br>
         <button id="confirmar-moneda">Confirmar</button>
         <button id="volver-tipo-comprobante-moneda">⬅</button>
       </div>
     </div>
   </div>
   </div>
+
+  <button onclick="window.location.href='./desactivar-ticket.html'">Anular Tiket</button>
 
   <script src="../js/ticket.js"></script>
 </body>

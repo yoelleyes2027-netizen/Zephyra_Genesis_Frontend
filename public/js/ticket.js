@@ -5,6 +5,7 @@ const form = document.getElementById('producto-form');
 const tablaBody = document.querySelector('#tabla-productos tbody');
 const totalSpan = document.getElementById('total');
 
+//Logica de buscador de productos
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -70,7 +71,7 @@ let tipoComprobanteSeleccionado = '101';
 let monedaSeleccionada = 'UYU';
 let cliente_id = 1; // ahora lo vamos a actualizar dinámicamente
 
-// 1. Mostrar modal de forma de pago
+// 1. Mostrar modal de tipo de pago
 document.getElementById('cerrar-ticket').addEventListener('click', () => {
   // ⚠️ Validar si hay productos
   if (productosSeleccionados.length === 0) {
@@ -222,32 +223,47 @@ document.getElementById('confirmar-moneda').addEventListener('click', async () =
   document.getElementById('modal-moneda').style.display = 'none';
 });
 
-//funcion para el Enter
+
+// prueba de nuevos modales
 document.addEventListener('keydown', function (e) {
-  // Si la tecla no es Enter, salimos
-  if (e.key !== 'Enter') return;
+  const currentModal = document.querySelector('.modal[style*="block"]');
+  if (!currentModal) return;
 
-  // Si estás escribiendo en un textarea (por si agregás uno en el futuro), no hagas nada
-  if (document.activeElement.tagName === 'TEXTAREA') return;
+  const opcionesContainer = currentModal.querySelector('.opciones');
+  if (!opcionesContainer) return;
 
-  // ⛔️ Previene que se envíe formularios no deseados (como el de producto)
-  e.preventDefault();
+  const opciones = Array.from(opcionesContainer.querySelectorAll('.opcion'));
+  let selectedIndex = opciones.findIndex(opt => opt.classList.contains('selected'));
 
-  // Buscar qué modal está visible
-  const modales = [
-    { id: 'ticket-info', boton: 'confirmar-tipo-pago'},
-    { id: 'modal-forma-pago', boton: 'confirmar-forma-pago' },
-    { id: 'modal-comprobante', boton: 'confirmar-comprobante' },
-    { id: 'modal-cliente', boton: 'confirmar-cliente' },
-    { id: 'modal-moneda', boton: 'confirmar-moneda' }
-  ];
-
-  for (const modal of modales) {
-    const modalEl = document.getElementById(modal.id);
-    if (modalEl && getComputedStyle(modalEl).display !== 'none') {
-      const btn = document.getElementById(modal.boton);
-      if (btn) btn.click();
-      break; // ya encontramos uno visible, no seguimos
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (selectedIndex < opciones.length - 1) {
+      opciones[selectedIndex].classList.remove('selected');
+      opciones[++selectedIndex].classList.add('selected');
     }
+  }
+
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (selectedIndex > 0) {
+      opciones[selectedIndex].classList.remove('selected');
+      opciones[--selectedIndex].classList.add('selected');
+    }
+  }
+
+  if (e.key === 'Enter') {
+    e.preventDefault();
+
+    // 1. Actualizar el input oculto con el valor seleccionado
+    const selectedOption = opciones[selectedIndex];
+    const inputId = opcionesContainer.dataset.inputId;
+    if (inputId && selectedOption) {
+      const input = document.getElementById(inputId);
+      input.value = selectedOption.dataset.value;
+    }
+
+    // 2. Hacer click en botón confirmar del modal actual
+    const confirmarBtn = currentModal.querySelector('button[id^="confirmar-"]');
+    if (confirmarBtn) confirmarBtn.click();
   }
 });

@@ -39,4 +39,28 @@ const crearTicket = async (req, res) => {
   }
 };
 
-module.exports = { crearTicket };
+const desactivarTicket = async (req, res) => {
+  try {
+    const { ticket_id } = req.body;
+
+    if (!ticket_id) {
+      return res.status(400).json({ ok: false, mensaje: 'ticket_id es requerido' });
+    }
+
+    const updatedRows = await Ticket.desactivar(ticket_id);
+
+    if (updatedRows === 0) {
+      return res.status(404).json({ ok: false, mensaje: 'Ticket no encontrado' });
+    }
+
+    res.status(200).json({ ok: true, mensaje: 'Ticket desactivado con éxito' });
+  } catch (error) {
+    console.error('❌ Error al desactivar ticket:', error);
+    res.status(500).json({ ok: false, mensaje: 'Error al desactivar ticket' });
+  }
+};
+
+module.exports = { 
+  crearTicket,
+  desactivarTicket
+ };
