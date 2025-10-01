@@ -221,3 +221,33 @@ document.getElementById('confirmar-moneda').addEventListener('click', async () =
   // Ocultar el último modal
   document.getElementById('modal-moneda').style.display = 'none';
 });
+
+//funcion para el Enter
+document.addEventListener('keydown', function (e) {
+  // Si la tecla no es Enter, salimos
+  if (e.key !== 'Enter') return;
+
+  // Si estás escribiendo en un textarea (por si agregás uno en el futuro), no hagas nada
+  if (document.activeElement.tagName === 'TEXTAREA') return;
+
+  // ⛔️ Previene que se envíe formularios no deseados (como el de producto)
+  e.preventDefault();
+
+  // Buscar qué modal está visible
+  const modales = [
+    { id: 'ticket-info', boton: 'confirmar-tipo-pago'},
+    { id: 'modal-forma-pago', boton: 'confirmar-forma-pago' },
+    { id: 'modal-comprobante', boton: 'confirmar-comprobante' },
+    { id: 'modal-cliente', boton: 'confirmar-cliente' },
+    { id: 'modal-moneda', boton: 'confirmar-moneda' }
+  ];
+
+  for (const modal of modales) {
+    const modalEl = document.getElementById(modal.id);
+    if (modalEl && getComputedStyle(modalEl).display !== 'none') {
+      const btn = document.getElementById(modal.boton);
+      if (btn) btn.click();
+      break; // ya encontramos uno visible, no seguimos
+    }
+  }
+});
