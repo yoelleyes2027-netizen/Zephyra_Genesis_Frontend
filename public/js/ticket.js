@@ -179,6 +179,7 @@ document.getElementById('buscar-cliente').addEventListener('click', async () => 
     denominacionSpan.textContent = cliente.denominacion;
     infoCliente.style.display = 'block';
     confirmBtn.style.display = 'inline-block';
+    document.getElementById('buscar-cliente').style.display = 'none'
   } catch (err) {
     mensaje.textContent = "❌ Cliente no registrado.";
     mensaje.style.display = 'block';
@@ -223,12 +224,37 @@ document.getElementById('confirmar-moneda').addEventListener('click', async () =
   document.getElementById('modal-moneda').style.display = 'none';
 });
 
-
-// prueba de nuevos modales
+//Logica de teclado con los modales
 document.addEventListener('keydown', function (e) {
   const currentModal = document.querySelector('.modal[style*="block"]');
   if (!currentModal) return;
 
+  // 🔍 Caso especial: modal-cliente (no tiene opciones navegables)
+  if (currentModal.id === 'modal-cliente') {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+
+      // 🔍 Buscar botón visible (buscar-cliente o confirmar-cliente)
+      const buscarBtn = currentModal.querySelector('#buscar-cliente');
+      const confirmarBtn = currentModal.querySelector('#confirmar-cliente');
+
+      if (buscarBtn && buscarBtn.style.display !== 'none') {
+        buscarBtn.click();
+      } else if (confirmarBtn && confirmarBtn.style.display !== 'none') {
+        confirmarBtn.click();
+      }
+    }
+
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const volverBtn = currentModal.querySelector('#volver-tipo-comprobante');
+      if (volverBtn) volverBtn.click();
+    }
+
+    return; // ⚠️ Salimos para no seguir con el resto de lógica
+  }
+
+  // 🔁 Modales con lista de opciones
   const opcionesContainer = currentModal.querySelector('.opciones');
   if (!opcionesContainer) return;
 
@@ -254,7 +280,6 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'Enter') {
     e.preventDefault();
 
-    // 1. Actualizar el input oculto con el valor seleccionado
     const selectedOption = opciones[selectedIndex];
     const inputId = opcionesContainer.dataset.inputId;
     if (inputId && selectedOption) {
@@ -262,8 +287,13 @@ document.addEventListener('keydown', function (e) {
       input.value = selectedOption.dataset.value;
     }
 
-    // 2. Hacer click en botón confirmar del modal actual
     const confirmarBtn = currentModal.querySelector('button[id^="confirmar-"]');
     if (confirmarBtn) confirmarBtn.click();
+  }
+
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    const volverBtn = currentModal.querySelector('button[id^="volver-"]');
+    if (volverBtn) volverBtn.click();
   }
 });

@@ -52,3 +52,18 @@ button:hover {
   margin-top: 1rem;
   font-weight: bold;
 }
+
+button {
+  padding: 0.7rem 1.5rem;
+  background-color: var(--color3);
+  color: var(--color2);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background-color: var(--color4);
+  color: var(--color1);
+}
