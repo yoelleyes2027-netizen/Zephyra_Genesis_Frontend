@@ -10,7 +10,7 @@
 
 <body>
   <div class="container">
-    <h1>Venta en Caja</h1>
+    <h1>Devolucion en Caja</h1>
 
     <form style="display: block;" id="producto-form">
       <input type="text" id="codigo" placeholder="Código del producto" required>
@@ -30,7 +30,7 @@
       <tbody></tbody>
     </table>
 
-    <p>Total: $<span id="total">0.00</span></p>
+    <p>Total: -$<span id="total">0.00</span></p>
 
     <button style="display: block;" id="cerrar-ticket">Cerrar Ticket</button>
 
@@ -129,11 +129,8 @@
   </div>
   </div>
 
-  <button onclick="window.location.href='./desactivar-ticket.html'">Devolver Tiket</button>
-  <button onclick="window.location.href='./devolucion.html'">Devolucion de articulos</button>
 
-
-  <script src="../js/ticket.js"></script>
+  <script src="../js/devolucion.js"></script>
 </body>
 
 </html>
