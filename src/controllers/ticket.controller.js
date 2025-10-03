@@ -3,7 +3,7 @@ const DetallesTicket = require('../models/detallesTicket.model');
 
 const crearTicket = async (req, res) => {
   try {
-    const { cliente_id, tipo_pago, productos, forma_pago, tipo_comprobante, moneda } = req.body;
+    const { cliente_id, tipo_pago, productos, forma_pago, tipo_comprobante, moneda, tipo_ticket } = req.body;
     const usuario_id = req.usuario.id;
 
     // Calcular el total en el backend
@@ -18,6 +18,7 @@ const crearTicket = async (req, res) => {
       forma_pago,
       tipo_comprobante,
       moneda,
+      tipo_ticket
     });
 
     // Insertar detalles
@@ -60,7 +61,54 @@ const desactivarTicket = async (req, res) => {
   }
 };
 
-module.exports = { 
+const buscarTicketPorId = async (req, res) => {
+  try {
+    const { ticket_id } = req.params;
+
+    if (!ticket_id) {
+      return res.status(400).json({ ok: false, mensaje: 'ticket_id es requerido' });
+    }
+
+    const ticket = await Ticket.buscarPorId(ticket_id);
+
+    if (!ticket) {
+      return res.status(404).json({ ok: false, mensaje: 'Ticket no encontrado o inactivo' });
+    }
+
+    const productos = await Ticket.buscarPorTicket(ticket_id);
+
+    res.status(200).json({ ok: true, ticket, productos });
+    console.log({ ok: true, ticket, productos })
+
+  } catch (error) {
+    console.error('❌ Error al buscar ticket:', error);
+    res.status(500).json({ ok: false, mensaje: 'Error al buscar ticket' });
+  }
+};
+
+const eliminarArticulosTicket = async (req, res) => {
+  try {
+    const { detalles_ids } = req.body;
+
+    if (!detalles_ids || !Array.isArray(detalles_ids) || detalles_ids.length === 0) {
+      return res.status(400).json({ ok: false, mensaje: 'detalles_ids es requerido y debe ser un array con al menos un ID.' });
+    }
+
+    const totalActualizados = await Ticket.desactivarPorIds(detalles_ids);
+
+    res.status(200).json({
+      success: true,
+      mensaje: `${totalActualizados} artículo(s) eliminado(s) correctamente.`
+    });
+  } catch (error) {
+    console.error('❌ Error al eliminar artículos del ticket:', error);
+    res.status(500).json({ ok: false, mensaje: 'Error al eliminar artículos del ticket' });
+  }
+};
+
+module.exports = {
   crearTicket,
-  desactivarTicket
- };
+  desactivarTicket,
+  buscarTicketPorId,
+  eliminarArticulosTicket
+};

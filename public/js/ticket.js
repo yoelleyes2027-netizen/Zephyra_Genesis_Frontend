@@ -70,6 +70,7 @@ let formaPagoSeleccionada = 'contado';
 let tipoComprobanteSeleccionado = '101';
 let monedaSeleccionada = 'UYU';
 let cliente_id = 1; // ahora lo vamos a actualizar dinámicamente
+let tipo_ticket = 'VENTA';
 
 // 1. Mostrar modal de tipo de pago
 document.getElementById('cerrar-ticket').addEventListener('click', () => {
@@ -199,6 +200,7 @@ document.getElementById('confirmar-moneda').addEventListener('click', async () =
     tipo_comprobante: tipoComprobanteSeleccionado,
     moneda: monedaSeleccionada,
     total,
+    tipo_ticket: tipo_ticket,
     productos: productosSeleccionados
   };
 
