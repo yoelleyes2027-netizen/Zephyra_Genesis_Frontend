@@ -6,40 +6,56 @@ body {
   color: var(--color2);
   margin: 0;
   padding: 0;
+  font-size: 18px;
+
+  /* Centrado de todo el contenido en la pantalla */
+  display: flex;
+  align-items: center;        /* centra verticalmente */
+  justify-content: center;    /* centra horizontalmente */
+  min-height: 100vh;          /* para que el body ocupe toda la altura */
 }
 
+/* Contenedor principal centrado y con ancho controlado */
 .ticket-container {
   padding: 2rem;
   max-width: 1000px;
-  margin: auto;
+  width: calc(100% - 2rem); /* margen lateral en móviles */
+  box-sizing: border-box;
+
+  /* Visual */
+  margin: 0 auto;
+  background: transparent; /* dejamos transparencia aquí, las secciones internas tienen fondo */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
+/* Header */
 .ticket-header {
   background-color: var(--color3);
   padding: 1rem 2rem;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   color: var(--color2);
-  margin-bottom: 2rem;
 }
 
+/* Ajuste del título para que se vea centrado dentro del header si quisieras */
 .ticket-header h1 {
   margin: 0;
+  text-align: center;
+  font-size: 2rem;
 }
 
+/* Secciones internas (mantienen el color de fondo que ya tenías) */
 .ticket-section {
   background-color: var(--color2);
   color: var(--color1);
   padding: 1.5rem;
   border-radius: 10px;
-  margin-bottom: 1.5rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-.ticket-section h2 {
-  margin-top: 0;
-}
-
+/* Formularios dentro */
 .ticket-form {
   display: flex;
   flex-wrap: wrap;
@@ -49,13 +65,16 @@ body {
 
 .ticket-form input,
 .ticket-form select {
-  padding: 0.6rem;
+  padding: 0.8rem;
+  font-size: 1rem;
   border-radius: 5px;
   border: 1px solid #ccc;
   flex: 1;
   min-width: 200px;
+  box-sizing: border-box;
 }
 
+/* Tabla */
 .ticket-table {
   width: 100%;
   border-collapse: collapse;
@@ -71,6 +90,7 @@ body {
 .ticket-table td {
   padding: 0.75rem 1rem;
   text-align: left;
+  font-size: 1rem;
 }
 
 .ticket-table th {
@@ -87,14 +107,16 @@ body {
   color: var(--color1);
 }
 
+/* Botones generales */
 button {
-  padding: 0.7rem 1.5rem;
+  padding: 1rem 2rem;
   background-color: var(--color3);
   color: var(--color2);
   border: none;
   border-radius: 5px;
   cursor: pointer;
   margin-top: 1rem;
+  font-size: 1rem;
 }
 
 button:hover {
@@ -102,8 +124,9 @@ button:hover {
   color: var(--color1);
 }
 
+/* Total y eliminar */
 .total-display {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: bold;
   margin-top: 1rem;
   text-align: right;
@@ -117,6 +140,7 @@ button:hover {
   cursor: pointer;
 }
 
+/* Opciones / selección */
 .opciones {
   display: flex;
   flex-direction: column;
@@ -142,4 +166,32 @@ button:hover {
   background-color: #007bff;
   color: white;
   font-weight: bold;
+}
+
+/* Estilos específicos para la vista central de botones (ticket.html) */
+.botones {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  align-items: center;
+}
+
+.botones button {
+  width: 100%;
+  max-width: 360px; /* ancho máximo de cada botón */
+  font-size: 1.1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+}
+
+/* Responsive: en pantallas más anchas poner los botones en fila */
+@media (min-width: 900px) {
+  .botones {
+    flex-direction: row;
+    justify-content: center;
+  }
+  .botones button {
+    width: 220px;
+  }
 }

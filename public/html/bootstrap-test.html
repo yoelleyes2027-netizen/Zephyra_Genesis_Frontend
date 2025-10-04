@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prueba Bootstrap</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+  <!-- Tu CSS de prueba -->
+  <link rel="stylesheet" href="./css/bootstrap-test.css">
+</head>
+<body>
+  <div class="container my-5">
+    <h1 class="mb-4 text-center">Prueba de Bootstrap + Estilos Propios</h1>
+
+    <!-- Botones -->
+    <h2>Botones</h2>
+    <button class="btn btn-primary">Primary</button>
+    <button class="btn btn-outline-secondary">Outline Secundario</button>
+    <button class="btn btn-success btn-lg">Éxito Grande</button>
+    <button class="btn btn-danger btn-sm">Pequeño Peligro</button>
+
+    <hr>
+
+    <!-- Tarjetas -->
+    <h2>Tarjetas</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Tarjeta 1</h5>
+            <p class="card-text">Un ejemplo de tarjeta básica con Bootstrap.</p>
+            <a href="#" class="btn btn-primary">Acción</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Tarjeta 2</h5>
+            <p class="card-text">Se adaptan al ancho del contenedor.</p>
+            <a href="#" class="btn btn-outline-success">Otra acción</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Menú desplegable -->
+    <h2>Dropdown</h2>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Menú de ejemplo
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Acción 1</a></li>
+        <li><a class="dropdown-item" href="#">Acción 2</a></li>
+        <li><a class="dropdown-item" href="#">Acción 3</a></li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <!-- Alertas -->
+    <h2>Alertas</h2>
+    <div class="alert alert-success">Éxito: todo salió bien 🎉</div>
+    <div class="alert alert-danger">Error: algo salió mal ❌</div>
+    <div class="alert alert-warning">Atención: revisa los datos ⚠️</div>
+    <div class="alert alert-info">Información: prueba Bootstrap ℹ️</div>
+
+  </div>
+
+  <!-- Bootstrap JS (para dropdowns, modales, etc.) -->
+  <script src="../public/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

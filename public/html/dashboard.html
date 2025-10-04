@@ -1,34 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - CRM</title>
-  <link rel="stylesheet" href="../css/dashboard.css" />
+  
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+
+  <!-- Tu CSS personalizado -->
+  <link rel="stylesheet" href="../css/dashboard.css">
 </head>
 <body>
-  <div class="dashboard-header">
-    <div class="logo">G</div>
-    <h1>Genesis - CRM</h1>
-  </div>
-  
-  <div class="dashboard-section">
-    <h2>Panel principal</h2>
-    <div class="dashboard-menu">
-      <button onclick="window.location.href='./productos.html'">🛒 Productos</button>
-      <button onclick="window.location.href='./proveedores.html'">🚚 Proveedores</button>
-      <button onclick="window.location.href='./ticket.html'">🧾 Ticket</button>
-      <button onclick="window.location.href='./clientes.html'">👥 Clientes</button>
-      <button onclick="window.location.href='./estadisticas.html'">📊 Estadísticas</button>
-      <button onclick="window.location.href='./etiquetas.html'">🏷️ Etiquetas</button>
-      <button onclick="window.location.href='./configuracion.html'">⚙️ Configuración</button>
+  <div class="dashboard-container container">
+    <!-- Header -->
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo">G</div>
+      <h1 class="mb-0">Genesis - CRM</h1>
+    </div>
+
+    <!-- Panel -->
+    <div class="dashboard-section">
+      <h2 class="mb-4">Panel principal</h2>
+      <div class="dashboard-menu d-flex flex-wrap gap-3">
+        <button class="btn btn-light shadow-sm flex-fill"
+          onclick="window.location.href='./productos.html'">🛒 Productos</button>
+        <button class="btn btn-light shadow-sm flex-fill"
+          onclick="window.location.href='./proveedores.html'">🏭 Proveedores</button>
+        <button class="btn btn-light shadow-sm flex-fill"
+          onclick="window.location.href='./ticket.html'">🎫 Ticket</button>
+        <button class="btn btn-light shadow-sm flex-fill"
+          onclick="window.location.href='./clientes.html'">👥 Clientes</button>
+        <button class="btn btn-light shadow-sm flex-fill"
+          onclick="window.location.href='./estadisticas.html'">📊 Estadísticas</button>
+        <button class="btn btn-light shadow-sm flex-fill"
+          onclick="window.location.href='./etiquetas.html'">🏷️ Etiquetas</button>
+        <button class="btn btn-light shadow-sm flex-fill"
+          onclick="window.location.href='./configuracion.html'">⚙️ Configuración</button>
+      </div>
+    </div>
+
+    <!-- Botón logout -->
+    <div class="text-center mt-4">
+      <button id="logout-btn" class="btn btn-danger px-4 py-2">
+        ⛔ Cerrar sesión
+      </button>
     </div>
   </div>
-
-   <!-- Botón de Cerrar Sesión -->
-   <button id="logout-btn" style="margin-top: 2rem; background-color: darkred; color: white;">
-    🔒 Cerrar sesión
-  </button>
 
   <script src="../js/dashboard.js"></script>
 </body>
