@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Venta de Ticket</title>
+  <link rel="stylesheet" href="../css/venta-caja.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Venta en Caja</h1>
+
+    <form style="display: block;" id="producto-form">
+      <input type="text" id="codigo" placeholder="Código del producto" required>
+      <input type="number" id="cantidad" placeholder="Cantidad" min="1" value="1" required>
+      <button type="submit">Agregar</button>
+    </form>
+
+    <table id="tabla-productos">
+      <thead>
+        <tr>
+          <th>Descripción</th>
+          <th>Precio unitario</th>
+          <th>Cantidad</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <p>Total: $<span id="total">0.00</span></p>
+
+    <button style="display: block;" id="cerrar-ticket">Cerrar Ticket</button>
+
+    <!-- Modal: Tipo de Pago -->
+    <div id="ticket-info" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h3>Tipo de pago</h3>
+
+        <div class="opciones" id="tipo-pago-opciones" data-input-id="tipo-pago">
+          <div class="opcion selected" data-value="efectivo">Efectivo</div>
+          <div class="opcion" data-value="Tarjeta">Tarjeta</div>
+        </div>
+
+        <input type="hidden" id="tipo-pago" value="efectivo" />
+
+        <br>
+        <button id="confirmar-tipo-pago">Confirmar</button>
+        <button id="volver-agregar-productos">⬅</button>
+      </div>
+    </div>
+
+    <!-- Modal para forma de pago -->
+    <div id="modal-forma-pago" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h3>Seleccioná forma de pago</h3>
+
+        <div class="opciones" id="forma-pago-opciones" data-input-id="forma-pago">
+          <div class="opcion selected" data-value="1">Contado</div>
+          <div class="opcion" data-value="2">Crédito</div>
+        </div>
+
+        <input type="hidden" id="forma-pago" value="1" /> <!-- Conservamos ID original -->
+
+        <br />
+        <button id="confirmar-forma-pago">Confirmar</button>
+        <button id="volver-tipo-pago">⬅</button>
+      </div>
+    </div>
+
+    <!-- Modal: Tipo de Comprobante -->
+    <div id="modal-comprobante" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h3>Factura con RUT</h3>
+
+        <div class="opciones" id="tipo-comprobante-opciones" data-input-id="tipo-comprobante">
+          <div class="opcion selected" data-value="101">Consumidor final</div>
+          <div class="opcion" data-value="111">Factura con RUT</div>
+        </div>
+
+        <input type="hidden" id="tipo-comprobante" value="101" />
+
+        <br>
+        <button id="confirmar-comprobante">Confirmar</button>
+        <button id="volver-forma-pago">⬅</button>
+      </div>
+    </div>
+
+    <!-- Modal: Cliente con RUT -->
+    <div id="modal-cliente" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h3>Buscar Cliente por Documento</h3>
+
+        <input type="text" id="documento-cliente" placeholder="Ingrese RUT o documento" />
+        <br><br>
+
+        <button id="buscar-cliente" style="display: block;">Buscar</button>
+
+        <p id="mensaje-cliente" style="color: red; display: none;"></p>
+        <p id="cliente-encontrado" style="display: none;">
+          Cliente: <span id="cliente-denominacion"></span>
+        </p>
+        <br>
+
+        <button id="confirmar-cliente" style="display: none;">Confirmar Cliente</button>
+        <button id="volver-tipo-comprobante">⬅</button>
+      </div>
+    </div>
+
+    <!-- Modal: Moneda -->
+    <div id="modal-moneda" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h3>Seleccionar moneda</h3>
+
+        <div class="opciones" id="moneda-opciones" data-input-id="moneda">
+          <div class="opcion selected" data-value="UYU">Pesos Uruguayos (UYU)</div>
+          <div class="opcion" data-value="USD">Dólares (USD)</div>
+        </div>
+
+        <input type="hidden" id="moneda" value="UYU" />
+
+        <br>
+        <button id="confirmar-moneda">Confirmar</button>
+        <button id="volver-tipo-comprobante-moneda">⬅</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script src="../js/venta-caja.js"></script>
+</body>
+
+</html>
