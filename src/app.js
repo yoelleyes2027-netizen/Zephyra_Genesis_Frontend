@@ -5,6 +5,7 @@ const rutas = require('./routes/index');
 const authRoutes = require('./routes/auth.routes');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const monedasRoutes = require('./routes/monedas.routes');
 
 // Cargar variables de entorno desde .env
 dotenv.config();
@@ -25,6 +26,8 @@ app.use('/api', rutas);
 app.use('/api/auth', authRoutes);
 app.use('/api/tickets', require('./routes/ticket.routes'));
 app.use('/api/etiquetas', require('./routes/etiquetas.routes'));
+app.use('/api/monedas', monedasRoutes);
+
 
 // Puerto
 const PORT = process.env.PORT || 3001;
