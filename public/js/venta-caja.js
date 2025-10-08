@@ -223,7 +223,7 @@ document.getElementById('confirmar-moneda').addEventListener('click', async () =
       tipo_ticket: tipo_ticket,
       productos: productosSeleccionados
     };
-  
+
     try {
       const res = await fetch('/api/tickets', {
         method: 'POST',
@@ -233,9 +233,21 @@ document.getElementById('confirmar-moneda').addEventListener('click', async () =
         credentials: 'include',
         body: JSON.stringify(body)
       });
-  
-      if (!res.ok) throw new Error('Error al guardar ticket');
-      alert('✅ Ticket generado correctamente');
+      // 2️⃣ Si el ticket se generó correctamente, actualizar el stock
+      const actualizarStock = await fetch('/api/productos/actualizar-stock', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ productos: productosSeleccionados })
+      });
+
+      if (!actualizarStock.ok) throw new Error('Error al actualizar stock');
+
+      // 3️⃣ Mensaje final
+      alert('✅ Ticket generado y stock actualizado correctamente');
+      location.reload();
     } catch (err) {
       console.error(err);
       alert('❌ ' + err.message);
@@ -272,8 +284,23 @@ document.getElementById('finalizar').addEventListener('click', async () => {
       credentials: 'include',
       body: JSON.stringify(body)
     })).ok) throw new Error('Error al guardar ticket');
-    alert('✅ Ticket generado correctamente');
+
+    // Si el ticket se generó correctamente, actualizar el stock
+    const actualizarStock = await fetch('/api/productos/actualizar-stock', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({ productos: productosSeleccionados })
+    });
+
+    if (!actualizarStock.ok) throw new Error('Error al actualizar stock');
+
+    // Mensaje final
+    alert('✅ Ticket generado y stock actualizado correctamente');
     location.reload();
+
   } catch (err) {
     console.error(err);
     alert('❌ ' + err.message);

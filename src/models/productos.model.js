@@ -127,6 +127,42 @@ const Producto = {
     return result;
   },
 
+  actualizarStockMultiple: async (productos) => {
+    const connection = await db.getConnection(); // usamos transacción por seguridad
+    try {
+      await connection.beginTransaction();
+  
+      for (const item of productos) {
+        const { producto_id, cantidad } = item;
+  
+        // Verificar que el producto exista y obtener stock actual
+        const [rows] = await connection.query(
+          'SELECT stock FROM productos WHERE id = ? AND activo = 1',
+          [producto_id]
+        );
+  
+        if (rows.length === 0) continue; // producto no encontrado o inactivo
+  
+        const stockActual = parseFloat(rows[0].stock) || 0;
+        const nuevoStock = Math.max(stockActual - cantidad, 0); // evita negativos
+  
+        await connection.query(
+          'UPDATE productos SET stock = ? WHERE id = ?',
+          [nuevoStock, producto_id]
+        );
+      }
+  
+      await connection.commit();
+      return { ok: true };
+    } catch (error) {
+      await connection.rollback();
+      console.error('Error en actualización de stock múltiple:', error);
+      throw error;
+    } finally {
+      connection.release();
+    }
+  },
+
 };
 
 module.exports = Producto;

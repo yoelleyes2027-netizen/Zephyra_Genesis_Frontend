@@ -128,6 +128,33 @@ const eliminarProductoPorCodigo = async (req, res) => {
   }
 };
 
+const actualizarStockProductos = async (req, res) => {
+  try {
+    const { productos } = req.body;
+
+    if (!Array.isArray(productos) || productos.length === 0) {
+      return res.status(400).json({
+        ok: false,
+        mensaje: 'Debe enviar un array de productos con cantidades.'
+      });
+    }
+
+    const resultado = await Producto.actualizarStockMultiple(productos);
+
+    res.json({
+      ok: true,
+      mensaje: 'Stock actualizado correctamente.',
+      resultado
+    });
+  } catch (error) {
+    console.error('Error al actualizar stock:', error);
+    res.status(500).json({
+      ok: false,
+      mensaje: 'Error al actualizar el stock de productos.'
+    });
+  }
+};
+
 module.exports = {
   obtenerProductos,
   agregarProducto,
@@ -135,4 +162,5 @@ module.exports = {
   obtenerProductoPorDescripcion,
   modificarProductoPorCodigo,
   eliminarProductoPorCodigo,
+  actualizarStockProductos,
 };
