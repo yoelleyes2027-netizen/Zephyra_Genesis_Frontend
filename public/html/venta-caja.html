@@ -127,7 +127,19 @@
       </div>
     </div>
   </div>
+
+  <div id="modal-pago-efectivo-container" class="modal" style="display: none">
+    <label for="monto-pagado"><strong>💵 El cliente paga con:</strong></label>
+    <input type="number" id="monto-pagado" min="0" step="0.01" placeholder="Ej: 1000"
+      style="width: 150px; margin-left: 8px;" />
+    <p style="margin-top: 5px;">
+      <strong>Cambio a entregar:</strong> $<span id="monto-cambio">0.00</span>
+    </p>
+    <br>
+    <button id="finalizar">Finalizar</button>
   </div>
+  </div>
+
 
   <script src="../js/venta-caja.js"></script>
 </body>

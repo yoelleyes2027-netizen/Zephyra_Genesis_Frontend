@@ -187,8 +187,66 @@ document.getElementById('buscar-cliente').addEventListener('click', async () => 
   }
 });
 
+// Detectar si corresponde mostrar campo de pago en efectivo
+const tipoPagoInput = document.getElementById('tipo-pago');
+const monedaInput = document.getElementById('moneda');
+const pagoEfectivoContainer = document.getElementById('pago-efectivo-container');
+const montoPagadoInput = document.getElementById('monto-pagado');
+const montoCambioSpan = document.getElementById('monto-cambio');
+
+// Calcular cambio automáticamente
+montoPagadoInput.addEventListener('input', () => {
+  const montoPagado = parseFloat(montoPagadoInput.value) || 0;
+  const cambio = montoPagado - total;
+  montoCambioSpan.textContent = cambio > 0 ? cambio.toFixed(2) : '0.00';
+});
+
 // 5. Confirmar moneda y enviar ticket al backend
 document.getElementById('confirmar-moneda').addEventListener('click', async () => {
+  monedaSeleccionada = document.getElementById('moneda').value;
+
+  const tipo_pago = document.getElementById('tipo-pago').value;
+
+  // si paga con efectivo mostrar calcualdora de cambio
+  if (tipo_pago === 'efectivo' && monedaSeleccionada === 'UYU') {
+    document.getElementById('modal-pago-efectivo-container').style.display = 'block';
+    document.getElementById('modal-moneda').style.display = 'none';
+  } else {
+
+    const body = {
+      cliente_id,
+      tipo_pago,
+      forma_pago: formaPagoSeleccionada,
+      tipo_comprobante: tipoComprobanteSeleccionado,
+      moneda: monedaSeleccionada,
+      total,
+      tipo_ticket: tipo_ticket,
+      productos: productosSeleccionados
+    };
+  
+    try {
+      const res = await fetch('/api/tickets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(body)
+      });
+  
+      if (!res.ok) throw new Error('Error al guardar ticket');
+      alert('✅ Ticket generado correctamente');
+    } catch (err) {
+      console.error(err);
+      alert('❌ ' + err.message);
+    }
+    location.reload();
+  }
+
+});
+
+// 6 ocultar el último modal
+document.getElementById('finalizar').addEventListener('click', async () => {
   monedaSeleccionada = document.getElementById('moneda').value;
 
   const tipo_pago = document.getElementById('tipo-pago').value;
@@ -205,25 +263,21 @@ document.getElementById('confirmar-moneda').addEventListener('click', async () =
   };
 
   try {
-    const res = await fetch('/api/tickets', {
+
+    if (!(await fetch('/api/tickets', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       credentials: 'include',
       body: JSON.stringify(body)
-    });
-
-    if (!res.ok) throw new Error('Error al guardar ticket');
+    })).ok) throw new Error('Error al guardar ticket');
     alert('✅ Ticket generado correctamente');
     location.reload();
   } catch (err) {
     console.error(err);
     alert('❌ ' + err.message);
   }
-
-  // Ocultar el último modal
-  document.getElementById('modal-moneda').style.display = 'none';
 });
 
 //Logica de teclado con los modales
