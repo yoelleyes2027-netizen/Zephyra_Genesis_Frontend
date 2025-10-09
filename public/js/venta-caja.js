@@ -194,6 +194,16 @@ const pagoEfectivoContainer = document.getElementById('pago-efectivo-container')
 const montoPagadoInput = document.getElementById('monto-pagado');
 const montoCambioSpan = document.getElementById('monto-cambio');
 
+// --- USD helpers / elementos ---
+let tasaUSD = null;         // $UYU por 1 USD (desde backend)
+let totalUSD = 0;           // total del ticket expresado en USD
+
+const modalPagoUsd = document.getElementById('modal-pago-efectivo-usd-container');
+const montoPagadoUsdInput = document.getElementById('monto-pagado-usd');
+const tasaUsdSpan = document.getElementById('tasa-usd');
+const totalUsdSpan = document.getElementById('total-usd');
+const cambioUsdSpan = document.getElementById('monto-cambio-usd');
+
 // Calcular cambio automáticamente
 montoPagadoInput.addEventListener('input', () => {
   const montoPagado = parseFloat(montoPagadoInput.value) || 0;
@@ -201,18 +211,66 @@ montoPagadoInput.addEventListener('input', () => {
   montoCambioSpan.textContent = cambio > 0 ? cambio.toFixed(2) : '0.00';
 });
 
+if (montoPagadoUsdInput) {
+  montoPagadoUsdInput.addEventListener('input', () => {
+    const monto = parseFloat(montoPagadoUsdInput.value) || 0;
+    const cambioUSD = monto - totalUSD;
+    const cambioUSDPositivo = cambioUSD > 0 ? cambioUSD : 0;
+
+    // 🔹 Mostrar cambio en dólares (como antes)
+    cambioUsdSpan.textContent = cambioUSDPositivo.toFixed(2);
+
+    // 🔹 Nuevo: calcular cambio en pesos uruguayos
+    const cambioUYU = cambioUSDPositivo * tasaUSD;
+    const cambioUYUSpan = document.getElementById('monto-cambio-uyu-usd');
+    cambioUYUSpan.textContent = cambioUYU.toFixed(2);
+  });
+}
+
+// Llamada para saber el dolar hoy
+async function obtenerTasaUSD() {
+  // Cacheamos en memoria para no llamar dos veces
+  if (tasaUSD) return tasaUSD;
+
+  const res = await fetch('/api/monedas/USD', { credentials: 'include' });
+  if (!res.ok) throw new Error('No se pudo obtener la tasa USD.');
+  const data = await res.json();
+
+  // El backend devuelve { ok, codigo, nombre, valor_en_pesos, ... }
+  tasaUSD = Number(data.valor_en_pesos);
+  return tasaUSD;
+}
+
 // 5. Confirmar moneda y enviar ticket al backend
 document.getElementById('confirmar-moneda').addEventListener('click', async () => {
   monedaSeleccionada = document.getElementById('moneda').value;
-
   const tipo_pago = document.getElementById('tipo-pago').value;
 
-  // si paga con efectivo mostrar calcualdora de cambio
+  // si paga con efectivo mostrar calculadora de cambio (UYU)
   if (tipo_pago === 'efectivo' && monedaSeleccionada === 'UYU') {
     document.getElementById('modal-pago-efectivo-container').style.display = 'block';
     document.getElementById('modal-moneda').style.display = 'none';
-  } else {
 
+  // 🔹 NUEVO: efectivo + USD
+  } else if (tipo_pago === 'efectivo' && monedaSeleccionada === 'USD') {
+    try {
+      const tasa = await obtenerTasaUSD(); // p.ej. 39.8267 UYU por 1 USD
+      tasaUsdSpan.textContent = tasa.toFixed(2);
+
+      // El total que llevás está en UYU => lo convertimos a USD solo para mostrar/cobrar
+      totalUSD = total / tasa;
+      totalUsdSpan.textContent = totalUSD.toFixed(2);
+      cambioUsdSpan.textContent = '0.00';
+      montoPagadoUsdInput.value = '';
+
+      modalPagoUsd.style.display = 'block';
+      document.getElementById('modal-moneda').style.display = 'none';
+    } catch (err) {
+      alert('❌ ' + err.message);
+    }
+
+  } else {
+    // ⚙️ Flujo normal (tarjeta / crédito / etc.) -> crear ticket y actualizar stock
     const body = {
       cliente_id,
       tipo_pago,
@@ -220,44 +278,37 @@ document.getElementById('confirmar-moneda').addEventListener('click', async () =
       tipo_comprobante: tipoComprobanteSeleccionado,
       moneda: monedaSeleccionada,
       total,
-      tipo_ticket: tipo_ticket,
+      tipo_ticket,
       productos: productosSeleccionados
     };
 
     try {
       const res = await fetch('/api/tickets', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(body)
       });
-      // 2️⃣ Si el ticket se generó correctamente, actualizar el stock
+      if (!res.ok) throw new Error('Error al guardar ticket');
+
       const actualizarStock = await fetch('/api/productos/actualizar-stock', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ productos: productosSeleccionados })
       });
-
       if (!actualizarStock.ok) throw new Error('Error al actualizar stock');
 
-      // 3️⃣ Mensaje final
       alert('✅ Ticket generado y stock actualizado correctamente');
       location.reload();
     } catch (err) {
       console.error(err);
       alert('❌ ' + err.message);
     }
-    location.reload();
   }
-
 });
 
-// 6 ocultar el último modal
+// 6.1 Ocultar el último modal con UYU
 document.getElementById('finalizar').addEventListener('click', async () => {
   monedaSeleccionada = document.getElementById('moneda').value;
 
@@ -301,6 +352,45 @@ document.getElementById('finalizar').addEventListener('click', async () => {
     alert('✅ Ticket generado y stock actualizado correctamente');
     location.reload();
 
+  } catch (err) {
+    console.error(err);
+    alert('❌ ' + err.message);
+  }
+});
+
+// 6.2 Ocultar el ultimo modal con USD
+document.getElementById('finalizar-usd').addEventListener('click', async () => {
+  const tipo_pago = document.getElementById('tipo-pago').value; // 'efectivo'
+  const body = {
+    cliente_id,
+    tipo_pago,
+    forma_pago: formaPagoSeleccionada,
+    tipo_comprobante: tipoComprobanteSeleccionado,
+    moneda: 'USD',                 // 👈 la moneda del ticket
+    total,                         // 👈 mantenemos tu total en UYU (como venías)
+    tipo_ticket,
+    productos: productosSeleccionados
+  };
+
+  try {
+    const res = await fetch('/api/tickets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error('Error al guardar ticket');
+
+    const actualizarStock = await fetch('/api/productos/actualizar-stock', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ productos: productosSeleccionados })
+    });
+    if (!actualizarStock.ok) throw new Error('Error al actualizar stock');
+
+    alert('✅ Ticket generado y stock actualizado correctamente');
+    location.reload();
   } catch (err) {
     console.error(err);
     alert('❌ ' + err.message);

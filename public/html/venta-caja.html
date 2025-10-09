@@ -140,6 +140,38 @@
   </div>
   </div>
 
+  <!-- Modal: Pago en efectivo (USD) -->
+<div id="modal-pago-efectivo-usd-container" class="modal" style="display: none">
+  <label for="monto-pagado-usd"><strong>💵 El cliente paga con (USD):</strong></label>
+  <input
+    type="number"
+    id="monto-pagado-usd"
+    min="0"
+    step="0.01"
+    placeholder="Ej: 50"
+    style="width: 150px; margin-left: 8px;"
+  />
+
+  <p style="margin-top: 5px;">
+    <small>Tasa usada: $<span id="tasa-usd">0.00</span> UYU por 1 USD</small>
+  </p>
+
+  <p style="margin-top: 5px;">
+    <strong>Total en USD:</strong> US$<span id="total-usd">0.00</span>
+  </p>
+
+  <p style="margin-top: 5px;">
+    <strong>Cambio a entregar (USD):</strong> US$<span id="monto-cambio-usd">0.00</span>
+  </p>
+
+  <p style="margin-top: 5px;">
+    <strong>Cambio en pesos uruguayos (UYU):</strong> $<span id="monto-cambio-uyu-usd">0.00</span>
+  </p>
+
+  <br />
+  <button id="finalizar-usd">Finalizar</button>
+</div>
+
 
   <script src="../js/venta-caja.js"></script>
 </body>
