@@ -5,20 +5,25 @@ const db = require('../config/db');
 const actualizarDolarHoy = async (req, res) => {
   try {
     const valorUSD = await obtenerDolarHoy();
-
     if (!valorUSD) {
       return res.status(500).json({ ok: false, msg: 'Error al obtener valor del dólar.' });
     }
 
+    // ✅ Ahora también actualizamos la fecha/hora
     const query = `
       UPDATE monedas
-      SET valor_en_pesos = ?
+      SET valor_en_pesos = ?, actualizado_en = NOW()
       WHERE codigo = 'USD'
     `;
 
     await db.query(query, [valorUSD]);
 
-    res.json({ ok: true, msg: 'Valor del dólar actualizado correctamente.', valorUSD });
+    res.json({
+      ok: true,
+      msg: 'Valor del dólar actualizado correctamente.',
+      valorUSD,
+      actualizado_en: new Date().toISOString()
+    });
 
   } catch (error) {
     console.error('Error al actualizar dólar:', error);

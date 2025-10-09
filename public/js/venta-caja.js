@@ -369,7 +369,8 @@ document.getElementById('finalizar-usd').addEventListener('click', async () => {
     moneda: 'USD',                 // 👈 la moneda del ticket
     total,                         // 👈 mantenemos tu total en UYU (como venías)
     tipo_ticket,
-    productos: productosSeleccionados
+    productos: productosSeleccionados,
+    tasa_USD: tasaUSD
   };
 
   try {
