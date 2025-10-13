@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - CRM</title>
-  
+
   <!-- Bootstrap -->
   <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="../css/all.min.css">
 
   <!-- Tu CSS personalizado -->
   <link rel="stylesheet" href="../css/dashboard.css">
 </head>
+
 <body>
   <div class="dashboard-container container">
     <!-- Header -->
@@ -23,22 +27,46 @@
     <div class="dashboard-section">
       <h2 class="mb-4">Panel principal</h2>
       <div class="dashboard-menu d-flex flex-wrap gap-3">
-        <button class="btn btn-light shadow-sm flex-fill"
-          onclick="window.location.href='./productos.html'">🛒 Productos</button>
-        <button class="btn btn-light shadow-sm flex-fill"
-          onclick="window.location.href='./proveedores.html'">🏭 Proveedores</button>
-        <button class="btn btn-light shadow-sm flex-fill"
-          onclick="window.location.href='./ticket.html'">🎫 Ticket</button>
-        <button class="btn btn-light shadow-sm flex-fill"
-          onclick="window.location.href='./clientes.html'">👥 Clientes</button>
-        <button class="btn btn-light shadow-sm flex-fill"
-          onclick="window.location.href='./estadisticas.html'">📊 Estadísticas</button>
-        <button class="btn btn-light shadow-sm flex-fill"
-          onclick="window.location.href='./etiquetas.html'">🏷️ Etiquetas</button>
-        <button class="btn btn-light shadow-sm flex-fill"
-          onclick="window.location.href='./configuracion.html'">⚙️ Configuración</button>
-          <button class="btn btn-light shadow-sm flex-fill"
-          onclick="window.location.href='./iniciar-dia.html'">Iniciar-dia</button>
+        <!-- Productos -->
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./productos.html'">
+          <i class="fas fa-box"></i> Productos
+        </button>
+
+        <!-- Proveedores -->
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./proveedores.html'">
+          <i class="fas fa-truck"></i> Proveedores
+        </button>
+
+        <!-- Ticket -->
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./ticket.html'">
+          <i class="fas fa-receipt"></i> Ticket
+        </button>
+
+        <!-- Clientes -->
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./clientes.html'">
+          <i class="fas fa-users"></i> Clientes
+        </button>
+
+        <!-- Estadísticas -->
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./estadisticas.html'">
+          <i class="fas fa-chart-line"></i> Estadísticas
+        </button>
+
+        <!-- Etiquetas -->
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./etiquetas.html'">
+          <i class="fas fa-tags"></i> Etiquetas
+        </button>
+
+        <!-- Configuración -->
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./configuracion.html'">
+          <i class="fas fa-cog"></i> Configuración
+        </button>
+
+        <!-- Iniciar día -->
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./iniciar-dia.html'">
+          <i class="fas fa-sun"></i> Iniciar día
+        </button>
+
       </div>
     </div>
 
@@ -52,4 +80,5 @@
 
   <script src="../js/dashboard.js"></script>
 </body>
+
 </html>
