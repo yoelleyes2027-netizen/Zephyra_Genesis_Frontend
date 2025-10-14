@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - CRM</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/all.min.css">
+    <link rel="stylesheet" href="../css/productos-unificado.css">
+</head>
+
+<body>
+    <div class="dashboard-container container">
+        <div class="dashboard-header d-flex align-items-center justify-content-between">
+            <div class="logo">G</div>
+            <h1 class="mb-0">Gestión de Productos</h1>
+        </div>
+
+        <section class="dashboard-section">
+            <h2 class="mb-5"><i class="fas fa-search"></i> Buscar producto</h2>
+
+            <div class="d-flex flex-fill flex-wrap flex-column gap-3 justify-content-center">
+
+                <!-- Buscador -->
+                <div class="flex-fill">
+                    <input id="codigo-input" type="text" class="form-control"
+                        placeholder="Código del producto o descripción">
+                </div>
+
+                <!-- checkbox -->
+                <div class="d-flex align-items-s gap-3">
+                    <div class="form-check form-switch custom-checkbox mb-0">
+                        <input class="form-check-input" type="checkbox" id="buscar_descripcion"
+                            style="border-top-width: 0px !important; margin-top: 0px !important">
+                        <label class="form-check-label ms-2" for="buscar_descripcion"> Buscar por Descripción</label>
+                    </div>
+                </div>
+
+                <!-- Boton de buscar (ahora esta invisible) -->
+                <div class="d-flex align-items-center justify-content-center">
+                    <button id="btn-buscar" class="btn btn-light shadow-sm py-2">
+                        <i class="d-flex justify-content-center fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </div>
+
+            <p id="mensaje-error" style="color: red; display: none; margin-top: .5rem;"></p>
+
+            <table id="tabla-resultado" class="table table-hover mt-4" style="display: none">
+                <thead class="table-light">
+                    <tr>
+                        <th class="primero">Código</th>
+                        <th>Descripción</th>
+                        <th>Precio Venta</th>
+                        <th>Precio Compra</th>
+                        <th>Stock</th>
+                        <th>Unidad</th>
+                        <th>Etiqueta</th>
+                        <th class="ultimo">Proveedor</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-resultado"></tbody>
+            </table>
+        </section>
+
+        <section class="dashboard-section">
+            <h2 class="mb-4"><i class="fas fa-box"></i> Todos los productos</h2>
+            <table id="tabla-productos" class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th class="primero">Código</th>
+                        <th>Descripción</th>
+                        <th>Precio Venta</th>
+                        <th>Precio Compra</th>
+                        <th>Stock</th>
+                        <th class="ultimo">Unidad</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-productos"></tbody>
+            </table>
+        </section>
+
+        <section class="dashboard-section" style="margin: 0px">
+            <div class="d-flex align-items-center justify-content-center gap-3">
+                <button onclick="window.location.href='./agregar-producto.html'" class="btn boton-producto">
+                    <i class="fas fa-plus"></i> Agregar producto
+                </button>
+                <button onclick="window.location.href='./modificar-producto.html'" class="btn boton-producto">
+                    <i class="fas fa-edit"></i> Modificar producto
+                </button>
+                <button onclick="window.location.href='./eliminar-producto.html'" class="btn boton-producto">
+                    <i class="fas fa-trash"></i> Eliminar producto
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <script src="../js/productos-unificado.js"></script>
+</body>
+
+</html>
