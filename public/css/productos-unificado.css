@@ -130,6 +130,19 @@ thead {
 
 /* codigo agregado manualmente */
 
+/*botones de colores*/
+#eliminar-producto-boton:hover {
+    background-color: #ff0000 !important
+}
+
+#modificar-producto-boton:hover {
+    background-color: #ffea00 !important
+}
+
+#agregar-producto-boton:hover {
+    background-color: #18ec00 !important
+}
+
 #tabla-resultado th {
     background-color: var(--color-terciario) !important;
     overflow: hidden;
@@ -144,6 +157,7 @@ thead {
     overflow: hidden;
     text-align: center;
     vertical-align: middle;
+    font-size: 20px;
 }
 
 #tabla-productos th {

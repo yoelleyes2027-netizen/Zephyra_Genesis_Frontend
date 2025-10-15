@@ -23,6 +23,7 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
       document.getElementById('cod_barra').textContent = producto.cod_barra || 'N/A';
   
       document.getElementById('productoInfo').style.display = 'block';
+      document.getElementById('boton-eliminar-producto').style.display = 'block';
       mensajeEl.textContent = '';
     } catch (error) {
       mensajeEl.textContent = 'Producto no encontrado';

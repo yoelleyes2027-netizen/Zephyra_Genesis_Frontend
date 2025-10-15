@@ -5,41 +5,88 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agregar Producto</title>
+
+  <!-- Bootstrap y estilos del sistema -->
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../css/all.min.css" />
   <link rel="stylesheet" href="../css/agregar-producto.css" />
 </head>
 
 <body>
-  <div class="form-container">
-    <h1>Agregar nuevo producto</h1>
-    <form id="form-agregar-producto">
-      <label for="codigo">Código:</label>
-      <input type="text" id="codigo" name="codigo" required />
+  <div class="dashboard-container container d-flex flex-fill flex-column justify-content-center">
 
-      <label for="descripcion">Descripción:</label>
-      <input type="text" id="descripcion" name="descripcion" required />
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo">G</div>
+      <h1 class="mb-0">Agregar Nuevo Producto</h1>
+    </div>
 
-      <label for="precio_venta">Precio de venta:</label>
-      <input type="number" id="precio_venta" name="precio_venta" step="0.01" required />
+    <section class="dashboard-section d-flex justify-content-center mx-auto" style="min-width: 80%;">
 
-      <label for="precio_compra">Precio de compra:</label>
-      <input type="number" id="precio_compra" name="precio_compra" step="0.01" required />
+      <form id="form-agregar-producto" class="d-flex flex-fill flex-column" style="max-width: 85%;">
 
-      <label for="unidad_medida">Unidad de medida:</label>
-      <input type="text" id="unidad_medida" name="unidad_medida" required />
+        <div class="mb-3">
+          <label for="codigo" style="color: black !important; font-size: 18px;"
+            class="form-label d-flex justify-content-center">Código</label>
+          <input type="text" id="codigo" name="codigo" style="color: rgb(67, 67, 67) !important;" class="form-control"
+            required />
+        </div>
 
-      <label for="etiqueta_id">Etiqueta:</label>
-      <select id="etiqueta_id" name="etiqueta_id" required>
-        <option value="">Seleccionar etiqueta</option>
-      </select>
+        <div class="mb-3">
+          <label for="descripcion" style="color: black !important; font-size: 18px;"
+            class="form-label d-flex justify-content-center">Descripción</label>
+          <input type="text" id="descripcion" name="descripcion" style="color: rgb(67, 67, 67) !important;"
+            class="form-control" required />
+        </div>
 
-      <label for="proveedor_id">Proveedor:</label>
-      <select id="proveedor_id" name="proveedor_id" required>
-        <option value="">Seleccionar proveedor</option>
-      </select>
+        <div class="mb-3">
+          <label for="precio_venta" style="color: black !important; font-size: 18px;"
+            class="form-label d-flex justify-content-center">Precio de Venta</label>
+          <input type="number" id="precio_venta" name="precio_venta" style="color: rgb(67, 67, 67) !important;"
+            class="form-control" step="1.0" required />
+        </div>
 
-      <button type="submit">Agregar producto</button>
-    </form>
-    <div id="mensaje"></div>
+        <div class="mb-3">
+          <label for="precio_compra" style="color: black !important; font-size: 18px;"
+            class="form-label d-flex justify-content-center">Precio de Compra</label>
+          <input type="number" id="precio_compra" name="precio_compra" style="color: rgb(67, 67, 67) !important;"
+            class="form-control" step="1.0" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="unidad_medida" style="color: black !important; font-size: 18px;"
+            class="form-label d-flex justify-content-center">Unidad de Medida</label>
+          <input type="text" id="unidad_medida" name="unidad_medida" style="color: rgb(67, 67, 67) !important;"
+            class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="etiqueta_id" style="color: black !important; font-size: 18px;"
+            class="form-label d-flex justify-content-center">Etiqueta</label>
+          <select id="etiqueta_id" name="etiqueta_id" style="color: rgb(67, 67, 67) !important;" class="form-select"
+            required>
+            <option value="">Seleccionar Etiqueta</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="proveedor_id" style="color: black !important; font-size: 18px;"
+            class="form-label d-flex justify-content-center">Proveedor</label>
+          <select id="proveedor_id" name="proveedor_id" style="color: rgb(67, 67, 67) !important;" class="form-select"
+            required>
+            <option value="">Seleccionar Proveedor</option>
+          </select>
+        </div>
+
+        <div id="mensaje" class="mt-2"></div>
+    </section>
+
+    <section class="dashboard-section d-flex justify-content-center mx-auto mt-4 py-3" style="min-width: 80%;">
+      <div>
+        <button id="agregar-producto-boton" type="submit" class="btn boton-producto w-100">
+          <i class="fas fa-plus"></i> Agregar producto
+        </button>
+      </div>
+    </section>
   </div>
 
   <script src="../js/agregar-producto.js"></script>

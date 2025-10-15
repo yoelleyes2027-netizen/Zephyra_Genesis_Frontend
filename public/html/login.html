@@ -4,10 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - CRM</title>
+
+   <!-- Bootstrap -->
+   <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/login.css">
 </head>
+
 <body>
-  <div class="login-container" id="login-container">
+  <div class="d-flex align-items-center flex-column login-container" id="login-container">
     <h2>Iniciar sesión</h2>
     <form id="login-form">
       <label for="cedula">Cédula</label>
@@ -16,13 +21,10 @@
       <label for="contraseña">Contraseña</label>
       <input type="password" id="contraseña" name="contraseña" required>
 
-      <button type="submit">Ingresar</button>
+      <button id="ingresar" type="submit">Ingresar</button>
     </form>
     <div id="mensaje-error"></div>
   </div>
-
-  <!-- Movido fuera del login-container -->
-  <div id="mensaje-bienvenida" style="display: none;"></div>
 
   <script src="../js/login.js"></script>
 </body>

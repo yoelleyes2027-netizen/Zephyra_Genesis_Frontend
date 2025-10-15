@@ -19,6 +19,20 @@
             <h1 class="mb-0">Gestión de Productos</h1>
         </div>
 
+        <section class="dashboard-section mb-4 py-3" style="margin: 0px">
+            <div class="d-flex align-items-center justify-content-center gap-3">
+                <button id="agregar-producto-boton" onclick="window.location.href='./agregar-producto.html'" class="btn boton-producto">
+                    <i class="fas fa-plus"></i> Agregar producto
+                </button>
+                <button id="modificar-producto-boton" onclick="window.location.href='./modificar-producto.html'" class="btn boton-producto">
+                    <i class="fas fa-edit"></i> Modificar producto
+                </button>
+                <button id="eliminar-producto-boton" onclick="window.location.href='./eliminar-producto.html'" class="btn boton-producto">
+                    <i class="fas fa-trash"></i> Eliminar producto
+                </button>
+            </div>
+        </section>
+
         <section class="dashboard-section">
             <h2 class="mb-5"><i class="fas fa-search"></i> Buscar producto</h2>
 
@@ -39,15 +53,16 @@
                     </div>
                 </div>
 
-                <!-- Boton de buscar (ahora esta invisible) -->
-                <div class="d-flex align-items-center justify-content-center">
-                    <button id="btn-buscar" class="btn btn-light shadow-sm py-2">
+                <!-- Boton de buscar -->
+                <div class="d-flex align-items-center justify-content-center mx-auto" style="min-width: 18%;">
+                    <button id="btn-buscar" class=" d-flex justify-content-center btn boton-producto w-100" style="padding-top: 12px !important; padding-bottom: 12px !important;">
                         <i class="d-flex justify-content-center fas fa-search"></i> Buscar
                     </button>
                 </div>
             </div>
 
             <p id="mensaje-error" style="color: red; display: none; margin-top: .5rem;"></p>
+
 
             <table id="tabla-resultado" class="table table-hover mt-4" style="display: none">
                 <thead class="table-light">
@@ -81,20 +96,6 @@
                 </thead>
                 <tbody id="tbody-productos"></tbody>
             </table>
-        </section>
-
-        <section class="dashboard-section" style="margin: 0px">
-            <div class="d-flex align-items-center justify-content-center gap-3">
-                <button onclick="window.location.href='./agregar-producto.html'" class="btn boton-producto">
-                    <i class="fas fa-plus"></i> Agregar producto
-                </button>
-                <button onclick="window.location.href='./modificar-producto.html'" class="btn boton-producto">
-                    <i class="fas fa-edit"></i> Modificar producto
-                </button>
-                <button onclick="window.location.href='./eliminar-producto.html'" class="btn boton-producto">
-                    <i class="fas fa-trash"></i> Eliminar producto
-                </button>
-            </div>
         </section>
     </div>
 
