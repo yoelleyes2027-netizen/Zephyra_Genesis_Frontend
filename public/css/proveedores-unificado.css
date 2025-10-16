@@ -16,7 +16,7 @@ body {
     margin: auto;
 }
 
-/* Header superior */
+/* Encabezado superior */
 .dashboard-header {
     background-color: var(--color-primario);
     color: var(--blanco);
@@ -45,7 +45,7 @@ body {
 .dashboard-section {
     background-color: var(--color-secundario);
     color: var(--color-texto);
-    padding: 1rem;
+    padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     margin-bottom: 2rem;
@@ -54,6 +54,15 @@ body {
 .dashboard-section h2 {
     margin-top: 0;
     font-weight: 600;
+}
+
+/* Inputs */
+input.form-control {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 /* Botones */
@@ -82,6 +91,51 @@ button i {
     font-size: 1.2rem !important;
 }
 
+/* Checkbox personalizado */
+.custom-checkbox .form-check-input {
+    width: 3rem;
+    height: 1.5rem;
+    background-color: #dee2e6;
+    border-radius: 1.5rem;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.custom-checkbox .form-check-input:checked {
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+}
+
+.custom-checkbox .form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.custom-checkbox .form-check-input:checked::before {
+    content: '';
+    display: block;
+    width: 1.2rem;
+    height: 1.2rem;
+    margin: 0.15rem;
+    background-color: var(--blanco);
+    border-radius: 50%;
+    transform: translateX(1.5rem);
+    transition: transform 0.3s ease;
+}
+
+.custom-checkbox .form-check-input::before {
+    content: '';
+    display: block;
+    width: 1.2rem;
+    height: 1.2rem;
+    margin: 0.15rem;
+    background-color: var(--blanco);
+    border-radius: 50%;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+}
+
 /* Tablas */
 table {
     width: 100%;
@@ -102,12 +156,15 @@ thead {
     color: var(--color2, #333);
 }
 
-/* Responsive y adicionales */
+/* Errores */
 #mensaje-error {
     color: red;
     margin-top: 0.5rem;
+    text-align: center;
+    font-weight: 500;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
     .dashboard-header {
         flex-direction: column;
@@ -128,22 +185,19 @@ thead {
     }
 }
 
-/* codigo agregado manualmente */
-
-/*botones de colores*/
-#eliminar-producto-boton:hover {
+#eliminar-proveedor-boton:hover {
     background-color: #d70000 !important
 }
 
-#modificar-producto-boton:hover {
+#modificar-proveedor-boton:hover {
     background-color: #f0dc00 !important
 }
 
-#agregar-producto-boton:hover {
+#agregar-proveedor-boton:hover {
     background-color: #16d700 !important
 }
 
-#tabla-resultado th {
+#tabla-proveedor th {
     background-color: var(--color-terciario) !important;
     overflow: hidden;
     border-bottom-width: 0px;
@@ -151,7 +205,7 @@ thead {
     vertical-align: middle;
 }
 
-#tabla-resultado td {
+#tabla-proveedor td {
     background-color: var(--color-secundario) !important;
     overflow: hidden;
     text-align: center;
@@ -159,7 +213,7 @@ thead {
     font-size: 20px;
 }
 
-#tabla-productos th {
+#tabla-estatica th {
     background-color: var(--color-terciario) !important;
     overflow: hidden;
     border-bottom-width: 0px;
@@ -167,8 +221,9 @@ thead {
     vertical-align: middle;
 }
 
-#tabla-productos td {
+#tabla-estatica td {
     background-color: var(--color-secundario) !important;
+    /* ejemplo: blanco casi puro */
     overflow: hidden;
     text-align: center;
     vertical-align: middle;
@@ -185,48 +240,3 @@ thead {
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
 }
-
-/* Checkbox estilo sistema */
-.custom-checkbox .form-check-input {
-    width: 3rem;
-    height: 1.5rem;
-    background-color: #dee2e6;
-    border-radius: 1.5rem;
-    border: 1px solid #ced4da;
-    transition: all 0.3s ease;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-    cursor: pointer;
-  }
-  
-  .custom-checkbox .form-check-input:checked {
-    background-color: var(--color-primario);
-    border-color: var(--color-primario);
-  }
-  
-  .custom-checkbox .form-check-input:focus {
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-  }
-  
-  .custom-checkbox .form-check-input:checked::before {
-    content: '';
-    display: block;
-    width: 1.2rem;
-    height: 1.2rem;
-    margin: 0.15rem;
-    background-color: var(--blanco);
-    border-radius: 50%;
-    transform: translateX(1.5rem);
-    transition: transform 0.3s ease;
-  }
-  
-  .custom-checkbox .form-check-input::before {
-    content: '';
-    display: block;
-    width: 1.2rem;
-    height: 1.2rem;
-    margin: 0.15rem;
-    background-color: var(--blanco);
-    border-radius: 50%;
-    transform: translateX(0);
-    transition: transform 0.3s ease;
-  }

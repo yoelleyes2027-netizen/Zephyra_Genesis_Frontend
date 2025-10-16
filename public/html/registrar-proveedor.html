@@ -1,40 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Registrar Proveedor</title>
+  <title>Agregar Proveedor</title>
+
+  <!-- Bootstrap y estilos del sistema -->
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../css/all.min.css" />
   <link rel="stylesheet" href="../css/registrar-proveedor.css" />
 </head>
+
 <body>
-  <div class="proveedor-container">
-    <h1>➕ Registrar nuevo proveedor</h1>
+  <div class="dashboard-container container d-flex flex-fill flex-column justify-content-center">
 
-    <form id="proveedor-form">
-      <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" required />
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo">G</div>
+      <h1 class="mb-0">
+        <i class="fas fa-user-plus"></i> Registrar nuevo proveedor
+      </h1>
+    </div>
 
-      <label for="telefono">Teléfono:</label>
-      <input type="text" id="telefono" required />
+    <section class="dashboard-section d-flex justify-content-center mx-auto" style="min-width: 80%;">
+      <form id="proveedor-form" class="d-flex flex-fill flex-column" style="max-width: 85%;">
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" required />
+        <div class="mb-3">
+          <label for="nombre" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Nombre
+          </label>
+          <input type="text" id="nombre" class="form-control" required />
+        </div>
 
-      <label for="direccion">Dirección:</label>
-      <input type="text" id="direccion" required />
+        <div class="mb-3">
+          <label for="telefono" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Teléfono
+          </label>
+          <input type="text" id="telefono" class="form-control" required />
+        </div>
 
-      <label for="documento">Documento:</label>
-      <input type="text" id="documento" required />
+        <div class="mb-3">
+          <label for="email" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Email
+          </label>
+          <input type="email" id="email" class="form-control" required />
+        </div>
 
-      <label for="denominacion">Denominación:</label>
-      <input type="text" id="denominacion" required />
+        <div class="mb-3">
+          <label for="direccion" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Dirección
+          </label>
+          <input type="text" id="direccion" class="form-control" required />
+        </div>
 
-      <button type="submit">Registrar Proveedor</button>
-    </form>
+        <div class="mb-3">
+          <label for="documento" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Documento
+          </label>
+          <input type="text" id="documento" class="form-control" required />
+        </div>
 
-    <p id="mensaje"></p>
+        <div class="mb-3">
+          <label for="denominacion" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Denominación
+          </label>
+          <input type="text" id="denominacion" class="form-control" required />
+        </div>
+
+        <div id="mensaje" class="mt-2"></div>
+      </form>
+    </section>
+
+    <section class="dashboard-section d-flex justify-content-center mx-auto mt-4 py-3" style="min-width: 80%;">
+      <div>
+        <button id="agregar-producto-boton" form="proveedor-form" type="submit" class="btn boton-producto w-100">
+          <i class="fas fa-user-plus"></i> Registrar Proveedor
+        </button>
+      </div>
+    </section>
+
   </div>
 
   <script src="../js/registrar-proveedor.js"></script>
 </body>
+
 </html>

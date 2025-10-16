@@ -24,7 +24,7 @@ document.getElementById("proveedor-form").addEventListener("submit", async (e) =
       const mensajeEl = document.getElementById("mensaje");
   
       if (res.ok) {
-        mensajeEl.textContent = "✅ Proveedor registrado correctamente.";
+        mensajeEl.textContent = "Proveedor registrado correctamente.";
         mensajeEl.style.color = "green";
         document.getElementById("proveedor-form").reset();
       } else {

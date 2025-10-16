@@ -21,6 +21,7 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
       document.getElementById('documento').textContent = proveedor.documento;
   
       document.getElementById('proveedorInfo').style.display = 'block';
+      document.getElementById('boton-eliminar-proveedor').style.display = 'block';
       mensajeEl.textContent = '';
     } catch (error) {
       mensajeEl.textContent = 'Proveedor no encontrado';
