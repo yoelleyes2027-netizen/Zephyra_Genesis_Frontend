@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
 const Ticket = {
-  insertar: async ({ cliente_id, usuario_id, total, tipo_pago, forma_pago, tipo_comprobante, moneda, tipo_ticket, tasa_USD}) => {
+  insertar: async ({ cliente_id, usuario_id, total, tipo_pago, forma_pago, tipo_comprobante, moneda, tipo_ticket, tasa_USD }) => {
     const query = `
       INSERT INTO tickets (cliente_id, usuario_id, total, tipo_pago, forma_pago, tipo_comprobante, moneda, tipo_ticket, tipo_cambio)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -67,19 +67,59 @@ const Ticket = {
     return result;
   },
 
-  desactivarPorIds: async (detallesIds) => {
-    // Generamos placeholders según la cantidad de IDs
+  /** (Esta funcion hace lo mismo que la de obtenerLineas pero la tengo repetida ya que se usan en dos flujos distintos y no las voy a unificar ahora)
+ * Devuelve {producto_id, cantidad} de los detalles activos por sus IDs.
+ * Útil para ajustar stock al devolver artículos.
+ */
+  obtenerLineasPorDetalleIds: async (detallesIds, connection = null) => {
+    const conn = connection || db;
+    if (!Array.isArray(detallesIds) || detallesIds.length === 0) return [];
+
     const placeholders = detallesIds.map(() => '?').join(',');
+    const [rows] = await conn.query(
+      `
+          SELECT producto_id, cantidad
+          FROM detalles_ticket
+          WHERE id IN (${placeholders}) AND activo = 1
+        `,
+      detallesIds
+    );
+    return rows; // [{producto_id, cantidad}, ...]
+  },
 
-    const query = `
-        UPDATE detalles_ticket
-        SET activo = 0
-        WHERE id IN (${placeholders}) AND activo = 1
-      `;
+  /**
+   * Marca inactivos los detalles (acepta conexión para usarse en la misma tx).
+   */
+  desactivarPorIds: async (detallesIds, connection = null) => {
+    const conn = connection || db;
+    if (!Array.isArray(detallesIds) || detallesIds.length === 0) return 0;
 
-    const [result] = await db.query(query, detallesIds);
-    return result.affectedRows; // cuántas filas fueron actualizadas
-  }
+    const placeholders = detallesIds.map(() => '?').join(',');
+    const [result] = await conn.query(
+      `
+          UPDATE detalles_ticket
+          SET activo = 0
+          WHERE id IN (${placeholders}) AND activo = 1
+        `,
+      detallesIds
+    );
+    return result.affectedRows;
+  },
+
+
+  /**
+   * Devuelve las líneas del ticket (producto_id, cantidad).
+   * Ajustá el nombre de la tabla si difiere en tu esquema.
+   */
+  obtenerLineas: async (ticket_id, connection = null) => {
+    const conn = connection || db;
+    const [rows] = await conn.query(
+      // Cambia 'ticket_detalles' por tu nombre real si fuera distinto
+      'SELECT producto_id, cantidad FROM detalles_ticket WHERE ticket_id = ? AND activo = 1',
+      [ticket_id]
+    );
+    return rows;
+  },
 };
 
 module.exports = Ticket;

@@ -130,7 +130,7 @@ const eliminarProductoPorCodigo = async (req, res) => {
 
 const actualizarStockProductos = async (req, res) => {
   try {
-    const { productos } = req.body;
+    const { productos, operacion = 'venta' } = req.body;
 
     if (!Array.isArray(productos) || productos.length === 0) {
       return res.status(400).json({
@@ -139,7 +139,24 @@ const actualizarStockProductos = async (req, res) => {
       });
     }
 
-    const resultado = await Producto.actualizarStockMultiple(productos);
+    if (!['venta', 'devolucion'].includes(operacion)) {
+      return res.status(400).json({
+        ok: false,
+        mensaje: "La operación debe ser 'venta' o 'devolucion'."
+      });
+    }
+
+    // (validación liviana de cantidades)
+    for (const it of productos) {
+      if (!it?.producto_id || !Number.isFinite(+it.cantidad) || +it.cantidad <= 0) {
+        return res.status(400).json({
+          ok: false,
+          mensaje: 'Cada item debe incluir producto_id y cantidad > 0.'
+        });
+      }
+    }
+
+    const resultado = await Producto.actualizarStockMultiple(productos, operacion);
 
     res.json({
       ok: true,

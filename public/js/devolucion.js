@@ -190,7 +190,6 @@ document.getElementById('buscar-cliente').addEventListener('click', async () => 
 // 5. Confirmar moneda y enviar ticket al backend
 document.getElementById('confirmar-moneda').addEventListener('click', async () => {
   monedaSeleccionada = document.getElementById('moneda').value;
-
   const tipo_pago = document.getElementById('tipo-pago').value;
 
   const body = {
@@ -200,23 +199,38 @@ document.getElementById('confirmar-moneda').addEventListener('click', async () =
     tipo_comprobante: tipoComprobanteSeleccionado,
     moneda: monedaSeleccionada,
     total,
-    tipo_ticket: tipo_ticket,
+    tipo_ticket: tipo_ticket,           // 'DEVOLUCION'
     productos: productosSeleccionados
   };
 
   try {
+    // 1) Guardar el ticket de devolución
     const res = await fetch('/api/tickets', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify(body)
     });
 
     if (!res.ok) throw new Error('Error al guardar ticket');
-    alert('✅ Ticket generado correctamente');
+
+    // 2) Actualizar el stock sumando (operacion: 'devolucion')
+    const respStock = await fetch('/api/productos/actualizar-stock', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        operacion: 'devolucion',
+        // tu backend espera [{ producto_id, cantidad }, ...]
+        productos: productosSeleccionados
+      })
+    });
+
+    if (!respStock.ok) throw new Error('Ticket creado pero falló la actualización de stock');
+
+    alert('✅ Devolución registrada y stock actualizado correctamente');
     location.reload();
+
   } catch (err) {
     console.error(err);
     alert('❌ ' + err.message);

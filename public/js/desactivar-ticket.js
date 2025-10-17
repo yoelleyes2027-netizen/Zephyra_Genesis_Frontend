@@ -69,6 +69,7 @@ async function buscarTicket() {
     document.getElementById('tipo-label').textContent = data.ticket.tipo_pago || 'N/A';
     document.getElementById('usuario-label').textContent = data.ticket.usuario_nombre || 'N/A';
     document.getElementById('datos-ticket').style.display = 'block';
+    document.getElementById('Tipo-ticket-label').textContent = data.ticket.tipo_ticket;
 
     // Vaciar y volver a llenar la tabla
     const tablaBody = document.getElementById('articulos-body');

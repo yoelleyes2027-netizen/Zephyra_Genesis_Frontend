@@ -19,11 +19,11 @@ const Producto = {
       LEFT JOIN proveedores pr ON p.proveedor_id = pr.id
       WHERE p.activo = 1
     `;
-    
+
     const [rows] = await db.query(query); // <- esta es la forma correcta con mysql2/promise
     return rows;
   }
-  
+
   ,
   insertar: async (data) => {
     const {
@@ -35,13 +35,13 @@ const Producto = {
       etiqueta_id,
       proveedor_id
     } = data;
-  
+
     const query = `
       INSERT INTO productos
       (codigo, descripcion, precio_venta, precio_compra, unidad_medida, etiqueta_id, proveedor_id)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
-  
+
     const [result] = await db.query(query, [
       codigo,
       descripcion,
@@ -51,10 +51,10 @@ const Producto = {
       etiqueta_id,
       proveedor_id
     ]);
-  
+
     return { id: result.insertId, ...data };
   }
-  
+
   ,
   obtenerPorCodigo: async (codigo) => {
     const query = `
@@ -107,16 +107,16 @@ const Producto = {
   actualizarPorCodigo: async (codigo, camposActualizados) => {
     const campos = Object.keys(camposActualizados);
     const valores = Object.values(camposActualizados);
-  
+
     if (campos.length === 0) {
       throw new Error('No se proporcionaron campos para actualizar');
     }
-  
+
     const setClause = campos.map(campo => `${campo} = ?`).join(', ');
     const query = `UPDATE productos SET ${setClause} WHERE codigo = ?`;
-  
+
     valores.push(codigo); // El código va al final para el WHERE
-  
+
     const [result] = await db.query(query, valores);
     return result;
   },
@@ -127,31 +127,32 @@ const Producto = {
     return result;
   },
 
-  actualizarStockMultiple: async (productos) => {
-    const connection = await db.getConnection(); // usamos transacción por seguridad
+  actualizarStockMultiple: async (productos, operacion = 'venta') => {
+    const connection = await db.getConnection();
     try {
       await connection.beginTransaction();
-  
+
+      const signo = operacion === 'devolucion' ? +1 : -1;
+
       for (const item of productos) {
         const { producto_id, cantidad } = item;
-  
-        // Verificar que el producto exista y obtener stock actual
+
         const [rows] = await connection.query(
           'SELECT stock FROM productos WHERE id = ? AND activo = 1',
           [producto_id]
         );
-  
-        if (rows.length === 0) continue; // producto no encontrado o inactivo
-  
+        if (rows.length === 0) continue; // no existe o inactivo
+
         const stockActual = parseFloat(rows[0].stock) || 0;
-        const nuevoStock = Math.max(stockActual - cantidad, 0); // evita negativos
-  
+        const delta = signo * Math.abs(Number(cantidad) || 0);
+        const nuevoStock = Math.max(stockActual + delta, 0); // evita negativos
+
         await connection.query(
           'UPDATE productos SET stock = ? WHERE id = ?',
           [nuevoStock, producto_id]
         );
       }
-  
+
       await connection.commit();
       return { ok: true };
     } catch (error) {
@@ -160,6 +161,43 @@ const Producto = {
       throw error;
     } finally {
       connection.release();
+    }
+  },
+
+  /**
+ * Ajusta el stock de múltiples productos.
+ * @param {Array<{producto_id:number, cantidad:number}>} items
+ * @param {'venta'|'devolucion'} operacion  - venta => resta; devolucion => suma.
+ * @param {any|null} connection             - opcional: conexión existente (transacción).
+ */
+  ajustarStockMultiple: async (items, operacion = 'venta', connection = null) => {
+    const ownConn = !connection;
+    const conn = connection || await db.getConnection();
+    try {
+      if (ownConn) await conn.beginTransaction();
+
+      const factor = operacion === 'devolucion' ? 1 : -1;
+
+      for (const it of items) {
+        const producto_id = Number(it.producto_id);
+        const cantidad = Number(it.cantidad) || 0;
+        if (!producto_id || !cantidad) continue;
+
+        // stock = GREATEST(stock + delta, 0)  (evita negativos)
+        const delta = factor * cantidad;
+        await conn.query(
+          'UPDATE productos SET stock = GREATEST(stock + ?, 0) WHERE id = ?',
+          [delta, producto_id]
+        );
+      }
+
+      if (ownConn) await conn.commit();
+      return { ok: true };
+    } catch (error) {
+      if (ownConn) await conn.rollback();
+      throw error;
+    } finally {
+      if (ownConn) conn.release();
     }
   },
 
