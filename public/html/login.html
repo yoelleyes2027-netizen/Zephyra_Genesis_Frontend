@@ -1,31 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - CRM</title>
 
-   <!-- Bootstrap -->
-   <link rel="stylesheet" href="../css/css/bootstrap.min.css">
-   <link rel="stylesheet" href="../css/all.min.css">
+  <!-- Bootstrap y estilos -->
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/login.css">
 </head>
 
 <body>
-  <div class="d-flex align-items-center flex-column login-container" id="login-container">
-    <h2>Iniciar sesión</h2>
-    <form id="login-form">
-      <label for="cedula">Cédula</label>
-      <input type="text" id="cedula" name="cedula" required>
+  <div class="d-flex flex-column flex-fill justify-content-center align-items-center gap-5">
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo me-4">G</div>
+      <h1 class="mb-0">Genesis Sistem</h1>
+    </div>
 
-      <label for="contraseña">Contraseña</label>
-      <input type="password" id="contraseña" name="contraseña" required>
+    <div class="d-flex flex-column justify-content-center login-container mt-5 pb-3" id="login-container"
+      style="max-width: 20%;">
+      <h2 class="text-center mb-4"><i id="icono" class="fas fa-user-circle"></i> Iniciar sesión</h2>
 
-      <button id="ingresar" type="submit">Ingresar</button>
-    </form>
-    <div id="mensaje-error"></div>
+      <form class="d-flex flex-column" id="login-form">
+        <label class="text-center" style="font-size: 20px" for="cedula">Cédula</label>
+        <input type="text" id="cedula" name="cedula" class="form-control" required>
+
+        <label class="text-center" style="font-size: 20px" for="contraseña">Contraseña</label>
+        <input type="password" id="contraseña" name="contraseña" class="form-control" required>
+
+        <div class="d-flex justify-content-center mt-5">
+          <button id="ingresar" type="submit" class="btn boton-producto w-100" style="max-width: 70%;">
+            <i class="fas fa-sign-in-alt"></i> Ingresar
+          </button>
+        </div>
+      </form>
+
+      <div id="mensaje-error"></div>
+    </div>
+
+
+    <div>
+      <h2 class="mt-5" style="color: rgb(169, 169, 169); font-size: 22px;" >Zephyra</h2>
+    </div>
+
   </div>
 
   <script src="../js/login.js"></script>
 </body>
+
 </html>

@@ -1,45 +1,101 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Crear Cliente</title>
+
+  <!-- Bootstrap y estilos del sistema -->
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../css/all.min.css" />
   <link rel="stylesheet" href="../css/crear_cliente.css" />
 </head>
+
 <body>
-  <div class="clientes-container">
-    <h1>🧾 Crear nuevo cliente</h1>
-    <form id="cliente-form">
-      <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" required />
+  <div class="dashboard-container container d-flex flex-fill flex-column justify-content-center">
 
-      <label for="telefono">Teléfono:</label>
-      <input type="text" id="telefono" required />
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo" onclick="window.location.href='./dashboard.html'">G</div>
+      <h1 class="mb-0">
+        <i class="fas fa-user-plus"></i> Registrar nuevo cliente
+      </h1>
+    </div>
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" required />
+    <section class="dashboard-section d-flex justify-content-center mx-auto" style="min-width: 80%;">
+      <form id="cliente-form" class="d-flex flex-fill flex-column" style="max-width: 85%;">
 
-      <label for="direccion">Dirección:</label>
-      <input type="text" id="direccion" required />
+        <div class="mb-3">
+          <label for="nombre" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Nombre
+          </label>
+          <input type="text" id="nombre" class="form-control" required />
+        </div>
 
-      <label for="tipo_documento">Tipo de documento:</label>
-      <input type="number" id="tipo_documento" value="2" required />
+        <div class="mb-3">
+          <label for="telefono" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Teléfono
+          </label>
+          <input type="text" id="telefono" class="form-control" required />
+        </div>
 
-      <label for="codigo_pais">Código de país:</label>
-      <input type="text" id="codigo_pais" value="UY" required />
+        <div class="mb-3">
+          <label for="email" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Email
+          </label>
+          <input type="email" id="email" class="form-control" required />
+        </div>
 
-      <label for="denominacion">Denominación:</label>
-      <input type="text" id="denominacion" required />
+        <div class="mb-3">
+          <label for="direccion" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Dirección
+          </label>
+          <input type="text" id="direccion" class="form-control" required />
+        </div>
 
-      <label for="numero_doc">Número de documento:</label>
-      <input type="text" id="numero_doc" required />
+        <div class="mb-3">
+          <label for="tipo_documento" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Tipo de documento
+          </label>
+          <input type="number" id="tipo_documento" class="form-control" value="2" required />
+        </div>
 
-      <button type="submit">➕ Crear Cliente</button>
-    </form>
-    <p id="mensaje"></p>
+        <div class="mb-3">
+          <label for="codigo_pais" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Código de país
+          </label>
+          <input type="text" id="codigo_pais" class="form-control" value="UY" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="denominacion" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Denominación
+          </label>
+          <input type="text" id="denominacion" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="numero_doc" class="form-label d-flex justify-content-center" style="color: black !important; font-size: 18px;">
+            Número de documento
+          </label>
+          <input type="text" id="numero_doc" class="form-control" required />
+        </div>
+
+        <div id="mensaje" class="mt-2"></div>
+      </form>
+    </section>
+
+    <section class="dashboard-section d-flex justify-content-center mx-auto mt-4 py-3" style="min-width: 80%;">
+      <div>
+        <button type="submit" form="cliente-form" class="btn boton-producto w-100">
+          <i class="fas fa-user-plus"></i> Registrar Cliente
+        </button>
+      </div>
+    </section>
+
   </div>
 
   <script src="../js/crear_cliente.js"></script>
 </body>
-</html>
 
+</html>

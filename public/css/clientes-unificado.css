@@ -9,14 +9,12 @@ body {
     padding: 0;
 }
 
-/* Contenedor general */
 .dashboard-container {
     padding: 2rem;
     max-width: 1200px;
     margin: auto;
 }
 
-/* Encabezado superior */
 .dashboard-header {
     background-color: var(--color-primario);
     color: var(--blanco);
@@ -27,14 +25,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-
-#documento-input:hover {
-    border: 1px solid var(--color-primario) !important;
-}
-
-#buscar-denominacion:hover {
-    border: 1px solid var(--color-primario) !important;
 }
 
 .logo {
@@ -49,7 +39,6 @@ body {
     margin-right: 1rem;
 }
 
-/* Secciones internas */
 .dashboard-section {
     background-color: var(--color-secundario);
     color: var(--color-texto);
@@ -99,7 +88,6 @@ button i {
     font-size: 1.2rem !important;
 }
 
-/* Checkbox personalizado */
 .custom-checkbox .form-check-input {
     width: 3rem;
     height: 1.5rem;
@@ -144,27 +132,24 @@ button i {
     transition: transform 0.3s ease;
 }
 
-/* Tablas */
 table {
     width: 100%;
     border-collapse: collapse;
-    color: var(--color-secundario)
 }
 
 th,
 td {
     padding: 0.8rem;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid #e5e5e8;
-    justify-content: center;
+    vertical-align: middle;
 }
 
 thead {
-    background-color: var(--color-secundario, #334e6a);
+    background-color: var(--color-secundario);
     color: var(--color2, #333);
 }
 
-/* Errores */
 #mensaje-error {
     color: red;
     margin-top: 0.5rem;
@@ -172,69 +157,20 @@ thead {
     font-weight: 500;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .dashboard-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .dashboard-header h1 {
-        margin-top: 1rem;
-    }
-
-    .dashboard-section {
-        padding: 1rem;
-    }
-
-    button {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-#eliminar-proveedor-boton:hover {
-    background-color: #d70000 !important
-}
-
-#modificar-proveedor-boton:hover {
-    background-color: #f0dc00 !important
-}
-
-#agregar-proveedor-boton:hover {
-    background-color: #16d700 !important
-}
-
-#tabla-proveedor th {
-    background-color: var(--color-terciario) !important;
-    overflow: hidden;
-    border-bottom-width: 0px;
-    text-align: center;
-    vertical-align: middle;
-}
-
-#tabla-proveedor td {
-    background-color: var(--color-secundario) !important;
-    overflow: hidden;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 20px;
-}
-
+#tabla-cliente th,
 #tabla-estatica th {
     background-color: var(--color-terciario) !important;
     overflow: hidden;
     border-bottom-width: 0px;
-    text-align: center;
-    vertical-align: middle;
+}
+
+#tabla-cliente td {
+    background-color: var(--color-secundario) !important;
+    font-size: 20px;
 }
 
 #tabla-estatica td {
     background-color: var(--color-secundario) !important;
-    /* ejemplo: blanco casi puro */
-    overflow: hidden;
-    text-align: center;
-    vertical-align: middle;
 }
 
 .primero {
@@ -247,4 +183,16 @@ thead {
     background-color: var(--blanco) !important;
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
+}
+
+#eliminar-cliente-boton:hover {
+    background-color: #d70000 !important
+}
+
+#modificar-cliente-boton:hover {
+    background-color: #f0dc00 !important
+}
+
+#agregar-cliente-boton:hover {
+    background-color: #16d700 !important
 }

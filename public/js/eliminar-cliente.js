@@ -22,6 +22,7 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
       document.getElementById('numero_doc').textContent = cliente.numero_doc || 'N/A';
   
       document.getElementById('clienteInfo').style.display = 'block';
+      document.getElementById('boton-eliminar-cliente').style.display = 'block';
       mensajeEl.textContent = '';
     } catch (error) {
       mensajeEl.textContent = 'Cliente no encontrado';

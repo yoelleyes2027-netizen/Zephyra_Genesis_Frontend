@@ -24,20 +24,20 @@ document.getElementById('login-form').addEventListener('submit', async function 
       const loginContainer = document.querySelector('.login-container');
       loginContainer.innerHTML = `
         <div class="bienvenida">
-          ✅ Bienvenido, <strong>${nombre}</strong>!
+          Bienvenido, <strong>${nombre}</strong>!
         </div>
       `;
     
-      // Redirigir según rol después de 2 segundos
+      // Redirigir según rol después de 1.5 segundos
       setTimeout(() => {
         if (rol === 'admin' || rol === 'gerente') {
           window.location.href = '../html/dashboard.html';
         } else if (rol === 'cajero') {
-          window.location.href = '../html/cajas.html';
+          window.location.href = '../html/ticket.html';
         } else {
           window.location.href = '../html/usuario.html';
         }
-      }, 2000);
+      }, 1500);
     
     } else {
       document.getElementById('mensaje-error').textContent = data.msg || 'Error al iniciar sesión';

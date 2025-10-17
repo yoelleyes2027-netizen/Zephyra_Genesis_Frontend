@@ -1,37 +1,80 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Eliminar Cliente</title>
+
+  <!-- Bootstrap y estilos del sistema -->
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../css/all.min.css" />
   <link rel="stylesheet" href="../css/eliminar-cliente.css" />
 </head>
+
 <body>
-  <div class="form-container">
-    <h1>Eliminar Cliente</h1>
+  <div class="dashboard-container container d-flex flex-fill flex-column justify-content-center">
 
-    <form id="formBuscar">
-      <label for="documentoBuscar">Buscar por documento:</label>
-      <input type="text" id="documentoBuscar" required />
-      <button type="submit">Buscar</button>
-    </form>
-
-    <div id="clienteInfo" style="display: none; margin-top: 2rem;">
-      <h2>Cliente encontrado</h2>
-      <p><strong>Nombre:</strong> <span id="nombre"></span></p>
-      <p><strong>Teléfono:</strong> <span id="telefono"></span></p>
-      <p><strong>Email:</strong> <span id="email"></span></p>
-      <p><strong>Dirección:</strong> <span id="direccion"></span></p>
-      <p><strong>Tipo documento:</strong> <span id="tipo_documento"></span></p>
-      <p><strong>Denominación:</strong> <span id="denominacion"></span></p>
-      <p><strong>Documento:</strong> <span id="numero_doc"></span></p>
-
-      <button id="btnEliminar">Eliminar Cliente</button>
+    <!-- Encabezado -->
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo" onclick="window.location.href='./dashboard.html'">G</div>
+      <h1 class="mb-0">
+        <i class="fas fa-user-times"></i> Eliminar Cliente
+      </h1>
     </div>
 
-    <p id="mensaje"></p>
+    <!-- Buscador -->
+    <section class="dashboard-section d-flex flex-column justify-content-center mx-auto" style="min-width: 80%;">
+      <h2 class="mb-2"><i class="fas fa-search"></i> Buscar cliente</h2>
+
+      <form id="formBuscar" class="d-flex flex-fill flex-column">
+        <div class="mb-4">
+          <label for="documentoBuscar" class="form-label"></label>
+          <input type="text" id="documentoBuscar" class="form-control" placeholder="Ingrese documento del cliente" required />
+        </div>
+
+        <div class="d-flex align-items-center justify-content-center mx-auto" style="min-width: 20%;">
+          <button type="submit" class="d-flex justify-content-center btn boton-producto w-100"
+            style="padding-top: 10px !important; padding-bottom: 10px !important;">
+            <i class="fas fa-search"></i> Buscar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Cliente encontrado -->
+    <section id="clienteInfo" class="dashboard-section d-flex justify-content-center mx-auto mt-4"
+      style="min-width: 80%; display: none !important">
+      <div style="width: 100%;" class="d-flex flex-column justify-content-center">
+        <h2 class="d-flex justify-content-center" style="font-size: 25px;">Información del Cliente</h2>
+        <div class="cliente-info-box">
+          <p style="font-size: 20px"><strong>Nombre:</strong> <span id="nombre"></span></p>
+          <p style="font-size: 20px"><strong>Teléfono:</strong> <span id="telefono"></span></p>
+          <p style="font-size: 20px"><strong>Email:</strong> <span id="email"></span></p>
+          <p style="font-size: 20px"><strong>Dirección:</strong> <span id="direccion"></span></p>
+          <p style="font-size: 20px"><strong>Tipo documento:</strong> <span id="tipo_documento"></span></p>
+          <p style="font-size: 20px"><strong>Denominación:</strong> <span id="denominacion"></span></p>
+          <p style="font-size: 20px"><strong>Número documento:</strong> <span id="numero_doc"></span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Botón eliminar -->
+    <section id="boton-eliminar-cliente" class="dashboard-section d-flex flex-column justify-content-center mx-auto py-4"
+      style="min-width: 80%; display: none !important">
+      <div class="d-flex justify-content-center">
+        <button id="btnEliminar" class="btn boton-producto d-flex justify-content-center">
+          <i class="fas fa-user-times"></i> Eliminar Cliente
+        </button>
+      </div>
+    </section>
+
+    <!-- Mensaje -->
+    <p id="mensaje" class="text-center"></p>
+
   </div>
 
   <script src="../js/eliminar-cliente.js"></script>
 </body>
+
 </html>

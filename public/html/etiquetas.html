@@ -1,22 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Agregar Etiqueta</title>
-  <link rel="stylesheet" href="../css/etiquetas.css">
-</head>
-<body>
-  <div class="container">
-    <h2>Agregar nueva etiqueta</h2>
-    <form id="form-etiqueta">
-      <label for="nombre">Nombre de la etiqueta</label>
-      <input type="text" id="nombre" name="nombre" required>
-      <button type="submit">Agregar</button>
-    </form>
 
-    <div id="mensaje-respuesta"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agregar Etiqueta</title>
+
+  <!-- Bootstrap y estilos del sistema -->
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../css/all.min.css" />
+  <link rel="stylesheet" href="../css/etiquetas.css" />
+</head>
+
+<body>
+  <div class="dashboard-container container d-flex flex-fill flex-column justify-content-center">
+
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo" onclick="window.location.href='./dashboard.html'">G</div>
+      <h1 class="mb-0">
+        <i class="fas fa-tags"></i> Agregar nueva etiqueta
+      </h1>
+    </div>
+
+    <section class="dashboard-section d-flex justify-content-center mx-auto py-3" style="min-width: 80%;">
+      <form id="form-etiqueta" class="d-flex flex-fill flex-column" style="max-width: 85%;">
+
+        <div class="mb-3">
+          <h3 class="d-flex justify-content-center my-3"><i class="fas fa-tag pe-3"></i> Nombre de la Etiqueta</h3>
+          <label for="nombre" class="form-label d-flex justify-content-center"
+            style="color: black !important; font-size: 18px;">
+          </label>
+          <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Nombre de la Etiqueta.."/>
+        </div>
+
+        <div id="mensaje-respuesta" class="mt-2"></div>
+      </form>
+    </section>
+
+    <section class="dashboard-section d-flex justify-content-center mx-auto mt-4 py-3" style="min-width: 80%;">
+      <div class="d-flex align-items-center justify-content-center mx-auto" style="min-width: 20%;">
+        <button id="boton-agregar-etiquta" type="submit" form="form-etiqueta" class="btn boton-producto w-100">
+          <i class="fas fa-plus"></i> Agregar Etiqueta
+        </button>
+      </div>
+    </section>
+
   </div>
 
   <script src="../js/etiquetas.js"></script>
 </body>
+
 </html>
