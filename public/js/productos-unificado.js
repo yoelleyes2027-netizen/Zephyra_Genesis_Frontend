@@ -88,14 +88,17 @@ async function buscarProducto() {
     : `/api/productos/${encodeURIComponent(valor)}`;
 
   try {
-    const resp = await fetch(endpoint, {
-      method: 'GET',
-      credentials: 'include',
-    });
+    const resp = await fetch(endpoint, { method: 'GET', credentials: 'include' });
     if (!resp.ok) throw new Error('Producto no encontrado');
 
-    const producto = await resp.json();
-    renderFilaResultado(producto);
+    const payload = await resp.json();
+    // si viene con { ok, data }, usamos data; si en algún lugar viejo te retorna un objeto, lo normalizamos a array
+    const resultados = Array.isArray(payload) ? payload
+      : Array.isArray(payload.data) ? payload.data
+        : [payload];
+
+    // pintar todas las filas
+    resultados.forEach(renderFilaResultado);
   } catch (err) {
     msgError.textContent = '❌ No se encontró el producto.';
     msgError.style.display = 'block';

@@ -53,24 +53,28 @@ const obtenerProductoPorCodigo = async (req, res) => {
   }
 };
 
-const obtenerProductoPorDescripcion = async (req, res) => {
+const obtenerProductosPorDescripcion = async (req, res) => {
   const { descripcion } = req.params;
   try {
-    const producto = await Producto.obtenerPorDescripcion(descripcion);
+    const productos = await Producto.buscarMuchosPorDescripcion(descripcion);
 
-    if (!producto) {
+    if (!productos || productos.length === 0) {
       return res.status(404).json({
         ok: false,
-        mensaje: 'Producto no encontrado',
+        mensaje: 'No se encontraron productos con esa descripción',
       });
     }
 
-    res.json(producto);
+    res.json({
+      ok: true,
+      total: productos.length,
+      data: productos,      // ← devolvemos la lista completa
+    });
   } catch (error) {
-    console.error('Error al obtener producto por descripción:', error);
+    console.error('Error al obtener productos por descripción:', error);
     res.status(500).json({
       ok: false,
-      mensaje: 'Error interno al obtener el producto',
+      mensaje: 'Error interno al obtener los productos',
     });
   }
 };
@@ -176,7 +180,7 @@ module.exports = {
   obtenerProductos,
   agregarProducto,
   obtenerProductoPorCodigo,
-  obtenerProductoPorDescripcion,
+  obtenerProductosPorDescripcion,
   modificarProductoPorCodigo,
   eliminarProductoPorCodigo,
   actualizarStockProductos,

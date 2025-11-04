@@ -80,7 +80,7 @@ const Producto = {
     return rows[0]; // Devuelve solo uno
   },
 
-  obtenerPorDescripcion: async (descripcion) => {
+  buscarMuchosPorDescripcion: async (descripcion) => {
     const query = `
       SELECT
         p.id,
@@ -95,13 +95,15 @@ const Producto = {
         pr.nombre AS proveedor,
         p.creado_en
       FROM productos p
-      LEFT JOIN etiquetas e ON p.etiqueta_id = e.id
+      LEFT JOIN etiquetas   e  ON p.etiqueta_id  = e.id
       LEFT JOIN proveedores pr ON p.proveedor_id = pr.id
-      WHERE p.activo = 1 AND p.descripcion LIKE ?
-      LIMIT 1
+      WHERE p.activo = 1
+        AND p.descripcion LIKE ? COLLATE utf8mb4_general_ci
+      ORDER BY p.descripcion ASC
+      LIMIT 1000
     `;
     const [rows] = await db.query(query, [`%${descripcion}%`]);
-    return rows[0]; // Devuelve solo uno
+    return rows;          // ← devolvemos TODAS las filas encontradas
   },
 
   actualizarPorCodigo: async (codigo, camposActualizados) => {

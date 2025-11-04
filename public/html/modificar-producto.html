@@ -18,7 +18,7 @@
     <div class="dashboard-header d-flex align-items-center justify-content-between">
       <div class="logo" onclick="window.location.href='./dashboard.html'">G</div>
       <h1 class="mb-0">
-        <i class="fas fa-pen"></i>  Modificar Producto
+        <i class="fas fa-pen"></i> Modificar Producto
       </h1>
     </div>
 
@@ -29,54 +29,64 @@
       <form id="formBuscar" class="d-flex flex-fill flex-column">
         <div class="mb-4">
           <label for="codigoBuscar" class="form-label"></label>
-          <input type="text" id="codigoBuscar" class="form-control" placeholder="Código del producto"
-            required />
+          <input type="text" id="codigoBuscar" class="form-control" placeholder="Código del producto" required />
         </div>
 
         <div class="d-flex align-items-center justify-content-center mx-auto" style="min-width: 20%;">
-          <button type="submit" class="btn boton-producto w-100" style="padding-top: 10px !important; padding-bottom: 10px !important;">
+          <button type="submit" class="btn boton-producto w-100"
+            style="padding-top: 10px !important; padding-bottom: 10px !important;">
             <i class="d-flex justify-content-centerfas fas fa-search "></i> Buscar
           </button>
         </div>
+
+        <div id="mensaje" class="mt-3"></div>
 
       </form>
     </section>
 
     <!-- Formulario de modificación -->
-    <section class="dashboard-section d-flex justify-content-center mx-auto mt-4" style="min-width: 80%;">
-      <form id="formModificar" class="d-flex flex-fill flex-column" style="max-width: 90%; display: none;">
+    <section id="selection-form" class="dashboard-section d-flex justify-content-center mx-auto mt-4"
+      style="min-width: 80%; display: none !important;">
+      <form id="formModificar" class="d-flex flex-fill flex-column" style="max-width: 90%;">
         <div class="mb-3">
-          <label for="codigo" class="form-label d-flex justify-content-center mb-1" style="color: black !important; font-size: 18px;">Código</label>
+          <label for="codigo" class="form-label d-flex justify-content-center mb-1"
+            style="color: black !important; font-size: 18px;">Código</label>
           <input type="text" id="codigo" class="form-control" required />
         </div>
 
         <div class="mb-3">
-          <label for="descripcion" class="form-label d-flex justify-content-center mb-1" style="color: black !important; font-size: 18px;">Descripción</label>
+          <label for="descripcion" class="form-label d-flex justify-content-center mb-1"
+            style="color: black !important; font-size: 18px;">Descripción</label>
           <input type="text" id="descripcion" class="form-control" required />
         </div>
 
         <div class="mb-3">
-          <label for="precio_venta" class="form-label d-flex justify-content-center mb-1" style="color: black !important; font-size: 18px;">Precio de venta</label>
+          <label for="precio_venta" class="form-label d-flex justify-content-center mb-1"
+            style="color: black !important; font-size: 18px;">Precio de venta</label>
           <input type="number" id="precio_venta" class="form-control" step="0.01" />
         </div>
 
         <div class="mb-3">
-          <label for="precio_compra" class="form-label d-flex justify-content-center mb-1" style="color: black !important; font-size: 18px;">Precio de compra</label>
+          <label for="precio_compra" class="form-label d-flex justify-content-center mb-1"
+            style="color: black !important; font-size: 18px;">Precio de compra</label>
           <input type="number" id="precio_compra" class="form-control" step="0.01" />
         </div>
 
         <div class="mb-3">
-          <label for="stock" class="form-label d-flex justify-content-center mb-1" style="color: black !important; font-size: 18px;">Stock</label>
+          <label for="stock" class="form-label d-flex justify-content-center mb-1"
+            style="color: black !important; font-size: 18px;">Stock</label>
           <input type="number" id="stock" class="form-control" />
         </div>
 
         <div class="mb-3">
-          <label for="unidad_medida" class="form-label d-flex justify-content-center mb-1" style="color: black !important; font-size: 18px;">Unidad de medida</label>
+          <label for="unidad_medida" class="form-label d-flex justify-content-center mb-1"
+            style="color: black !important; font-size: 18px;">Unidad de medida</label>
           <input type="text" id="unidad_medida" class="form-control" />
         </div>
 
         <div class="mb-3">
-          <label for="etiqueta_id" class="form-label d-flex justify-content-center mb-1" style="color: black !important; font-size: 18px;">Etiqueta</label>
+          <label for="etiqueta_id" class="form-label d-flex justify-content-center mb-1"
+            style="color: black !important; font-size: 18px;">Etiqueta</label>
           <div class="custom-select-wrapper">
             <select id="etiqueta_id" class="form-select" required>
               <option value="">Seleccionar Etiqueta</option>
@@ -85,7 +95,8 @@
         </div>
 
         <div class="mb-3">
-          <label for="proveedor_id" class="form-label d-flex justify-content-center mb-1" style="color: black !important; font-size: 18px;">Proveedor</label>
+          <label for="proveedor_id" class="form-label d-flex justify-content-center mb-1"
+            style="color: black !important; font-size: 18px;">Proveedor</label>
           <div class="custom-select-wrapper">
             <select id="proveedor_id" class="form-select" required>
               <option value="">Seleccionar Proveedor</option>
@@ -94,12 +105,16 @@
         </div>
 
         <div class="mb-0">
-          <label for="cod_barra" class="form-label d-flex justify-content-center mb-1" style="color: black !important; font-size: 18px;">Código de barras</label>
+          <label for="cod_barra" class="form-label d-flex justify-content-center mb-1"
+            style="color: black !important; font-size: 18px;">Código de barras</label>
           <input type="text" id="cod_barra" class="form-control" />
         </div>
-
-        <div id="mensaje" class="mt-3"></div>
       </form>
+    </section>
+
+    <section id="correcto" class="dashboard-section d-flex mt-3 flex-column justify-content-center mx-auto"
+      style="min-width: 60%; display: none !important; background-color: rgba(42, 176, 99, 0.24) !important;">
+      <div id="mensaje.ok" style="font-size: 25px" class="d-flex justify-content-center"></div>
     </section>
 
     <section class="dashboard-section d-flex justify-content-center mx-auto mt-4 py-3" style="min-width: 80%;">
