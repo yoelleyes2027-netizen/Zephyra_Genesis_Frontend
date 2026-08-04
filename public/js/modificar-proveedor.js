@@ -1,12 +1,14 @@
+let proveedorDocumentoOriginal = null;
+
 // FORMULARIO DE BÚSQUEDA
 document.getElementById('formBuscar').addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    const numeroDoc = document.getElementById('documentoBuscar').value;
+    const numeroDoc = document.getElementById('documentoBuscar').value.trim();
     const mensajeEl = document.getElementById('mensaje');
 
     try {
-        const response = await fetch(`/api/proveedores/buscar/${numeroDoc}`, {
+        const response = await fetch(`/api/proveedores/buscar/${encodeURIComponent(numeroDoc)}`, {
             credentials: 'include'
         });
 
@@ -16,13 +18,15 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
 
         const respuesta = await response.json();  // ✅ importante
         const proveedor = respuesta.data;         // ✅ accedemos a los datos reales
+    proveedorDocumentoOriginal = proveedor.numeroDocumento || numeroDoc;
 
         // Rellenar el formulario
-        document.getElementById('nombre').value = proveedor.nombre || '';
+    document.getElementById('nombre').value = proveedor.name || '';
         document.getElementById('telefono').value = proveedor.telefono || '';
         document.getElementById('email').value = proveedor.email || '';
         document.getElementById('direccion').value = proveedor.direccion || '';
-        document.getElementById('denominacion').value = proveedor.denominacion || '';
+    document.getElementById('denominacion').value = proveedor.razonSocial || '';
+    document.getElementById('documento').value = proveedor.numeroDocumento || '';
 
         document.getElementById('formModificar').style.display = 'block';
         mensajeEl.textContent = '';
@@ -38,20 +42,23 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
 document.getElementById('formModificar').addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    const numeroDoc = document.getElementById('documentoBuscar').value;
+    const mensajeEl = document.getElementById('mensaje');
+    const numeroDoc = proveedorDocumentoOriginal || document.getElementById('documentoBuscar').value.trim();
 
-    if (!numeroDoc || typeof numeroDoc !== 'string' || !numeroDoc.trim()) {
+    if (!numeroDoc) {
         mensajeEl.textContent = 'Número de documento inválido.';
         mensajeEl.style.color = 'red';
         return;
     }
 
     const datos = {
-        nombre: document.getElementById('nombre').value,
-        telefono: document.getElementById('telefono').value,
+        name: document.getElementById('nombre').value,
+        telefono: Number(document.getElementById('telefono').value || 0),
         email: document.getElementById('email').value,
         direccion: document.getElementById('direccion').value,
-        denominacion: document.getElementById('denominacion').value,
+        numeroDocumento: document.getElementById('documento').value,
+        razonSocial: document.getElementById('denominacion').value,
+        tipoDocumento: document.getElementById('tipo_documento')?.value || 'CI',
     };
 
     // Limpiar campos vacíos o nulos
@@ -61,10 +68,8 @@ document.getElementById('formModificar').addEventListener('submit', async functi
         }
     });
 
-    const mensajeEl = document.getElementById('mensaje');
-
     try {
-        const response = await fetch(`/api/proveedores/${numeroDoc}`, {
+        const response = await fetch(`/api/proveedores/${encodeURIComponent(numeroDoc)}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -78,6 +83,7 @@ document.getElementById('formModificar').addEventListener('submit', async functi
         if (response.ok) {
             mensajeEl.textContent = resultado.mensaje;
             mensajeEl.style.color = 'green';
+            proveedorDocumentoOriginal = datos.numeroDocumento || numeroDoc;
         } else {
             mensajeEl.textContent = resultado.mensaje || 'Error al actualizar';
             mensajeEl.style.color = 'red';

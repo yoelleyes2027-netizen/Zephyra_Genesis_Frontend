@@ -1,12 +1,14 @@
+let clienteEmailOriginal = null;
+
 // FORMULARIO DE BÚSQUEDA
 document.getElementById('formBuscar').addEventListener('submit', async function (e) {
     e.preventDefault();
   
-    const numeroDoc = document.getElementById('documentoBuscar').value;
+    const valorBusqueda = document.getElementById('documentoBuscar').value.trim();
     const mensajeEl = document.getElementById('mensaje');
   
     try {
-      const response = await fetch(`/api/clientes/buscar/${numeroDoc}`, {
+      const response = await fetch(`/api/clientes/buscar/${encodeURIComponent(valorBusqueda)}`, {
         credentials: 'include'
       });
   
@@ -15,12 +17,12 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
       }
   
       const cliente = await response.json();
+      clienteEmailOriginal = cliente.email || valorBusqueda;
   
       // Rellenar el formulario con los datos
-      document.getElementById('nombre').value = cliente.nombre || '';
+      document.getElementById('nombre').value = cliente.name || '';
       document.getElementById('telefono').value = cliente.telefono || '';
       document.getElementById('email').value = cliente.email || '';
-      document.getElementById('direccion').value = cliente.direccion || '';
   
       document.getElementById('formModificar').style.display = 'block';
       mensajeEl.textContent = '';
@@ -35,19 +37,19 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
   document.getElementById('formModificar').addEventListener('submit', async function (e) {
     e.preventDefault();
   
-    const numeroDoc = document.getElementById('documentoBuscar').value;
+      const mensajeEl = document.getElementById('mensaje');
+      const emailOriginal = clienteEmailOriginal || document.getElementById('documentoBuscar').value.trim();
 
-    if (!numeroDoc || typeof numeroDoc !== 'string' || !numeroDoc.trim()) {
+      if (!emailOriginal) {
         mensajeEl.textContent = 'Número de documento inválido.';
         mensajeEl.style.color = 'red';
         return;
       }
   
     const datos = {
-      nombre: document.getElementById('nombre').value,
-      telefono: document.getElementById('telefono').value,
+        name: document.getElementById('nombre').value,
+        telefono: Number(document.getElementById('telefono').value || 0),
       email: document.getElementById('email').value,
-      direccion: document.getElementById('direccion').value
     };
   
     // Eliminar campos vacíos o inválidos
@@ -57,10 +59,8 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
       }
     });
   
-    const mensajeEl = document.getElementById('mensaje');
-  
     try {
-      const response = await fetch(`/api/clientes/${numeroDoc}`, {
+      const response = await fetch(`/api/clientes/${encodeURIComponent(emailOriginal)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -74,6 +74,7 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
       if (response.ok) {
         mensajeEl.textContent = resultado.mensaje;
         mensajeEl.style.color = 'green';
+        clienteEmailOriginal = datos.email || emailOriginal;
       } else {
         mensajeEl.textContent = resultado.mensaje || 'Error al actualizar';
         mensajeEl.style.color = 'red';

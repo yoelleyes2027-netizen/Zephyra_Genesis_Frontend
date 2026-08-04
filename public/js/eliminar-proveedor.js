@@ -1,11 +1,13 @@
+let proveedorDocumentoOriginal = null;
+
 document.getElementById('formBuscar').addEventListener('submit', async function (e) {
     e.preventDefault();
   
-    const documento = document.getElementById('documentoBuscar').value;
+    const documento = document.getElementById('documentoBuscar').value.trim();
     const mensajeEl = document.getElementById('mensaje');
   
     try {
-      const response = await fetch(`/api/proveedores/buscar/${documento}`, {
+      const response = await fetch(`/api/proveedores/buscar/${encodeURIComponent(documento)}`, {
         credentials: 'include'
       });
   
@@ -13,12 +15,13 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
   
       const respuesta = await response.json();
       const proveedor = respuesta.data;
+      proveedorDocumentoOriginal = proveedor.numeroDocumento || documento;
   
-      document.getElementById('nombre').textContent = proveedor.nombre;
+      document.getElementById('nombre').textContent = proveedor.name;
       document.getElementById('email').textContent = proveedor.email || 'N/A';
       document.getElementById('telefono').textContent = proveedor.telefono || 'N/A';
       document.getElementById('direccion').textContent = proveedor.direccion || 'N/A';
-      document.getElementById('documento').textContent = proveedor.documento;
+      document.getElementById('documento').textContent = proveedor.numeroDocumento;
   
       document.getElementById('proveedorInfo').style.display = 'block';
       document.getElementById('boton-eliminar-proveedor').style.display = 'block';
@@ -31,13 +34,13 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
   });
   
   document.getElementById('btnEliminar').addEventListener('click', async function () {
-    const documento = document.getElementById('documento').textContent;
+    const documento = proveedorDocumentoOriginal || document.getElementById('documento').textContent;
     const mensajeEl = document.getElementById('mensaje');
   
     if (!confirm(`¿Estás seguro que deseas eliminar al proveedor con documento ${documento}?`)) return;
   
     try {
-      const response = await fetch(`/api/proveedores/desactivar/${documento}`, {
+      const response = await fetch(`/api/proveedores/desactivar/${encodeURIComponent(documento)}`, {
         method: 'PUT',
         credentials: 'include'
       });

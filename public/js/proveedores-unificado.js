@@ -29,13 +29,13 @@ async function buscarProveedor() {
   
       // Tus controladores devolvían { data: {...} } o similar; conservamos esto
       const respuesta = await response.json();
-      const proveedor = respuesta.data;
+      const proveedor = Array.isArray(respuesta.data) ? respuesta.data[0] : respuesta.data;
   
       const fila = document.createElement("tr");
       fila.innerHTML = `
-        <td>${proveedor.nombre || ""}</td>
-        <td>${proveedor.denominacion || ""}</td>
-        <td>${proveedor.documento || ""}</td>
+        <td>${proveedor.name || ""}</td>
+        <td>${proveedor.razonSocial || ""}</td>
+        <td>${proveedor.numeroDocumento || ""}</td>
         <td>${proveedor.telefono || ""}</td>
         <td>${proveedor.email || ""}</td>
         <td>${proveedor.direccion || ""}</td>
@@ -64,7 +64,7 @@ async function buscarProveedor() {
   
       const proveedores = result.data || [];
       // Orden alfabético por nombre (como ya hacías)
-      proveedores.sort((a, b) => (a.nombre || "").localeCompare(b.nombre || ""));
+      proveedores.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
   
       const tbody = document.getElementById("proveedoresBody");
       tbody.innerHTML = "";
@@ -72,12 +72,12 @@ async function buscarProveedor() {
       proveedores.forEach((proveedor) => {
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${proveedor.nombre || ""}</td>
-          <td>${proveedor.documento || ""}</td>
+          <td>${proveedor.name || ""}</td>
+          <td>${proveedor.numeroDocumento || ""}</td>
           <td>${proveedor.direccion || ""}</td>
           <td>${proveedor.telefono || ""}</td>
           <td>${proveedor.email || ""}</td>
-          <td>${proveedor.denominacion || ""}</td>
+          <td>${proveedor.razonSocial || ""}</td>
         `;
         tbody.appendChild(row);
       });

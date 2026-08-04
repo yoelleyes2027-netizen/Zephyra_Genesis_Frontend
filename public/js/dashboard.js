@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!response.ok) {
         console.warn("❌ Token inválido o expirado. Redirigiendo...");
+        window.location.href = "../html/login.html";
       } else {
         console.log("✅ Token válido. Acceso permitido al dashboard.");
       }

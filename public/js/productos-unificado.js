@@ -28,12 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
       data.forEach((producto) => {
         const fila = document.createElement('tr');
         fila.innerHTML = `
-          <td>${producto.codigo}</td>
+          <td>${producto.codigoDeBarras}</td>
           <td>${producto.descripcion}</td>
-          <td>$${producto.precio_venta}</td>
-          <td>$${producto.precio_compra}</td>
+          <td>$${producto.precioVenta}</td>
+          <td>$${producto.precioCompra}</td>
           <td>${producto.stock}</td>
-          <td>${producto.unidad_medida}</td>
+          <td>${producto.unidadDeMedida}</td>
         `;
         tbodyProductos.appendChild(fila);
       });
@@ -55,14 +55,14 @@ function limpiarResultado() {
 function renderFilaResultado(p) {
   const fila = document.createElement('tr');
   fila.innerHTML = `
-    <td>${p.codigo ?? ''}</td>
+    <td>${p.codigoDeBarras ?? ''}</td>
     <td>${p.descripcion ?? ''}</td>
-    <td>$${p.precio_venta ?? ''}</td>
-    <td>$${p.precio_compra ?? ''}</td>
+    <td>$${p.precioVenta ?? ''}</td>
+    <td>$${p.precioCompra ?? ''}</td>
     <td>${p.stock ?? ''}</td>
-    <td>${p.unidad_medida ?? ''}</td>
+    <td>${p.unidadDeMedida ?? ''}</td>
     <td>${p.etiqueta ?? ''}</td>
-    <td>${p.proveedor ?? ''}</td>
+    <td>${p.proveedorNombre ?? ''}</td>
   `;
   tbodyResultado.appendChild(fila);
   tablaResultado.style.display = 'table';

@@ -30,12 +30,12 @@ document.getElementById('login-form').addEventListener('submit', async function 
     
       // Redirigir según rol después de 1.5 segundos
       setTimeout(() => {
-        if (rol === 'admin' || rol === 'gerente') {
+        if (rol === 'admin' || rol === 'recepcion') {
           window.location.href = '../html/dashboard.html';
         } else if (rol === 'cajero') {
           window.location.href = '../html/ticket.html';
         } else {
-          window.location.href = '../html/usuario.html';
+          window.location.href = '../html/dashboard.html';
         }
       }, 1500);
     

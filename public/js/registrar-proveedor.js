@@ -2,12 +2,13 @@ document.getElementById("proveedor-form").addEventListener("submit", async (e) =
     e.preventDefault();
   
     const proveedor = {
-      nombre: document.getElementById("nombre").value,
-      telefono: document.getElementById("telefono").value,
+      name: document.getElementById("nombre").value,
+      telefono: Number(document.getElementById("telefono").value || 0),
       email: document.getElementById("email").value,
       direccion: document.getElementById("direccion").value,
-      documento: document.getElementById("documento").value,
-      denominacion: document.getElementById("denominacion").value,
+      numeroDocumento: document.getElementById("documento").value,
+      razonSocial: document.getElementById("denominacion").value,
+      tipoDocumento: document.getElementById("tipo_documento")?.value || "CI",
     };
   
     try {

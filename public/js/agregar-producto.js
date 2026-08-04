@@ -13,11 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await res.json();
       if (result.ok && Array.isArray(result.data)) {
         result.data
-        .sort((a, b) => a.nombre.localeCompare(b.nombre)) // Ordenar por nombre A-Z
+        .sort((a, b) => a.name.localeCompare(b.name)) // Ordenar por nombre A-Z
         .forEach(proveedor => {
           const option = document.createElement("option");
           option.value = proveedor.id;
-          option.textContent = proveedor.nombre;
+          option.textContent = proveedor.name;
           proveedorSelect.appendChild(option);
         });
       }
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
           .sort((a, b) => a.nombre.localeCompare(b.nombre)) // orden alfabético
           .forEach(etiqueta => {
             const option = document.createElement("option");
-            option.value = etiqueta.id;
+            option.value = etiqueta.nombre;
             option.textContent = etiqueta.nombre;
             etiquetaSelect.appendChild(option);
           });
@@ -56,13 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
 
     const data = {
-      codigo: form.codigo.value,
+      codigoDeBarras: Number(form.codigo.value),
       descripcion: form.descripcion.value,
-      precio_venta: parseFloat(form.precio_venta.value),
-      precio_compra: parseFloat(form.precio_compra.value),
-      unidad_medida: form.unidad_medida.value,
-      etiqueta_id: parseInt(form.etiqueta_id.value),
-      proveedor_id: parseInt(form.proveedor_id.value)
+      precioVenta: parseFloat(form.precio_venta.value),
+      precioCompra: parseFloat(form.precio_compra.value),
+      stock: parseInt(form.stock.value),
+      unidadDeMedida: form.unidad_medida.value,
+      etiqueta: form.etiqueta_id.value,
+      proveedorId: parseInt(form.proveedor_id.value)
     };
 
     try {

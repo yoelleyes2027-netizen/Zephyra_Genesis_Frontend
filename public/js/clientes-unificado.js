@@ -21,17 +21,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       tbody.innerHTML = '';
   
       // (Opcional) ordenar por denominación alfabéticamente
-      clientes.sort((a, b) => (a.denomincacion || a.denominacion || '').localeCompare(b.denomincacion || b.denominacion || ''));
+      clientes.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
   
       clientes.forEach(cliente => {
         const fila = document.createElement('tr');
         fila.innerHTML = `
-          <td>${cliente.denominacion ?? ''}</td>
-          <td>${cliente.numero_doc ?? ''}</td>
+          <td>${cliente.name ?? ''}</td>
           <td>${cliente.email ?? ''}</td>
-          <td>${cliente.direccion ?? ''}</td>
           <td>${cliente.telefono ?? ''}</td>
-          <td>${cliente.nombre ?? ''}</td>
+          <td>${cliente.fechaCreacion ?? ''}</td>
         `;
         tbody.appendChild(fila);
       });
@@ -76,12 +74,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         // En tu versión original usabas el objeto directo
         const fila = document.createElement("tr");
         fila.innerHTML = `
-          <td>${cliente.nombre ?? ''}</td>
-          <td>${cliente.denominacion ?? ''}</td>
-          <td>${cliente.numero_doc ?? ''}</td>
+          <td>${cliente.name ?? ''}</td>
+          <td>${cliente.email ?? ''}</td>
           <td>${cliente.telefono ?? '--'}</td>
-          <td>${cliente.email ?? '--'}</td>
-          <td>${cliente.direccion ?? '--'}</td>
+          <td>${cliente.fechaCreacion ?? '--'}</td>
         `;
         tbody.appendChild(fila);
         tabla.style.display = "table";

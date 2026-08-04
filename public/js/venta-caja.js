@@ -20,13 +20,13 @@ form.addEventListener('submit', async (e) => {
     if (!res.ok) throw new Error('Producto no encontrado');
 
     const producto = await res.json();
-    const subtotal = producto.precio_venta * cantidad;
+    const subtotal = producto.precioVenta * cantidad;
     total += subtotal;
 
     const productoInfo = {
       producto_id: producto.id,
       cantidad,
-      precio_unitario: producto.precio_venta,
+      precio_unitario: producto.precioVenta,
       subtotal,
     };
 
@@ -35,7 +35,7 @@ form.addEventListener('submit', async (e) => {
     const fila = document.createElement('tr');
     fila.innerHTML = `
       <td>${producto.descripcion}</td>
-      <td>$${producto.precio_venta}</td>
+      <td>$${producto.precioVenta}</td>
       <td>${cantidad}</td>
       <td>$${subtotal.toFixed(2)}</td>
       <td><button class="eliminar-producto" data-id="${producto.id}">🗑️</button></td>
@@ -71,6 +71,28 @@ let tipoComprobanteSeleccionado = '101';
 let monedaSeleccionada = 'UYU';
 let cliente_id = 1; // ahora lo vamos a actualizar dinámicamente
 let tipo_ticket = 'VENTA';
+
+function mapFormaPago(valor) {
+  const normalized = String(valor || '').trim().toLowerCase();
+  if (normalized === 'tarjeta') return 'TARJETA';
+  if (normalized === 'transferencia') return 'TRANSFERENCIA';
+  return 'EFECTIVO';
+}
+
+function mapDetalleTickets(productos) {
+  return productos.map((item) => ({
+    productoId: item.productoId ?? item.producto_id,
+    cantidad: item.cantidad,
+    precioUnitario: item.precioUnitario ?? item.precio_unitario,
+  }));
+}
+
+function mapStockItems(productos) {
+  return productos.map((item) => ({
+    productoId: item.productoId ?? item.producto_id,
+    cantidad: item.cantidad,
+  }));
+}
 
 // 1. Mostrar modal de forma de pago
 document.getElementById('cerrar-ticket').addEventListener('click', () => {
@@ -177,7 +199,7 @@ document.getElementById('buscar-cliente').addEventListener('click', async () => 
 
     const cliente = await res.json();
     cliente_id = cliente.id; // ✅ actualizar el id a enviar
-    denominacionSpan.textContent = cliente.denominacion;
+    denominacionSpan.textContent = cliente.name || cliente.email || 'N/A';
     infoCliente.style.display = 'block';
     confirmBtn.style.display = 'inline-block';
     document.getElementById('buscar-cliente').style.display = 'none'
@@ -272,14 +294,9 @@ document.getElementById('confirmar-moneda').addEventListener('click', async () =
   } else {
     // ⚙️ Flujo normal (tarjeta / crédito / etc.) -> crear ticket y actualizar stock
     const body = {
-      cliente_id,
-      tipo_pago,
-      forma_pago: formaPagoSeleccionada,
-      tipo_comprobante: tipoComprobanteSeleccionado,
-      moneda: monedaSeleccionada,
-      total,
-      tipo_ticket,
-      productos: productosSeleccionados
+      clienteId: cliente_id,
+      formaDePago: mapFormaPago(formaPagoSeleccionada),
+      detalleTickets: mapDetalleTickets(productosSeleccionados)
     };
 
     try {
@@ -295,7 +312,7 @@ document.getElementById('confirmar-moneda').addEventListener('click', async () =
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ productos: productosSeleccionados })
+        body: JSON.stringify({ productos: mapStockItems(productosSeleccionados) })
       });
       if (!actualizarStock.ok) throw new Error('Error al actualizar stock');
 
@@ -315,14 +332,9 @@ document.getElementById('finalizar').addEventListener('click', async () => {
   const tipo_pago = document.getElementById('tipo-pago').value;
 
   const body = {
-    cliente_id,
-    tipo_pago,
-    forma_pago: formaPagoSeleccionada,
-    tipo_comprobante: tipoComprobanteSeleccionado,
-    moneda: monedaSeleccionada,
-    total,
-    tipo_ticket: tipo_ticket,
-    productos: productosSeleccionados
+    clienteId: cliente_id,
+    formaDePago: mapFormaPago(formaPagoSeleccionada),
+    detalleTickets: mapDetalleTickets(productosSeleccionados)
   };
 
   try {
@@ -343,7 +355,7 @@ document.getElementById('finalizar').addEventListener('click', async () => {
         'Content-Type': 'application/json'
       },
       credentials: 'include',
-      body: JSON.stringify({ productos: productosSeleccionados })
+      body: JSON.stringify({ productos: mapStockItems(productosSeleccionados) })
     });
 
     if (!actualizarStock.ok) throw new Error('Error al actualizar stock');
@@ -362,15 +374,9 @@ document.getElementById('finalizar').addEventListener('click', async () => {
 document.getElementById('finalizar-usd').addEventListener('click', async () => {
   const tipo_pago = document.getElementById('tipo-pago').value; // 'efectivo'
   const body = {
-    cliente_id,
-    tipo_pago,
-    forma_pago: formaPagoSeleccionada,
-    tipo_comprobante: tipoComprobanteSeleccionado,
-    moneda: 'USD',                 // 👈 la moneda del ticket
-    total,                         // 👈 mantenemos tu total en UYU (como venías)
-    tipo_ticket,
-    productos: productosSeleccionados,
-    tasa_USD: tasaUSD
+    clienteId: cliente_id,
+    formaDePago: mapFormaPago(formaPagoSeleccionada),
+    detalleTickets: mapDetalleTickets(productosSeleccionados)
   };
 
   try {
@@ -386,7 +392,7 @@ document.getElementById('finalizar-usd').addEventListener('click', async () => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ productos: productosSeleccionados })
+      body: JSON.stringify({ productos: mapStockItems(productosSeleccionados) })
     });
     if (!actualizarStock.ok) throw new Error('Error al actualizar stock');
 

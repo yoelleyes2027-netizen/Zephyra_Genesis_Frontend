@@ -2,14 +2,9 @@ document.getElementById("cliente-form").addEventListener("submit", async (e) => 
     e.preventDefault();
   
     const cliente = {
-      nombre: document.getElementById("nombre").value,
-      telefono: document.getElementById("telefono").value,
+      name: document.getElementById("nombre").value,
+      telefono: Number(document.getElementById("telefono").value || 0),
       email: document.getElementById("email").value,
-      direccion: document.getElementById("direccion").value,
-      tipo_documento: document.getElementById("tipo_documento").value,
-      codigo_pais: document.getElementById("codigo_pais").value,
-      denominacion: document.getElementById("denominacion").value,
-      numero_doc: document.getElementById("numero_doc").value,
     };
   
     try {

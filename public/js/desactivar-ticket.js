@@ -7,6 +7,21 @@ let clienteIdBuscado = null;
 let tipoPagoBuscado = null;
 let tipoComprobanteBuscado = null;
 
+function mapFormaPago(valor) {
+  const normalized = String(valor || '').trim().toLowerCase();
+  if (normalized === 'tarjeta') return 'TARJETA';
+  if (normalized === 'transferencia') return 'TRANSFERENCIA';
+  return 'EFECTIVO';
+}
+
+function mapDetalleTickets(productos) {
+  return productos.map((item) => ({
+    productoId: item.productoId ?? item.producto_id,
+    cantidad: item.cantidad,
+    precioUnitario: item.precioUnitario ?? item.precio_unitario,
+  }));
+}
+
 async function buscarTicket() {
   const ticketIdInput = document.getElementById('ticket-id');
   const mensaje = document.getElementById('mensaje');
@@ -41,14 +56,14 @@ async function buscarTicket() {
       return;
     }
 
-    clienteIdBuscado = data.ticket.cliente_id;
-    tipoPagoBuscado = data.ticket.tipo_pago;
-    tipoComprobanteBuscado = data.ticket.tipo_comprobante;
+    clienteIdBuscado = data.ticket.clienteId;
+    tipoPagoBuscado = data.ticket.formaDePago;
+    tipoComprobanteBuscado = data.ticket.formaDePago;
 
     // Mostrar datos del ticket
 
     // fecha formateada
-    const fechaOriginal = data.ticket.creado_en;  // ← viene del backend
+    const fechaOriginal = data.ticket.fechaCreacion;
     const fecha = new Date(fechaOriginal);
 
     const dia = String(fecha.getDate()).padStart(2, '0');
@@ -61,32 +76,32 @@ async function buscarTicket() {
     const fechaFormateada = `${dia}/${mes}/${anio} ${horas}:${minutos}`;
 
     document.getElementById('ticket-id-label').textContent = data.ticket.id;
-    document.getElementById('cliente-label').textContent = data.ticket.denominacion || 'N/A';
+    document.getElementById('cliente-label').textContent = data.ticket.clienteNombre || 'N/A';
     document.getElementById('fecha-label').textContent = fechaFormateada;
-    document.getElementById('total-label').textContent = data.ticket.total;
-    document.getElementById('forma-label').textContent = data.ticket.forma_pago || 'N/A';
-    document.getElementById('moneda-label').textContent = data.ticket.moneda || 'N/A';
-    document.getElementById('tipo-label').textContent = data.ticket.tipo_pago || 'N/A';
-    document.getElementById('usuario-label').textContent = data.ticket.usuario_nombre || 'N/A';
+    document.getElementById('total-label').textContent = data.ticket.montoTotal;
+    document.getElementById('forma-label').textContent = data.ticket.formaDePago || 'N/A';
+    document.getElementById('moneda-label').textContent = 'N/A';
+    document.getElementById('tipo-label').textContent = data.ticket.formaDePago || 'N/A';
+    document.getElementById('usuario-label').textContent = data.ticket.usuarioNombre || 'N/A';
     document.getElementById('datos-ticket').style.display = 'block';
-    document.getElementById('Tipo-ticket-label').textContent = data.ticket.tipo_ticket;
+    document.getElementById('Tipo-ticket-label').textContent = 'ticket';
 
     // Vaciar y volver a llenar la tabla
     const tablaBody = document.getElementById('articulos-body');
     tablaBody.innerHTML = '';
 
     // Agregar productos
-    data.productos.forEach(producto => {
+    data.ticket.detalleTickets.forEach(producto => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-    <td>${producto.descripcion}</td>
+    <td>${producto.productoDescripcion}</td>
     <td>${producto.cantidad}</td>
-    <td>$${producto.precio_unitario}</td>
+    <td>$${producto.precioUnitario}</td>
     <td>
       <input type="checkbox" 
        class="checkbox-articulo" 
        value="${producto.id}" 
-       data-producto-id="${producto.producto_id}">
+       data-producto-id="${producto.productoId}">
     </td>
   `;
       tablaBody.appendChild(tr);
@@ -220,14 +235,9 @@ async function crearTicketDevolucion() {
     const total = productos.reduce((acc, p) => acc + (p.precio_unitario * p.cantidad), 0);
 
     const payload = {
-      cliente_id,
-      tipo_pago,
-      forma_pago,
-      tipo_comprobante,
-      moneda,
-      total,
-      tipo_ticket: 'devolucion',
-      productos
+      clienteId: cliente_id,
+      formaDePago: mapFormaPago(forma_pago),
+      detalleTickets: mapDetalleTickets(productos)
     };
 
     const res = await fetch('/api/tickets', {
@@ -286,14 +296,9 @@ async function crearTicketDevolucionDesdeSeleccionados() {
     const total = productos.reduce((acc, p) => acc + (p.precio_unitario * p.cantidad), 0);
 
     const payload = {
-      cliente_id,
-      tipo_pago,
-      forma_pago,
-      tipo_comprobante,
-      moneda,
-      total,
-      tipo_ticket: 'devolucion',
-      productos
+      clienteId: cliente_id,
+      formaDePago: mapFormaPago(forma_pago),
+      detalleTickets: mapDetalleTickets(productos)
     };
 
     const res = await fetch('/api/tickets', {

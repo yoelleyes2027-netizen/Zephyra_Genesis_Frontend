@@ -1,25 +1,24 @@
+let clienteEmailOriginal = null;
+
 document.getElementById('formBuscar').addEventListener('submit', async function (e) {
     e.preventDefault();
   
-    const documento = document.getElementById('documentoBuscar').value;
+    const documento = document.getElementById('documentoBuscar').value.trim();
     const mensajeEl = document.getElementById('mensaje');
   
     try {
-      const response = await fetch(`/api/clientes/buscar/${documento}`, {
+      const response = await fetch(`/api/clientes/buscar/${encodeURIComponent(documento)}`, {
         credentials: 'include'
       });
   
       if (!response.ok) throw new Error('Cliente no encontrado');
   
       const cliente = await response.json();
+      clienteEmailOriginal = cliente.email || documento;
   
-      document.getElementById('nombre').textContent = cliente.nombre;
+      document.getElementById('nombre').textContent = cliente.name;
       document.getElementById('telefono').textContent = cliente.telefono || 'N/A';
       document.getElementById('email').textContent = cliente.email || 'N/A';
-      document.getElementById('direccion').textContent = cliente.direccion || 'N/A';
-      document.getElementById('tipo_documento').textContent = cliente.tipo_documento || 'N/A';
-      document.getElementById('denominacion').textContent = cliente.denominacion || 'N/A';
-      document.getElementById('numero_doc').textContent = cliente.numero_doc || 'N/A';
   
       document.getElementById('clienteInfo').style.display = 'block';
       document.getElementById('boton-eliminar-cliente').style.display = 'block';
@@ -32,13 +31,13 @@ document.getElementById('formBuscar').addEventListener('submit', async function 
   });
   
   document.getElementById('btnEliminar').addEventListener('click', async function () {
-    const documento = document.getElementById('numero_doc').textContent;
+    const documento = clienteEmailOriginal || document.getElementById('email').textContent;
     const mensajeEl = document.getElementById('mensaje');
   
-    if (!confirm(`¿Estás seguro que deseas eliminar al cliente con documento ${documento}?`)) return;
+    if (!confirm(`¿Estás seguro que deseas eliminar al cliente ${documento}?`)) return;
   
     try {
-      const response = await fetch(`/api/clientes/desactivar/${documento}`, {
+      const response = await fetch(`/api/clientes/desactivar/${encodeURIComponent(documento)}`, {
         method: 'PUT',
         credentials: 'include'
       });
