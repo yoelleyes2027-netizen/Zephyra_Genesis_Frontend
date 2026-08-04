@@ -13,11 +13,40 @@ const backendApiBaseUrl = (process.env.BACKEND_API_URL || 'http://localhost:8080
 
 app.use(cookieParser());
 
-// Hacer pública la carpeta /public
-app.use(express.static(path.join(__dirname, '../public')));
-
 // Middleware para recibir JSON
 app.use(express.json());
+
+const adminSistemaHtmlPath = path.join(__dirname, '../public/html/adminSistema.html');
+
+app.get('/html/adminSistema.html', async (req, res, next) => {
+  try {
+    const token = req.cookies?.token;
+
+    if (!token) {
+      return res.redirect('/html/login.html');
+    }
+
+    const response = await axios.get(`${backendApiBaseUrl}/api/auth/verificar-token`, {
+      headers: {
+        Cookie: `token=${token}`,
+      },
+      validateStatus: () => true,
+    });
+
+    const rol = response.data?.usuario?.rol;
+    if (response.status === 200 && rol === 'admin_sistema') {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      return res.sendFile(adminSistemaHtmlPath);
+    }
+
+    return res.redirect('/html/login.html');
+  } catch (error) {
+    return next(error);
+  }
+});
+
+// Hacer pública la carpeta /public
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/', (req, res) => {
   res.redirect('/html/login.html');
