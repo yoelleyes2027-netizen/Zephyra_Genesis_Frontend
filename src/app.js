@@ -54,7 +54,7 @@ app.get('/', (req, res) => {
 
 const proxyApiRequest = async (req, res, next) => {
   try {
-    const upstreamPath = req.originalUrl.replace(/^\/api/, '') || '/';
+    const upstreamPath = req.originalUrl || '/';
     const targetUrl = `${backendApiBaseUrl}${upstreamPath}`;
     const response = await axios.request({
       method: req.method,
