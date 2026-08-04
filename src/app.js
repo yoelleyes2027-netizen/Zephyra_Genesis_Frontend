@@ -78,7 +78,11 @@ const proxyApiRequest = async (req, res, next) => {
 
     res.status(response.status).send(Buffer.from(response.data));
   } catch (error) {
-    next(error);
+    console.error('Error proxying API request:', error.message);
+    res.status(503).json({
+      ok: false,
+      msg: 'El backend no está disponible en este momento. Intentá nuevamente en unos segundos.',
+    });
   }
 };
 
