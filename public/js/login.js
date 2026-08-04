@@ -14,7 +14,13 @@ document.getElementById('login-form').addEventListener('submit', async function 
       body: JSON.stringify({ cedula, contraseña }),
     });
 
-    const data = await res.json();
+    const responseText = await res.text();
+    let data = {};
+    try {
+      data = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      data = { ok: false, msg: responseText || 'Respuesta inválida del servidor' };
+    }
     console.log('Respuesta del servidor:', data); // <-- LOG IMPORTANTE
 
     if (res.ok) {
