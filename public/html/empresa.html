@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empresa - Genesis</title>
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-container container">
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo" onclick="window.location.href='./adminUsuario.html'">G</div>
+      <h1 class="mb-0">Gestión de Empresa</h1>
+    </div>
+
+    <section class="dashboard-section mb-4">
+      <h2 class="mb-3">Alta / edición</h2>
+      <form id="empresa-form" class="row g-3">
+        <div class="col-md-4"><input id="empresa-name" class="form-control" placeholder="Nombre" required></div>
+        <div class="col-md-4"><input id="empresa-email" type="email" class="form-control" placeholder="Email"></div>
+        <div class="col-md-4"><input id="empresa-telefono" type="number" class="form-control" placeholder="Teléfono"></div>
+        <div class="col-md-3"><input id="empresa-documento" class="form-control" placeholder="Número documento" required></div>
+        <div class="col-md-3"><input id="empresa-tipo-documento" class="form-control" placeholder="Tipo documento" value="RUC" required></div>
+        <div class="col-md-3"><input id="empresa-razon-social" class="form-control" placeholder="Razón social" required></div>
+        <div class="col-md-3"><input id="empresa-direccion" class="form-control" placeholder="Dirección" required></div>
+        <div class="col-12 d-flex gap-2">
+          <button id="empresa-submit" class="btn btn-primary" type="submit">Guardar empresa</button>
+          <button id="empresa-cancelar" class="btn btn-outline-secondary" type="button">Limpiar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="dashboard-section mb-4">
+      <h2 class="mb-3">Buscar / listar</h2>
+      <div class="row g-2 align-items-end">
+        <div class="col-md-6"><input id="empresa-busqueda" class="form-control" placeholder="Documento o razón social"></div>
+        <div class="col-md-3 form-check form-switch ms-2">
+          <input id="empresa-por-razon" class="form-check-input" type="checkbox">
+          <label class="form-check-label ms-2" for="empresa-por-razon">Buscar por razón social</label>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+          <button id="empresa-buscar" class="btn btn-light w-100">Buscar</button>
+          <button id="empresa-ver-todos" class="btn btn-outline-light w-100" type="button">Ver todos</button>
+        </div>
+      </div>
+
+      <div class="table-responsive mt-4">
+        <table class="table table-hover align-middle">
+          <thead><tr><th>Nombre</th><th>Documento</th><th>Razón social</th><th>Teléfono</th><th>Email</th><th>Dirección</th><th>Acciones</th></tr></thead>
+          <tbody id="empresa-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+  <script src="../js/empresa.js"></script>
+</body>
+</html>

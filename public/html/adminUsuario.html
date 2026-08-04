@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Principal - Genesis</title>
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+  <div class="dashboard-container container">
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo">G</div>
+      <h1 class="mb-0">Genesis - Panel Principal</h1>
+    </div>
+
+    <div class="dashboard-section">
+      <h2 class="mb-4">Todos los módulos</h2>
+      <div class="dashboard-menu d-flex flex-wrap gap-3">
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./producto.html'">
+          <i class="fas fa-box"></i> Productos
+        </button>
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./proveedores.html'">
+          <i class="fas fa-truck"></i> Proveedores
+        </button>
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./empresa.html'">
+          <i class="fas fa-building"></i> Empresa
+        </button>
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./clientes-unificado.html'">
+          <i class="fas fa-users"></i> Clientes
+        </button>
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./ticket.html'">
+          <i class="fas fa-receipt"></i> Ticket
+        </button>
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./etiquetas.html'">
+          <i class="fas fa-tags"></i> Etiquetas
+        </button>
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./iniciar-dia.html'">
+          <i class="fas fa-sun"></i> Iniciar día
+        </button>
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./adminSistema.html'">
+          <i class="fas fa-user-shield"></i> Admin del sistema
+        </button>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <button id="logout-btn" class="btn btn-danger px-4 py-2">⛔ Cerrar sesión</button>
+    </div>
+  </div>
+
+  <script src="../js/dashboard.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productos - Genesis</title>
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-container container">
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo" onclick="window.location.href='./adminUsuario.html'">G</div>
+      <h1 class="mb-0">Gestión de Productos</h1>
+    </div>
+
+    <section class="dashboard-section mb-4">
+      <h2 class="mb-3">Alta / edición</h2>
+      <form id="producto-form" class="row g-3">
+        <div class="col-md-3"><input id="producto-codigo" type="number" class="form-control" placeholder="Código de barras" required></div>
+        <div class="col-md-5"><input id="producto-descripcion" class="form-control" placeholder="Descripción" required></div>
+        <div class="col-md-2"><input id="producto-stock" type="number" class="form-control" placeholder="Stock" required></div>
+        <div class="col-md-2"><input id="producto-unidad" class="form-control" placeholder="Unidad" value="UNIDAD" required></div>
+        <div class="col-md-3"><input id="producto-precio-venta" type="number" step="0.01" class="form-control" placeholder="Precio venta" required></div>
+        <div class="col-md-3"><input id="producto-precio-compra" type="number" step="0.01" class="form-control" placeholder="Precio compra" required></div>
+        <div class="col-md-3"><input id="producto-etiqueta" class="form-control" placeholder="Etiqueta" required></div>
+        <div class="col-md-3"><input id="producto-proveedor" type="number" class="form-control" placeholder="ID Proveedor" required></div>
+        <div class="col-12 d-flex gap-2">
+          <button id="producto-submit" class="btn btn-primary" type="submit">Guardar producto</button>
+          <button id="producto-cancelar" class="btn btn-outline-secondary" type="button">Limpiar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="dashboard-section mb-4">
+      <h2 class="mb-3">Buscar / listar</h2>
+      <div class="row g-2 align-items-end">
+        <div class="col-md-6"><input id="producto-busqueda" class="form-control" placeholder="Código o descripción"></div>
+        <div class="col-md-3 form-check form-switch ms-2">
+          <input id="producto-por-descripcion" class="form-check-input" type="checkbox">
+          <label class="form-check-label ms-2" for="producto-por-descripcion">Buscar por descripción</label>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+          <button id="producto-buscar" class="btn btn-light w-100">Buscar</button>
+          <button id="producto-ver-todos" class="btn btn-outline-light w-100" type="button">Ver todos</button>
+        </div>
+      </div>
+
+      <div class="table-responsive mt-4">
+        <table class="table table-hover align-middle">
+          <thead id="producto-head">
+            <tr><th>Código</th><th>Descripción</th><th>Precio venta</th><th>Precio compra</th><th>Stock</th><th>Unidad</th><th>Etiqueta</th><th>Proveedor</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="producto-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+  <script src="../js/producto.js"></script>
+</body>
+</html>

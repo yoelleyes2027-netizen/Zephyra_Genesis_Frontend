@@ -6,13 +6,26 @@ document.addEventListener("DOMContentLoaded", () => {
     method: "GET",
     credentials: "include", // Importante para enviar cookies
   })
-    .then(response => {
+    .then(async response => {
       console.log("🔄 Respuesta del backend:", response.status);
 
       if (!response.ok) {
         console.warn("❌ Token inválido o expirado. Redirigiendo...");
         window.location.href = "../html/login.html";
       } else {
+        const payload = await response.json();
+        const rol = (payload.usuario?.rol || "").toLowerCase();
+
+        if (rol === "admin_sistema") {
+          window.location.href = "../html/adminSistema.html";
+          return;
+        }
+
+        if (rol === "cajero") {
+          window.location.href = "../html/ticket.html";
+          return;
+        }
+
         console.log("✅ Token válido. Acceso permitido al dashboard.");
       }
     })

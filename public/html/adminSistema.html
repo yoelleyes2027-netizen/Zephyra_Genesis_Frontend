@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin del Sistema - Genesis</title>
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+  <div class="dashboard-container container">
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo" onclick="window.location.href='./adminUsuario.html'">G</div>
+      <h1 class="mb-0">Admin del Sistema</h1>
+    </div>
+
+    <section class="dashboard-section mb-4">
+      <h2 class="mb-3">Usuarios por base de datos</h2>
+      <form id="usuario-form" class="row g-3">
+        <div class="col-md-4"><input id="usuario-nombre" class="form-control" placeholder="Nombre completo" required></div>
+        <div class="col-md-2"><input id="usuario-cedula" type="number" class="form-control" placeholder="Cédula" required></div>
+        <div class="col-md-2"><input id="usuario-password" type="password" class="form-control" placeholder="Contraseña"></div>
+        <div class="col-md-2"><select id="usuario-rol" class="form-select"><option value="ADMIN_SISTEMA">Admin sistema</option><option value="ADMIN">Admin</option><option value="RECEPCION">Recepción</option><option value="CAJERO">Cajero</option></select></div>
+        <div class="col-md-2"><input id="usuario-db" class="form-control" placeholder="BDD asignada" required></div>
+        <div class="col-md-4"><input id="usuario-email" type="email" class="form-control" placeholder="Email"></div>
+        <div class="col-md-2"><input id="usuario-telefono" type="number" class="form-control" placeholder="Teléfono"></div>
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-primary" type="submit">Guardar usuario</button>
+          <button class="btn btn-outline-secondary" type="button" id="usuario-limpiar">Limpiar</button>
+        </div>
+      </form>
+      <div class="table-responsive mt-4">
+        <table class="table table-hover align-middle">
+          <thead><tr><th>Nombre</th><th>Cédula</th><th>Rol</th><th>BDD</th><th>Email</th><th>Teléfono</th><th>Acciones</th></tr></thead>
+          <tbody id="usuarios-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="dashboard-section">
+      <h2 class="mb-3">Soporte por tabla</h2>
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <select id="tabla-soporte" class="form-select">
+            <option value="usuarios">Usuario</option>
+            <option value="proveedores">Proveedores</option>
+            <option value="empresas">Empresa</option>
+            <option value="productos">Productos</option>
+            <option value="tickets">Ticket</option>
+            <option value="detalle_ticket">Detalle_Ticket</option>
+            <option value="caja_diaria">Caja_Diaria</option>
+          </select>
+        </div>
+        <div class="col-md-3"><button id="cargar-soporte" class="btn btn-light w-100">Cargar tabla</button></div>
+      </div>
+      <div class="table-responsive mt-4">
+        <table class="table table-hover align-middle">
+          <thead id="soporte-head"></thead>
+          <tbody id="soporte-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="text-center mt-4">
+      <button id="logout-btn" class="btn btn-danger px-4 py-2">⛔ Cerrar sesión</button>
+    </div>
+  </div>
+
+  <script src="../js/admin-sistema.js"></script>
+</body>
+
+</html>
