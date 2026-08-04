@@ -19,6 +19,10 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Middleware para recibir JSON
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.redirect('/html/login.html');
+});
+
 const proxyApiRequest = async (req, res, next) => {
   try {
     const upstreamPath = req.originalUrl.replace(/^\/api/, '') || '/';
