@@ -36,13 +36,18 @@ jobs:
 
       - name: Get runner public IP
         id: runner_ip
-        run: echo "ip=$(curl -s https://checkip.amazonaws.com)" >> "$GITHUB_OUTPUT"
+        run: echo "ip=$(curl -4 -s https://checkip.amazonaws.com)" >> "$GITHUB_OUTPUT"
 
       - name: Allow temporary SSH access from runner
         run: |
           aws ec2 authorize-security-group-ingress \
             --group-id "${{ secrets.EC2_SECURITY_GROUP_ID }}" \
-            --ip-permissions "IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges=[{CidrIp=${{ steps.runner_ip.outputs.ip }}/32,Description='GitHub Actions runner SSH'}]" || true
+            --ip-permissions "IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges=[{CidrIp=${{ steps.runner_ip.outputs.ip }}/32,Description='GitHub Actions runner SSH'}]"
+
+          aws ec2 describe-security-groups \
+            --group-ids "${{ secrets.EC2_SECURITY_GROUP_ID }}" \
+            --query "SecurityGroups[0].IpPermissions[?FromPort==\`22\` && ToPort==\`22\`]" \
+            --output json
 
       - name: Build, tag, and push image
         run: |
