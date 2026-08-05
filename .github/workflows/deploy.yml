@@ -14,6 +14,7 @@ env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   ECR_REGISTRY: 316388238667.dkr.ecr.us-east-1.amazonaws.com
   ECR_REPOSITORY: genesis/frontend
+  EC2_HOST: 32.196.157.34
 
 jobs:
   deploy:
@@ -57,7 +58,6 @@ jobs:
 
       - name: Deploy frontend on EC2
         env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
