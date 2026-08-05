@@ -6,9 +6,24 @@ const soporteBody = document.getElementById('soporte-body');
 const cargarSoporte = document.getElementById('cargar-soporte');
 const tablaSoporte = document.getElementById('tabla-soporte');
 const logoutBtn = document.getElementById('logout-btn');
+const bddRefrescar = document.getElementById('bdd-refrescar');
+const usuarioDbSelect = document.getElementById('usuario-db');
+const adminSistemaMensaje = document.getElementById('admin-sistema-mensaje');
 
 let usuariosCache = [];
 let cedulaEdicion = null;
+
+function mostrarMensaje(texto, tipo = 'info') {
+  if (!adminSistemaMensaje) return;
+  const colores = {
+    info: 'text-primary',
+    success: 'text-success',
+    error: 'text-danger',
+    warning: 'text-warning',
+  };
+  adminSistemaMensaje.className = `mt-3 ${colores[tipo] || colores.info}`;
+  adminSistemaMensaje.textContent = texto || '';
+}
 
 async function verificarRolSistema() {
   try {
@@ -17,6 +32,7 @@ async function verificarRolSistema() {
     const data = await response.json();
     if ((data.usuario?.rol || '').toLowerCase() !== 'admin_sistema') {
       window.location.href = './adminUsuario.html';
+      return;
     }
   } catch {
     window.location.href = './login.html';
@@ -28,10 +44,46 @@ async function cerrarSesion() {
   window.location.href = './login.html';
 }
 
+async function cargarBasesDeDatos() {
+  try {
+    const selectedValue = usuarioDbSelect.value;
+    usuarioDbSelect.innerHTML = '<option value="">Cargando BDD...</option>';
+    const response = await fetch('/api/admin-sistema/bases-datos', { credentials: 'include' });
+    if (!response.ok) throw new Error('No se pudieron cargar las BDD');
+    const payload = await response.json();
+    const bases = Array.isArray(payload.data) ? payload.data : [];
+    usuarioDbSelect.innerHTML = '';
+
+    if (!bases.length) {
+      usuarioDbSelect.innerHTML = '<option value="">No hay bases disponibles</option>';
+      return;
+    }
+
+    usuarioDbSelect.insertAdjacentHTML('beforeend', '<option value="">Seleccionar BDD...</option>');
+    bases.forEach((base) => {
+      const option = document.createElement('option');
+      option.value = base;
+      option.textContent = base;
+      usuarioDbSelect.appendChild(option);
+    });
+
+    if (selectedValue && bases.includes(selectedValue)) {
+      usuarioDbSelect.value = selectedValue;
+    }
+  } catch (error) {
+    usuarioDbSelect.innerHTML = '<option value="">Error al cargar BDD</option>';
+    mostrarMensaje(error.message || 'No se pudieron cargar las bases de datos', 'error');
+  }
+}
+
 function limpiarFormularioUsuario() {
   usuarioForm.reset();
   document.getElementById('usuario-rol').value = 'ADMIN_SISTEMA';
+  if (usuarioDbSelect) {
+    usuarioDbSelect.value = '';
+  }
   cedulaEdicion = null;
+  mostrarMensaje('');
 }
 
 function formDataUsuario() {
@@ -42,7 +94,7 @@ function formDataUsuario() {
     rol: document.getElementById('usuario-rol').value,
     email: document.getElementById('usuario-email').value.trim(),
     telefono: Number(document.getElementById('usuario-telefono').value || 0),
-    tenantDatabase: document.getElementById('usuario-db').value.trim(),
+    tenantDatabase: usuarioDbSelect.value.trim(),
   };
 }
 
@@ -75,9 +127,15 @@ function renderUsuarios(items) {
 }
 
 async function cargarUsuarios() {
-  const response = await fetch('/api/admin-sistema/usuarios', { credentials: 'include' });
-  const payload = await response.json();
-  renderUsuarios(payload.data || []);
+  try {
+    const response = await fetch('/api/admin-sistema/usuarios', { credentials: 'include' });
+    if (!response.ok) throw new Error('No se pudieron cargar los usuarios');
+    const payload = await response.json();
+    renderUsuarios(payload.data || []);
+  } catch (error) {
+    usuariosBody.innerHTML = `<tr><td colspan="7">${error.message || 'No se pudieron cargar los usuarios'}</td></tr>`;
+    mostrarMensaje(error.message || 'No se pudieron cargar los usuarios', 'error');
+  }
 }
 
 function editarUsuario(cedula) {
@@ -90,64 +148,90 @@ function editarUsuario(cedula) {
   document.getElementById('usuario-rol').value = (usuario.rol ?? 'ADMIN_SISTEMA').toUpperCase();
   document.getElementById('usuario-email').value = usuario.email ?? '';
   document.getElementById('usuario-telefono').value = usuario.telefono ?? '';
-  document.getElementById('usuario-db').value = usuario.tenantDatabase ?? '';
+  usuarioDbSelect.value = usuario.tenantDatabase ?? '';
 }
 
 async function eliminarUsuario(cedula) {
   if (!confirm(`¿Eliminar el usuario ${cedula}?`)) return;
-  const response = await fetch(`/api/admin-sistema/usuarios/${cedula}`, { method: 'DELETE', credentials: 'include' });
-  if (!response.ok) {
-    alert('No se pudo eliminar el usuario');
-    return;
+  try {
+    const response = await fetch(`/api/admin-sistema/usuarios/${cedula}`, { method: 'DELETE', credentials: 'include' });
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload.msg || 'No se pudo eliminar el usuario');
+    }
+    await cargarUsuarios();
+    mostrarMensaje('Usuario eliminado correctamente', 'success');
+  } catch (error) {
+    mostrarMensaje(error.message || 'No se pudo eliminar el usuario', 'error');
   }
-  await cargarUsuarios();
 }
 
 usuarioForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const body = formDataUsuario();
   if (cedulaEdicion === null && !body.contraseña) {
-    alert('La contraseña es obligatoria para crear un usuario');
+    mostrarMensaje('La contraseña es obligatoria para crear un usuario', 'error');
     return;
   }
+  if (!body.tenantDatabase) {
+    mostrarMensaje('Selecciona una base de datos', 'error');
+    return;
+  }
+
   const isEdit = cedulaEdicion !== null;
   const endpoint = isEdit ? `/api/admin-sistema/usuarios/${cedulaEdicion}` : '/api/admin-sistema/usuarios';
   const method = isEdit ? 'PUT' : 'POST';
-  const response = await fetch(endpoint, {
-    method,
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!response.ok) {
-    alert('No se pudo guardar el usuario');
-    return;
+
+  try {
+    mostrarMensaje(isEdit ? 'Actualizando usuario...' : 'Guardando usuario...');
+    const response = await fetch(endpoint, {
+      method,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(payload.msg || 'No se pudo guardar el usuario');
+    }
+    limpiarFormularioUsuario();
+    await cargarUsuarios();
+    mostrarMensaje(payload.mensaje || 'Usuario guardado correctamente', 'success');
+  } catch (error) {
+    mostrarMensaje(error.message || 'No se pudo guardar el usuario', 'error');
   }
-  limpiarFormularioUsuario();
-  await cargarUsuarios();
 });
 
 usuarioLimpiar.addEventListener('click', limpiarFormularioUsuario);
 async function cargarSoporteTabla() {
-  const tabla = tablaSoporte.value;
-  const response = await fetch(`/api/admin-sistema/soporte?tabla=${encodeURIComponent(tabla)}`, { credentials: 'include' });
-  const payload = await response.json();
-  const items = payload.data?.data || [];
-  soporteHead.innerHTML = '';
-  soporteBody.innerHTML = '';
-  if (!items.length) {
-    soporteHead.innerHTML = '<tr><th>Sin datos</th></tr>';
-    return;
+  try {
+    const tabla = tablaSoporte.value;
+    const response = await fetch(`/api/admin-sistema/soporte?tabla=${encodeURIComponent(tabla)}`, { credentials: 'include' });
+    if (!response.ok) throw new Error('No se pudo cargar la tabla');
+    const payload = await response.json();
+    const items = Array.isArray(payload.data?.data) ? payload.data.data : [];
+    soporteHead.innerHTML = '';
+    soporteBody.innerHTML = '';
+    if (!items.length) {
+      soporteHead.innerHTML = '<tr><th>Sin datos</th></tr>';
+      soporteBody.innerHTML = '<tr><td>No hay registros para esta tabla</td></tr>';
+      return;
+    }
+    const columns = Object.keys(items[0]);
+    soporteHead.innerHTML = `<tr>${columns.map((column) => `<th>${column}</th>`).join('')}</tr>`;
+    soporteBody.innerHTML = items.map((item) => `<tr>${columns.map((column) => `<td>${Array.isArray(item[column]) ? item[column].join(', ') : (item[column] ?? '')}</td>`).join('')}</tr>`).join('');
+  } catch (error) {
+    soporteHead.innerHTML = '<tr><th>Error</th></tr>';
+    soporteBody.innerHTML = `<tr><td>${error.message || 'No se pudo cargar el soporte'}</td></tr>`;
   }
-  const columns = Object.keys(items[0]);
-  soporteHead.innerHTML = `<tr>${columns.map((column) => `<th>${column}</th>`).join('')}</tr>`;
-  soporteBody.innerHTML = items.map((item) => `<tr>${columns.map((column) => `<td>${Array.isArray(item[column]) ? item[column].join(', ') : (item[column] ?? '')}</td>`).join('')}</tr>`).join('');
 }
 
 cargarSoporte.addEventListener('click', cargarSoporteTabla);
+bddRefrescar.addEventListener('click', cargarBasesDeDatos);
 logoutBtn.addEventListener('click', cerrarSesion);
 document.addEventListener('DOMContentLoaded', async () => {
   await verificarRolSistema();
+  await cargarBasesDeDatos();
   await cargarUsuarios();
   await cargarSoporteTabla();
 });
