@@ -56,3 +56,17 @@ document.getElementById('login-form').addEventListener('submit', async function 
     document.getElementById('mensaje-error').textContent = 'Error al conectar con el servidor';
   }
 });
+
+const contraseñaLogin = document.getElementById('contraseña');
+const toggleContraseñaLogin = document.getElementById('toggle-contraseña');
+
+if (contraseñaLogin && toggleContraseñaLogin) {
+  toggleContraseñaLogin.addEventListener('click', () => {
+    const mostrar = contraseñaLogin.type === 'password';
+    contraseñaLogin.type = mostrar ? 'text' : 'password';
+    toggleContraseñaLogin.innerHTML = mostrar
+      ? '<i class="fas fa-eye-slash"></i>'
+      : '<i class="fas fa-eye"></i>';
+    toggleContraseñaLogin.setAttribute('aria-label', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
+  });
+}

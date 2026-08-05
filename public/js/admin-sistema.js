@@ -9,6 +9,8 @@ const logoutBtn = document.getElementById('logout-btn');
 const bddRefrescar = document.getElementById('bdd-refrescar');
 const usuarioDbSelect = document.getElementById('usuario-db');
 const adminSistemaMensaje = document.getElementById('admin-sistema-mensaje');
+const usuarioPassword = document.getElementById('usuario-password');
+const toggleUsuarioPassword = document.getElementById('toggle-usuario-password');
 
 let usuariosCache = [];
 let cedulaEdicion = null;
@@ -23,6 +25,17 @@ function mostrarMensaje(texto, tipo = 'info') {
   };
   adminSistemaMensaje.className = `mt-3 ${colores[tipo] || colores.info}`;
   adminSistemaMensaje.textContent = texto || '';
+}
+
+if (usuarioPassword && toggleUsuarioPassword) {
+  toggleUsuarioPassword.addEventListener('click', () => {
+    const mostrar = usuarioPassword.type === 'password';
+    usuarioPassword.type = mostrar ? 'text' : 'password';
+    toggleUsuarioPassword.innerHTML = mostrar
+      ? '<i class="fas fa-eye-slash"></i>'
+      : '<i class="fas fa-eye"></i>';
+    toggleUsuarioPassword.setAttribute('aria-label', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
+  });
 }
 
 async function verificarRolSistema() {
