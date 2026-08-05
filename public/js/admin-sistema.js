@@ -91,7 +91,7 @@ async function cargarBasesDeDatos() {
 
 function limpiarFormularioUsuario() {
   usuarioForm.reset();
-  document.getElementById('usuario-rol').value = 'ADMIN_SISTEMA';
+  document.getElementById('usuario-rol').value = 'ADMIN';
   if (usuarioDbSelect) {
     usuarioDbSelect.value = '';
   }
@@ -158,7 +158,7 @@ function editarUsuario(cedula) {
   document.getElementById('usuario-nombre').value = usuario.nombre ?? '';
   document.getElementById('usuario-cedula').value = usuario.cedula ?? '';
   document.getElementById('usuario-password').value = '';
-  document.getElementById('usuario-rol').value = (usuario.rol ?? 'ADMIN_SISTEMA').toUpperCase();
+  document.getElementById('usuario-rol').value = (usuario.rol ?? 'ADMIN').toUpperCase();
   document.getElementById('usuario-email').value = usuario.email ?? '';
   document.getElementById('usuario-telefono').value = usuario.telefono ?? '';
   usuarioDbSelect.value = usuario.tenantDatabase ?? '';
