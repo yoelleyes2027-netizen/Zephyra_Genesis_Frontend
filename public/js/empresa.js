@@ -6,6 +6,15 @@ const empresaVerTodos = document.getElementById('empresa-ver-todos');
 const empresaBody = document.getElementById('empresa-body');
 const empresaBusqueda = document.getElementById('empresa-busqueda');
 const empresaPorRazon = document.getElementById('empresa-por-razon');
+const empresaEditModal = document.getElementById('empresa-edit-modal');
+const empresaEditForm = document.getElementById('empresa-edit-form');
+const empresaEditName = document.getElementById('empresa-edit-name');
+const empresaEditEmail = document.getElementById('empresa-edit-email');
+const empresaEditTelefono = document.getElementById('empresa-edit-telefono');
+const empresaEditDocumento = document.getElementById('empresa-edit-documento');
+const empresaEditTipoDocumento = document.getElementById('empresa-edit-tipo-documento');
+const empresaEditRazonSocial = document.getElementById('empresa-edit-razon-social');
+const empresaEditDireccion = document.getElementById('empresa-edit-direccion');
 
 let empresasCache = [];
 let documentoEdicionEmpresa = null;
@@ -24,9 +33,31 @@ function formDataEmpresa() {
 
 function limpiarFormularioEmpresa() {
   empresaForm.reset();
-  documentoEdicionEmpresa = null;
   empresaSubmit.textContent = 'Guardar empresa';
   document.getElementById('empresa-tipo-documento').value = 'RUC';
+}
+
+function abrirModalEdicionEmpresa(empresa) {
+  documentoEdicionEmpresa = empresa.numeroDocumento;
+  empresaEditName.value = empresa.name ?? '';
+  empresaEditEmail.value = empresa.email ?? '';
+  empresaEditTelefono.value = empresa.telefono ?? '';
+  empresaEditDocumento.value = empresa.numeroDocumento ?? '';
+  empresaEditTipoDocumento.value = empresa.tipoDocumento ?? 'RUC';
+  empresaEditRazonSocial.value = empresa.razonSocial ?? '';
+  empresaEditDireccion.value = empresa.direccion ?? '';
+  empresaEditModal.classList.remove('d-none');
+  empresaEditModal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  window.setTimeout(() => empresaEditName.focus(), 0);
+}
+
+function cerrarModalEdicionEmpresa() {
+  documentoEdicionEmpresa = null;
+  empresaEditForm.reset();
+  empresaEditModal.classList.add('d-none');
+  empresaEditModal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
 }
 
 function attachEmpresaActions() {
@@ -67,15 +98,7 @@ async function cargarEmpresas() {
 function editarEmpresa(documento) {
   const empresa = empresasCache.find((item) => String(item.numeroDocumento) === String(documento));
   if (!empresa) return;
-  documentoEdicionEmpresa = empresa.numeroDocumento;
-  document.getElementById('empresa-name').value = empresa.name ?? '';
-  document.getElementById('empresa-email').value = empresa.email ?? '';
-  document.getElementById('empresa-telefono').value = empresa.telefono ?? '';
-  document.getElementById('empresa-documento').value = empresa.numeroDocumento ?? '';
-  document.getElementById('empresa-direccion').value = empresa.direccion ?? '';
-  document.getElementById('empresa-razon-social').value = empresa.razonSocial ?? '';
-  document.getElementById('empresa-tipo-documento').value = empresa.tipoDocumento ?? 'RUC';
-  empresaSubmit.textContent = 'Actualizar empresa';
+  abrirModalEdicionEmpresa(empresa);
 }
 
 async function eliminarEmpresa(documento) {
@@ -110,11 +133,8 @@ async function buscarEmpresas() {
 empresaForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const body = formDataEmpresa();
-  const isEdit = documentoEdicionEmpresa !== null;
-  const endpoint = isEdit ? `/api/empresas/${encodeURIComponent(documentoEdicionEmpresa)}` : '/api/empresas';
-  const method = isEdit ? 'PUT' : 'POST';
-  const response = await fetch(endpoint, {
-    method,
+  const response = await fetch('/api/empresas', {
+    method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -125,6 +145,42 @@ empresaForm.addEventListener('submit', async (event) => {
   }
   limpiarFormularioEmpresa();
   await cargarEmpresas();
+});
+
+empresaEditForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  if (!documentoEdicionEmpresa) return;
+  const body = {
+    name: empresaEditName.value.trim(),
+    email: empresaEditEmail.value.trim(),
+    telefono: Number(empresaEditTelefono.value || 0),
+    numeroDocumento: empresaEditDocumento.value.trim(),
+    direccion: empresaEditDireccion.value.trim(),
+    razonSocial: empresaEditRazonSocial.value.trim(),
+    tipoDocumento: empresaEditTipoDocumento.value.trim().toUpperCase(),
+  };
+  const response = await fetch(`/api/empresas/${encodeURIComponent(documentoEdicionEmpresa)}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    alert('No se pudo actualizar la empresa');
+    return;
+  }
+  cerrarModalEdicionEmpresa();
+  await cargarEmpresas();
+});
+
+document.querySelectorAll('[data-empresa-close]').forEach((button) => {
+  button.addEventListener('click', cerrarModalEdicionEmpresa);
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && empresaEditModal && !empresaEditModal.classList.contains('d-none')) {
+    cerrarModalEdicionEmpresa();
+  }
 });
 
 empresaCancelar.addEventListener('click', limpiarFormularioEmpresa);
