@@ -11,11 +11,13 @@ let proveedoresCache = [];
 let documentoEdicionProveedor = null;
 
 function formDataProveedor() {
+  const numeroDocumento = document.getElementById('proveedor-documento').value.trim();
   return {
     name: document.getElementById('proveedor-name').value.trim(),
     email: document.getElementById('proveedor-email').value.trim(),
     telefono: Number(document.getElementById('proveedor-telefono').value || 0),
-    numeroDocumento: document.getElementById('proveedor-documento').value.trim(),
+    numeroDocumento,
+    numero_documento: numeroDocumento,
     direccion: document.getElementById('proveedor-direccion').value.trim(),
     razonSocial: document.getElementById('proveedor-razon-social').value.trim(),
     tipoDocumento: document.getElementById('proveedor-tipo-documento').value.trim().toUpperCase(),
