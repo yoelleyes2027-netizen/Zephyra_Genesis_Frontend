@@ -1,19 +1,16 @@
 const usuarioForm = document.getElementById('usuario-form');
-const usuarioLimpiar = document.getElementById('usuario-limpiar');
-const usuariosBody = document.getElementById('usuarios-body');
 const soporteHead = document.getElementById('soporte-head');
 const soporteBody = document.getElementById('soporte-body');
 const cargarSoporte = document.getElementById('cargar-soporte');
 const tablaSoporte = document.getElementById('tabla-soporte');
 const logoutBtn = document.getElementById('logout-btn');
-const bddRefrescar = document.getElementById('bdd-refrescar');
 const usuarioDbSelect = document.getElementById('usuario-db');
 const adminSistemaMensaje = document.getElementById('admin-sistema-mensaje');
 const usuarioPassword = document.getElementById('usuario-password');
 const toggleUsuarioPassword = document.getElementById('toggle-usuario-password');
 
-let usuariosCache = [];
-let cedulaEdicion = null;
+let soporteItemsCache = [];
+let tablaSoporteActual = 'usuarios';
 
 function mostrarMensaje(texto, tipo = 'info') {
   if (!adminSistemaMensaje) return;
@@ -27,6 +24,10 @@ function mostrarMensaje(texto, tipo = 'info') {
   adminSistemaMensaje.textContent = texto || '';
 }
 
+function mostrarMensajeError(error) {
+  mostrarMensaje(error?.message || 'Ocurrió un error', 'error');
+}
+
 if (usuarioPassword && toggleUsuarioPassword) {
   toggleUsuarioPassword.addEventListener('click', () => {
     const mostrar = usuarioPassword.type === 'password';
@@ -37,6 +38,12 @@ if (usuarioPassword && toggleUsuarioPassword) {
     toggleUsuarioPassword.setAttribute('aria-label', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
   });
 }
+
+soporteBody.addEventListener('click', async (event) => {
+  const button = event.target.closest('button[data-accion-soporte]');
+  if (!button) return;
+  await manejarAccionSoporte(tablaSoporteActual, button.dataset.accionSoporte, button.dataset.claveSoporte);
+});
 
 async function verificarRolSistema() {
   try {
@@ -85,17 +92,16 @@ async function cargarBasesDeDatos() {
     }
   } catch (error) {
     usuarioDbSelect.innerHTML = '<option value="">Error al cargar BDD</option>';
-    mostrarMensaje(error.message || 'No se pudieron cargar las bases de datos', 'error');
+    mostrarMensajeError(error);
   }
 }
 
 function limpiarFormularioUsuario() {
   usuarioForm.reset();
-  document.getElementById('usuario-rol').value = 'ADMIN';
+  document.getElementById('usuario-rol').value = '';
   if (usuarioDbSelect) {
     usuarioDbSelect.value = '';
   }
-  cedulaEdicion = null;
   mostrarMensaje('');
 }
 
@@ -111,78 +117,146 @@ function formDataUsuario() {
   };
 }
 
-function attachUsuarioActions() {
-  document.querySelectorAll('[data-editar-usuario]').forEach((button) => {
-    button.addEventListener('click', () => editarUsuario(Number(button.dataset.editarUsuario)));
-  });
-  document.querySelectorAll('[data-eliminar-usuario]').forEach((button) => {
-    button.addEventListener('click', () => eliminarUsuario(Number(button.dataset.eliminarUsuario)));
-  });
-}
-
-function renderUsuarios(items) {
-  usuariosCache = items || [];
-  usuariosBody.innerHTML = usuariosCache.map((usuario) => `
-    <tr>
-      <td>${usuario.nombre ?? ''}</td>
-      <td>${usuario.cedula ?? ''}</td>
-      <td>${usuario.rol ?? ''}</td>
-      <td>${usuario.tenantDatabase ?? ''}</td>
-      <td>${usuario.email ?? ''}</td>
-      <td>${usuario.telefono ?? ''}</td>
-      <td>
-        <button class="btn btn-sm btn-outline-primary me-2" data-editar-usuario="${usuario.cedula}">Editar</button>
-        <button class="btn btn-sm btn-outline-danger" data-eliminar-usuario="${usuario.cedula}">Eliminar</button>
-      </td>
-    </tr>
-  `).join('');
-  attachUsuarioActions();
-}
-
-async function cargarUsuarios() {
-  try {
-    const response = await fetch('/api/admin-sistema/usuarios', { credentials: 'include' });
-    if (!response.ok) throw new Error('No se pudieron cargar los usuarios');
-    const payload = await response.json();
-    renderUsuarios(payload.data || []);
-  } catch (error) {
-    usuariosBody.innerHTML = `<tr><td colspan="7">${error.message || 'No se pudieron cargar los usuarios'}</td></tr>`;
-    mostrarMensaje(error.message || 'No se pudieron cargar los usuarios', 'error');
+function pedirTexto(titulo, valorActual = '', obligatorio = false) {
+  const respuesta = window.prompt(titulo, valorActual ?? '');
+  if (respuesta === null) {
+    return null;
   }
+  const limpio = respuesta.trim();
+  if (obligatorio && !limpio) {
+    mostrarMensaje('Debe completar todos los campos requeridos', 'error');
+    return undefined;
+  }
+  return limpio;
 }
 
-function editarUsuario(cedula) {
-  const usuario = usuariosCache.find((item) => Number(item.cedula) === Number(cedula));
-  if (!usuario) return;
-  cedulaEdicion = Number(usuario.cedula);
-  document.getElementById('usuario-nombre').value = usuario.nombre ?? '';
-  document.getElementById('usuario-cedula').value = usuario.cedula ?? '';
-  document.getElementById('usuario-password').value = '';
-  document.getElementById('usuario-rol').value = (usuario.rol ?? 'ADMIN').toUpperCase();
-  document.getElementById('usuario-email').value = usuario.email ?? '';
-  document.getElementById('usuario-telefono').value = usuario.telefono ?? '';
-  usuarioDbSelect.value = usuario.tenantDatabase ?? '';
-}
-
-async function eliminarUsuario(cedula) {
-  if (!confirm(`¿Eliminar el usuario ${cedula}?`)) return;
-  try {
-    const response = await fetch(`/api/admin-sistema/usuarios/${cedula}`, { method: 'DELETE', credentials: 'include' });
-    if (!response.ok) {
-      const payload = await response.json().catch(() => ({}));
-      throw new Error(payload.msg || 'No se pudo eliminar el usuario');
+function pedirNumero(titulo, valorActual = '', obligatorio = false) {
+  const respuesta = window.prompt(titulo, valorActual === null || valorActual === undefined ? '' : String(valorActual));
+  if (respuesta === null) {
+    return null;
+  }
+  const limpio = respuesta.trim();
+  if (!limpio) {
+    if (obligatorio) {
+      mostrarMensaje('Debe completar todos los campos requeridos', 'error');
+      return undefined;
     }
-    await cargarUsuarios();
-    mostrarMensaje('Usuario eliminado correctamente', 'success');
-  } catch (error) {
-    mostrarMensaje(error.message || 'No se pudo eliminar el usuario', 'error');
+    return 0;
+  }
+  const numero = Number(limpio);
+  if (Number.isNaN(numero)) {
+    mostrarMensaje('Debe ingresar un número válido', 'error');
+    return undefined;
+  }
+  return numero;
+}
+
+function pedirUnidadMedida(valorActual = '') {
+  const respuesta = window.prompt('Unidad de medida (KILOGRAMO, LITRO, UNIDAD)', valorActual ?? 'UNIDAD');
+  if (respuesta === null) {
+    return null;
+  }
+  const limpio = respuesta.trim().toUpperCase();
+  if (!['KILOGRAMO', 'LITRO', 'UNIDAD'].includes(limpio)) {
+    mostrarMensaje('Unidad de medida inválida', 'error');
+    return undefined;
+  }
+  return limpio;
+}
+
+function obtenerClaveSoporte(tabla, item) {
+  switch (tabla) {
+    case 'usuarios':
+    case 'usuario':
+      return String(item.cedula ?? item.id ?? '');
+    case 'proveedores':
+    case 'proveedor':
+    case 'empresas':
+    case 'empresa':
+      return String(item.numeroDocumento ?? item.id ?? '');
+    case 'productos':
+    case 'producto':
+      return String(item.codigoDeBarras ?? item.id ?? '');
+    case 'tickets':
+    case 'ticket':
+    case 'detalle_ticket':
+    case 'detalle-ticket':
+    case 'detalleticket':
+    case 'caja_diaria':
+    case 'caja-diaria':
+    case 'cajadiaria':
+      return String(item.id ?? '');
+    default:
+      return String(item.id ?? '');
   }
 }
 
-usuarioForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
+function encontrarItemSoporte(tabla, clave) {
+  return soporteItemsCache.find((item) => obtenerClaveSoporte(tabla, item) === String(clave));
+}
+
+function accionesSoporteHtml(tabla, item) {
+  const clave = obtenerClaveSoporte(tabla, item);
+  if (!clave) {
+    return '<button class="btn btn-sm btn-outline-secondary" type="button" disabled>Sin acciones</button>';
+  }
+
+  const accionesEdicion = new Set(['usuarios', 'usuario', 'proveedores', 'proveedor', 'empresas', 'empresa', 'productos', 'producto']);
+  if (accionesEdicion.has(tabla)) {
+    return `
+      <button class="btn btn-sm btn-outline-primary me-2" type="button" data-accion-soporte="editar" data-clave-soporte="${clave}">Editar</button>
+      <button class="btn btn-sm btn-outline-danger" type="button" data-accion-soporte="eliminar" data-clave-soporte="${clave}">Eliminar</button>
+    `;
+  }
+
+  if (tabla === 'tickets' || tabla === 'ticket') {
+    return `<button class="btn btn-sm btn-outline-danger" type="button" data-accion-soporte="desactivar" data-clave-soporte="${clave}">Desactivar</button>`;
+  }
+
+  if (tabla === 'detalle_ticket' || tabla === 'detalle-ticket' || tabla === 'detalleticket') {
+    return `<button class="btn btn-sm btn-outline-danger" type="button" data-accion-soporte="eliminar-articulos" data-clave-soporte="${clave}">Eliminar artículos</button>`;
+  }
+
+  return '<button class="btn btn-sm btn-outline-secondary" type="button" disabled>Sin acciones</button>';
+}
+
+function renderSoporteTabla(items) {
+  soporteItemsCache = items || [];
+  if (!soporteItemsCache.length) {
+    soporteHead.innerHTML = '<tr><th>Sin datos</th></tr>';
+    soporteBody.innerHTML = '<tr><td>No hay registros para esta tabla</td></tr>';
+    return;
+  }
+
+  const columns = Object.keys(soporteItemsCache[0]);
+  soporteHead.innerHTML = `<tr>${columns.map((column) => `<th>${column}</th>`).join('')}<th>Acciones</th></tr>`;
+  soporteBody.innerHTML = soporteItemsCache.map((item) => {
+    const celdas = columns.map((column) => `<td>${Array.isArray(item[column]) ? item[column].join(', ') : (item[column] ?? '')}</td>`).join('');
+    return `<tr>${celdas}<td>${accionesSoporteHtml(tablaSoporteActual, item)}</td></tr>`;
+  }).join('');
+}
+
+async function cargarSoporteTabla() {
+  try {
+    tablaSoporteActual = tablaSoporte.value;
+    const response = await fetch(`/api/admin-sistema/soporte?tabla=${encodeURIComponent(tablaSoporteActual)}`, { credentials: 'include' });
+    if (!response.ok) throw new Error('No se pudo cargar la tabla');
+    const payload = await response.json();
+    const items = Array.isArray(payload.data?.data) ? payload.data.data : [];
+    renderSoporteTabla(items);
+  } catch (error) {
+    soporteHead.innerHTML = '<tr><th>Error</th></tr>';
+    soporteBody.innerHTML = `<tr><td>${error.message || 'No se pudo cargar el soporte'}</td></tr>`;
+  }
+}
+
+async function guardarUsuarioNuevo() {
   const body = formDataUsuario();
-  if (cedulaEdicion === null && !body.contraseña) {
+  if (!body.rol) {
+    mostrarMensaje('Debe seleccionar un rol', 'error');
+    return;
+  }
+  if (!body.contraseña) {
     mostrarMensaje('La contraseña es obligatoria para crear un usuario', 'error');
     return;
   }
@@ -191,14 +265,10 @@ usuarioForm.addEventListener('submit', async (event) => {
     return;
   }
 
-  const isEdit = cedulaEdicion !== null;
-  const endpoint = isEdit ? `/api/admin-sistema/usuarios/${cedulaEdicion}` : '/api/admin-sistema/usuarios';
-  const method = isEdit ? 'PUT' : 'POST';
-
   try {
-    mostrarMensaje(isEdit ? 'Actualizando usuario...' : 'Guardando usuario...');
-    const response = await fetch(endpoint, {
-      method,
+    mostrarMensaje('Guardando usuario...');
+    const response = await fetch('/api/admin-sistema/usuarios', {
+      method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -208,43 +278,308 @@ usuarioForm.addEventListener('submit', async (event) => {
       throw new Error(payload.msg || 'No se pudo guardar el usuario');
     }
     limpiarFormularioUsuario();
-    await cargarUsuarios();
+    await cargarSoporteTabla();
     mostrarMensaje(payload.mensaje || 'Usuario guardado correctamente', 'success');
   } catch (error) {
     mostrarMensaje(error.message || 'No se pudo guardar el usuario', 'error');
   }
-});
+}
 
-usuarioLimpiar.addEventListener('click', limpiarFormularioUsuario);
-async function cargarSoporteTabla() {
+async function manejarAccionSoporte(tabla, accion, clave) {
+  const item = encontrarItemSoporte(tabla, clave);
+  if (!item) {
+    mostrarMensaje('No se encontró el registro seleccionado', 'error');
+    return;
+  }
+
   try {
-    const tabla = tablaSoporte.value;
-    const response = await fetch(`/api/admin-sistema/soporte?tabla=${encodeURIComponent(tabla)}`, { credentials: 'include' });
-    if (!response.ok) throw new Error('No se pudo cargar la tabla');
-    const payload = await response.json();
-    const items = Array.isArray(payload.data?.data) ? payload.data.data : [];
-    soporteHead.innerHTML = '';
-    soporteBody.innerHTML = '';
-    if (!items.length) {
-      soporteHead.innerHTML = '<tr><th>Sin datos</th></tr>';
-      soporteBody.innerHTML = '<tr><td>No hay registros para esta tabla</td></tr>';
+    if (accion === 'editar') {
+      await editarItemSoporte(tabla, item);
       return;
     }
-    const columns = Object.keys(items[0]);
-    soporteHead.innerHTML = `<tr>${columns.map((column) => `<th>${column}</th>`).join('')}</tr>`;
-    soporteBody.innerHTML = items.map((item) => `<tr>${columns.map((column) => `<td>${Array.isArray(item[column]) ? item[column].join(', ') : (item[column] ?? '')}</td>`).join('')}</tr>`).join('');
+
+    if (accion === 'eliminar') {
+      await eliminarItemSoporte(tabla, item);
+      return;
+    }
+
+    if (accion === 'desactivar') {
+      await desactivarTicket(item);
+      return;
+    }
+
+    if (accion === 'eliminar-articulos') {
+      await eliminarArticulosDetalle(item);
+      return;
+    }
+
+    mostrarMensaje('Acción no soportada', 'error');
   } catch (error) {
-    soporteHead.innerHTML = '<tr><th>Error</th></tr>';
-    soporteBody.innerHTML = `<tr><td>${error.message || 'No se pudo cargar el soporte'}</td></tr>`;
+    mostrarMensaje(error.message || 'No se pudo completar la acción', 'error');
   }
 }
 
+async function editarItemSoporte(tabla, item) {
+  switch (tabla) {
+    case 'usuarios':
+    case 'usuario':
+      await editarUsuarioSoporte(item);
+      break;
+    case 'proveedores':
+    case 'proveedor':
+      await editarProveedorSoporte(item);
+      break;
+    case 'empresas':
+    case 'empresa':
+      await editarEmpresaSoporte(item);
+      break;
+    case 'productos':
+    case 'producto':
+      await editarProductoSoporte(item);
+      break;
+    default:
+      throw new Error('La edición no está disponible para esta tabla.');
+  }
+}
+
+async function eliminarItemSoporte(tabla, item) {
+  switch (tabla) {
+    case 'usuarios':
+    case 'usuario':
+      if (!window.confirm(`¿Eliminar el usuario ${item.cedula}?`)) return;
+      await fetchApi('/api/admin-sistema/usuarios/' + encodeURIComponent(item.cedula), { method: 'DELETE' });
+      mostrarMensaje('Usuario eliminado correctamente', 'success');
+      break;
+    case 'proveedores':
+    case 'proveedor':
+      if (!window.confirm(`¿Eliminar el proveedor ${item.numeroDocumento}?`)) return;
+      await fetchApi('/api/proveedores/desactivar/' + encodeURIComponent(item.numeroDocumento), { method: 'DELETE' });
+      mostrarMensaje('Proveedor eliminado correctamente', 'success');
+      break;
+    case 'empresas':
+    case 'empresa':
+      if (!window.confirm(`¿Eliminar la empresa ${item.numeroDocumento}?`)) return;
+      await fetchApi('/api/empresas/desactivar/' + encodeURIComponent(item.numeroDocumento), { method: 'DELETE' });
+      mostrarMensaje('Empresa eliminada correctamente', 'success');
+      break;
+    case 'productos':
+    case 'producto':
+      if (!window.confirm(`¿Eliminar el producto ${item.codigoDeBarras}?`)) return;
+      await fetchApi('/api/productos/' + encodeURIComponent(item.codigoDeBarras), { method: 'DELETE' });
+      mostrarMensaje('Producto eliminado correctamente', 'success');
+      break;
+    default:
+      throw new Error('La eliminación no está disponible para esta tabla.');
+  }
+
+  await cargarSoporteTabla();
+}
+
+async function desactivarTicket(item) {
+  if (!window.confirm(`¿Desactivar el ticket ${item.id}?`)) return;
+  await fetchApi('/api/tickets/desactivar', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ticket_id: Number(item.id) }),
+  });
+  mostrarMensaje('Ticket desactivado correctamente', 'success');
+  await cargarSoporteTabla();
+}
+
+async function eliminarArticulosDetalle(item) {
+  if (!window.confirm(`¿Eliminar el detalle ${item.id}?`)) return;
+  await fetchApi('/api/tickets/eliminar-articulos', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ detalles_ids: [Number(item.id)] }),
+  });
+  mostrarMensaje('Detalle eliminado correctamente', 'success');
+  await cargarSoporteTabla();
+}
+
+async function editarUsuarioSoporte(item) {
+  const nombre = pedirTexto('Nombre completo', item.nombre ?? '', true);
+  if (nombre === null || nombre === undefined) return;
+
+  const cedula = pedirNumero('Cédula', item.cedula ?? '', true);
+  if (cedula === null || cedula === undefined) return;
+
+  const contraseña = window.prompt('Contraseña (dejar vacío para no cambiarla)', '');
+  if (contraseña === null) return;
+
+  const rol = pedirTexto('Rol (ADMIN, RECEPCION o CAJERO)', (item.rol ?? '').toUpperCase(), true);
+  if (rol === null || rol === undefined) return;
+
+  const email = pedirTexto('Email', item.email ?? '', false);
+  if (email === null || email === undefined) return;
+
+  const telefono = pedirNumero('Teléfono', item.telefono ?? '', false);
+  if (telefono === null || telefono === undefined) return;
+
+  const tenantDatabase = pedirTexto('Base de datos asignada', item.tenantDatabase ?? '', true);
+  if (tenantDatabase === null || tenantDatabase === undefined) return;
+
+  await fetchApi('/api/admin-sistema/usuarios/' + encodeURIComponent(item.cedula), {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      nombre,
+      cedula,
+      contraseña: contraseña.trim(),
+      rol,
+      email,
+      telefono,
+      tenantDatabase,
+    }),
+  });
+
+  mostrarMensaje('Usuario actualizado correctamente', 'success');
+  await cargarSoporteTabla();
+}
+
+async function editarProveedorSoporte(item) {
+  const name = pedirTexto('Nombre', item.name ?? '', true);
+  if (name === null || name === undefined) return;
+
+  const email = pedirTexto('Email', item.email ?? '', false);
+  if (email === null || email === undefined) return;
+
+  const telefono = pedirNumero('Teléfono', item.telefono ?? '', false);
+  if (telefono === null || telefono === undefined) return;
+
+  const numeroDocumento = pedirTexto('Número de documento', item.numeroDocumento ?? '', true);
+  if (numeroDocumento === null || numeroDocumento === undefined) return;
+
+  const direccion = pedirTexto('Dirección', item.direccion ?? '', false);
+  if (direccion === null || direccion === undefined) return;
+
+  const razonSocial = pedirTexto('Razón social', item.razonSocial ?? '', true);
+  if (razonSocial === null || razonSocial === undefined) return;
+
+  const tipoDocumento = pedirTexto('Tipo de documento (CI, RUT, RUC)', item.tipoDocumento ?? 'CI', false);
+  if (tipoDocumento === null || tipoDocumento === undefined) return;
+
+  await fetchApi('/api/proveedores/' + encodeURIComponent(item.numeroDocumento), {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      email,
+      telefono,
+      numeroDocumento,
+      direccion,
+      razonSocial,
+      tipoDocumento,
+    }),
+  });
+
+  mostrarMensaje('Proveedor actualizado correctamente', 'success');
+  await cargarSoporteTabla();
+}
+
+async function editarEmpresaSoporte(item) {
+  const name = pedirTexto('Nombre', item.name ?? '', true);
+  if (name === null || name === undefined) return;
+
+  const email = pedirTexto('Email', item.email ?? '', false);
+  if (email === null || email === undefined) return;
+
+  const telefono = pedirNumero('Teléfono', item.telefono ?? '', false);
+  if (telefono === null || telefono === undefined) return;
+
+  const razonSocial = pedirTexto('Razón social', item.razonSocial ?? '', true);
+  if (razonSocial === null || razonSocial === undefined) return;
+
+  const tipoDocumento = pedirTexto('Tipo de documento', item.tipoDocumento ?? '', true);
+  if (tipoDocumento === null || tipoDocumento === undefined) return;
+
+  const direccion = pedirTexto('Dirección', item.direccion ?? '', false);
+  if (direccion === null || direccion === undefined) return;
+
+  const numeroDocumento = pedirTexto('Número de documento', item.numeroDocumento ?? '', true);
+  if (numeroDocumento === null || numeroDocumento === undefined) return;
+
+  await fetchApi('/api/empresas/' + encodeURIComponent(item.numeroDocumento), {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      email,
+      telefono,
+      razonSocial,
+      tipoDocumento,
+      direccion,
+      numeroDocumento,
+    }),
+  });
+
+  mostrarMensaje('Empresa actualizada correctamente', 'success');
+  await cargarSoporteTabla();
+}
+
+async function editarProductoSoporte(item) {
+  const descripcion = pedirTexto('Descripción', item.descripcion ?? '', true);
+  if (descripcion === null || descripcion === undefined) return;
+
+  const precioVenta = pedirNumero('Precio de venta', item.precioVenta ?? '', true);
+  if (precioVenta === null || precioVenta === undefined) return;
+
+  const precioCompra = pedirNumero('Precio de compra', item.precioCompra ?? '', true);
+  if (precioCompra === null || precioCompra === undefined) return;
+
+  const stock = pedirNumero('Stock', item.stock ?? '', true);
+  if (stock === null || stock === undefined) return;
+
+  const unidadDeMedida = pedirUnidadMedida(item.unidadDeMedida ?? 'UNIDAD');
+  if (unidadDeMedida === null || unidadDeMedida === undefined) return;
+
+  const etiqueta = pedirTexto('Etiqueta', item.etiqueta ?? '', false);
+  if (etiqueta === null || etiqueta === undefined) return;
+
+  const proveedorId = pedirNumero('ID del proveedor', item.proveedorId ?? '', true);
+  if (proveedorId === null || proveedorId === undefined) return;
+
+  await fetchApi('/api/productos/' + encodeURIComponent(item.codigoDeBarras), {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      codigoDeBarras: Number(item.codigoDeBarras),
+      descripcion,
+      precioVenta,
+      precioCompra,
+      stock,
+      unidadDeMedida,
+      etiqueta,
+      proveedorId,
+    }),
+  });
+
+  mostrarMensaje('Producto actualizado correctamente', 'success');
+  await cargarSoporteTabla();
+}
+
+async function fetchApi(url, options = {}) {
+  const response = await fetch(url, {
+    credentials: 'include',
+    ...options,
+  });
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.msg || payload.mensaje || 'No se pudo completar la operación');
+  }
+  return payload;
+}
+
+usuarioForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  await guardarUsuarioNuevo();
+});
+
 cargarSoporte.addEventListener('click', cargarSoporteTabla);
-bddRefrescar.addEventListener('click', cargarBasesDeDatos);
 logoutBtn.addEventListener('click', cerrarSesion);
 document.addEventListener('DOMContentLoaded', async () => {
   await verificarRolSistema();
   await cargarBasesDeDatos();
-  await cargarUsuarios();
   await cargarSoporteTabla();
 });
