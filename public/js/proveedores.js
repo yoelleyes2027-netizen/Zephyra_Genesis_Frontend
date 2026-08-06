@@ -5,7 +5,7 @@ const proveedorBuscar = document.getElementById('proveedor-buscar');
 const proveedorVerTodos = document.getElementById('proveedor-ver-todos');
 const proveedorBody = document.getElementById('proveedor-body');
 const proveedorBusqueda = document.getElementById('proveedor-busqueda');
-const proveedorPorRazon = document.getElementById('proveedor-por-razon');
+const proveedorBuscarPor = document.getElementById('proveedor-buscar-por');
 
 let proveedoresCache = [];
 let documentoEdicionProveedor = null;
@@ -94,7 +94,8 @@ async function buscarProveedores() {
     await cargarProveedores();
     return;
   }
-  const endpoint = proveedorPorRazon.checked
+  const criterio = proveedorBuscarPor?.value || 'documento';
+  const endpoint = criterio === 'razon'
     ? `/api/proveedores/buscar/denominacion/${encodeURIComponent(valor)}`
     : `/api/proveedores/buscar/${encodeURIComponent(valor)}`;
   const response = await fetch(endpoint, { credentials: 'include' });
