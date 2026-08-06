@@ -5,7 +5,7 @@ const productoBuscar = document.getElementById('producto-buscar');
 const productoVerTodos = document.getElementById('producto-ver-todos');
 const productoBody = document.getElementById('producto-body');
 const productoBusqueda = document.getElementById('producto-busqueda');
-const productoPorDescripcion = document.getElementById('producto-por-descripcion');
+const productoBuscarPor = document.getElementById('producto-buscar-por');
 
 let productosCache = [];
 let codigoEdicion = null;
@@ -28,6 +28,27 @@ function limpiarFormulario() {
   codigoEdicion = null;
   productoSubmit.textContent = 'Guardar producto';
   document.getElementById('producto-unidad').value = 'UNIDAD';
+}
+
+function normalizarTexto(valor) {
+  return String(valor ?? '').trim().toLowerCase();
+}
+
+function filtrarProductosLocal(valor, criterio) {
+  const texto = normalizarTexto(valor);
+  if (!texto) {
+    return productosCache;
+  }
+
+  switch (criterio) {
+    case 'descripcion':
+      return productosCache.filter((producto) => normalizarTexto(producto.descripcion).includes(texto));
+    case 'etiqueta':
+      return productosCache.filter((producto) => normalizarTexto(producto.etiqueta).includes(texto));
+    case 'codigo':
+    default:
+      return productosCache.filter((producto) => normalizarTexto(producto.codigoDeBarras).includes(texto));
+  }
 }
 
 function attachRowActions() {
@@ -98,17 +119,8 @@ async function buscarProductos() {
     await cargarProductos();
     return;
   }
-  const endpoint = productoPorDescripcion.checked
-    ? `/api/productos/descripcion/${encodeURIComponent(valor)}`
-    : `/api/productos/${encodeURIComponent(valor)}`;
-  const response = await fetch(endpoint, { credentials: 'include' });
-  if (!response.ok) {
-    renderProductos([]);
-    return;
-  }
-  const payload = await response.json();
-  const items = Array.isArray(payload) ? payload : Array.isArray(payload.data) ? payload.data : [payload];
-  renderProductos(items);
+  const criterio = productoBuscarPor?.value || 'codigo';
+  renderProductos(filtrarProductosLocal(valor, criterio));
 }
 
 productoForm.addEventListener('submit', async (event) => {
