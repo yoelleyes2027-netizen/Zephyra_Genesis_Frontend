@@ -77,7 +77,8 @@ function editarProveedor(documento) {
   document.getElementById('proveedor-direccion').value = proveedor.direccion ?? '';
   document.getElementById('proveedor-razon-social').value = proveedor.razonSocial ?? '';
   document.getElementById('proveedor-tipo-documento').value = proveedor.tipoDocumento ?? 'RUC';
-  proveedorSubmit.textContent = 'Actualizar proveedor';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('proveedor-name').focus();
 }
 
 async function eliminarProveedor(documento) {
