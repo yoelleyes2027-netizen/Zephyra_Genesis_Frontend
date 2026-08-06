@@ -2,15 +2,22 @@ const usuarioForm = document.getElementById('usuario-form');
 const soporteHead = document.getElementById('soporte-head');
 const soporteBody = document.getElementById('soporte-body');
 const cargarSoporte = document.getElementById('cargar-soporte');
+const baseSoporteSelect = document.getElementById('base-soporte');
 const tablaSoporte = document.getElementById('tabla-soporte');
 const logoutBtn = document.getElementById('logout-btn');
 const usuarioDbSelect = document.getElementById('usuario-db');
 const adminSistemaMensaje = document.getElementById('admin-sistema-mensaje');
 const usuarioPassword = document.getElementById('usuario-password');
 const toggleUsuarioPassword = document.getElementById('toggle-usuario-password');
+const soporteEditModal = document.getElementById('soporte-edit-modal');
+const soporteEditTitle = document.getElementById('soporte-edit-title');
+const soporteEditBody = document.getElementById('soporte-edit-body');
+const soporteEditForm = document.getElementById('soporte-edit-form');
 
 let soporteItemsCache = [];
+let baseSoporteActual = '';
 let tablaSoporteActual = 'usuarios';
+let soporteEditState = null;
 
 function mostrarMensaje(texto, tipo = 'info') {
   if (!adminSistemaMensaje) return;
@@ -26,6 +33,268 @@ function mostrarMensaje(texto, tipo = 'info') {
 
 function mostrarMensajeError(error) {
   mostrarMensaje(error?.message || 'Ocurrió un error', 'error');
+}
+
+function escapeHtml(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function obtenerValorTexto(item, claves, fallback = '') {
+  for (const clave of claves) {
+    const valor = item?.[clave];
+    if (valor !== undefined && valor !== null && String(valor).trim() !== '') {
+      return String(valor);
+    }
+  }
+  return fallback;
+}
+
+function construirInputCampo(campo) {
+  const atributos = [
+    `name="${escapeHtml(campo.name)}"`,
+    `id="soporte-${escapeHtml(campo.name)}"`,
+    `class="form-control"`,
+    `value="${escapeHtml(campo.value ?? '')}"`,
+  ];
+  if (campo.type) atributos.unshift(`type="${escapeHtml(campo.type)}"`);
+  if (campo.step) atributos.push(`step="${escapeHtml(campo.step)}"`);
+  if (campo.placeholder) atributos.push(`placeholder="${escapeHtml(campo.placeholder)}"`);
+  if (campo.required) atributos.push('required');
+  if (campo.readOnly) atributos.push('readonly');
+  if (campo.min !== undefined) atributos.push(`min="${escapeHtml(campo.min)}"`);
+  if (campo.max !== undefined) atributos.push(`max="${escapeHtml(campo.max)}"`);
+  return `<input ${atributos.join(' ')}>`;
+}
+
+function construirSelectCampo(campo) {
+  const opciones = (campo.options || []).map((opcion) => {
+    const selected = String(opcion.value) === String(campo.value) ? 'selected' : '';
+    return `<option value="${escapeHtml(opcion.value)}" ${selected}>${escapeHtml(opcion.label)}</option>`;
+  }).join('');
+  const atributos = [
+    `name="${escapeHtml(campo.name)}"`,
+    `id="soporte-${escapeHtml(campo.name)}"`,
+    'class="form-select"',
+  ];
+  if (campo.required) atributos.push('required');
+  return `<select ${atributos.join(' ')}>${opciones}</select>`;
+}
+
+function camposEdicionSoporte(tabla, item) {
+  switch (tabla) {
+    case 'usuarios':
+    case 'usuario':
+      return [
+        { name: 'nombre', label: 'Nombre completo', type: 'text', value: obtenerValorTexto(item, ['nombre', 'name']), required: true },
+        { name: 'cedula', label: 'Cédula', type: 'number', value: obtenerValorTexto(item, ['cedula']), required: true },
+        { name: 'contraseña', label: 'Contraseña nueva', type: 'password', value: '', placeholder: 'Dejar vacío para no cambiarla' },
+        { name: 'rol', label: 'Rol', type: 'select', value: obtenerValorTexto(item, ['rol']).toUpperCase(), required: true, options: [
+          { value: '', label: 'Seleccionar rol' },
+          { value: 'ADMIN', label: 'Admin' },
+          { value: 'RECEPCION', label: 'Recepción' },
+          { value: 'CAJERO', label: 'Cajero' },
+        ] },
+        { name: 'email', label: 'Email', type: 'email', value: obtenerValorTexto(item, ['email']), placeholder: 'Email del usuario' },
+        { name: 'telefono', label: 'Teléfono', type: 'number', value: obtenerValorTexto(item, ['telefono']), placeholder: 'Opcional' },
+        { name: 'tenantDatabase', label: 'Base de datos', type: 'text', value: obtenerValorTexto(item, ['tenantDatabase']), required: true },
+      ];
+    case 'clientes':
+    case 'cliente':
+      return [
+        { name: 'name', label: 'Nombre completo', type: 'text', value: obtenerValorTexto(item, ['name', 'nombre']), required: true },
+        { name: 'email', label: 'Email', type: 'email', value: obtenerValorTexto(item, ['email']), required: true },
+        { name: 'telefono', label: 'Teléfono', type: 'number', value: obtenerValorTexto(item, ['telefono']), placeholder: 'Opcional' },
+      ];
+    case 'proveedores':
+    case 'proveedor':
+      return [
+        { name: 'name', label: 'Nombre', type: 'text', value: obtenerValorTexto(item, ['name', 'nombre']), required: true },
+        { name: 'email', label: 'Email', type: 'email', value: obtenerValorTexto(item, ['email']), placeholder: 'Opcional' },
+        { name: 'telefono', label: 'Teléfono', type: 'number', value: obtenerValorTexto(item, ['telefono']), placeholder: 'Opcional' },
+        { name: 'numeroDocumento', label: 'Número de documento', type: 'text', value: obtenerValorTexto(item, ['numeroDocumento']), required: true },
+        { name: 'direccion', label: 'Dirección', type: 'text', value: obtenerValorTexto(item, ['direccion']), placeholder: 'Opcional' },
+        { name: 'razonSocial', label: 'Razón social', type: 'text', value: obtenerValorTexto(item, ['razonSocial']), required: true },
+        { name: 'tipoDocumento', label: 'Tipo de documento', type: 'select', value: obtenerValorTexto(item, ['tipoDocumento']).toUpperCase(), options: [
+          { value: 'CI', label: 'CI' },
+          { value: 'RUT', label: 'RUT' },
+          { value: 'RUC', label: 'RUC' },
+        ] },
+      ];
+    case 'empresas':
+    case 'empresa':
+      return [
+        { name: 'name', label: 'Nombre', type: 'text', value: obtenerValorTexto(item, ['name', 'nombre']), required: true },
+        { name: 'email', label: 'Email', type: 'email', value: obtenerValorTexto(item, ['email']), placeholder: 'Opcional' },
+        { name: 'telefono', label: 'Teléfono', type: 'number', value: obtenerValorTexto(item, ['telefono']), placeholder: 'Opcional' },
+        { name: 'razonSocial', label: 'Razón social', type: 'text', value: obtenerValorTexto(item, ['razonSocial']), required: true },
+        { name: 'tipoDocumento', label: 'Tipo de documento', type: 'select', value: obtenerValorTexto(item, ['tipoDocumento']).toUpperCase(), required: true, options: [
+          { value: 'CI', label: 'CI' },
+          { value: 'RUT', label: 'RUT' },
+          { value: 'RUC', label: 'RUC' },
+        ] },
+        { name: 'direccion', label: 'Dirección', type: 'text', value: obtenerValorTexto(item, ['direccion']), placeholder: 'Opcional' },
+        { name: 'numeroDocumento', label: 'Número de documento', type: 'text', value: obtenerValorTexto(item, ['numeroDocumento']), required: true },
+      ];
+    case 'productos':
+    case 'producto':
+      return [
+        { name: 'descripcion', label: 'Descripción', type: 'text', value: obtenerValorTexto(item, ['descripcion']), required: true },
+        { name: 'precioVenta', label: 'Precio de venta', type: 'number', step: 'any', value: obtenerValorTexto(item, ['precioVenta']), required: true },
+        { name: 'precioCompra', label: 'Precio de compra', type: 'number', step: 'any', value: obtenerValorTexto(item, ['precioCompra']), required: true },
+        { name: 'stock', label: 'Stock', type: 'number', value: obtenerValorTexto(item, ['stock']), required: true },
+        { name: 'unidadDeMedida', label: 'Unidad de medida', type: 'select', value: obtenerValorTexto(item, ['unidadDeMedida']).toUpperCase(), required: true, options: [
+          { value: 'KILOGRAMO', label: 'KILOGRAMO' },
+          { value: 'LITRO', label: 'LITRO' },
+          { value: 'UNIDAD', label: 'UNIDAD' },
+        ] },
+        { name: 'etiqueta', label: 'Etiqueta', type: 'text', value: obtenerValorTexto(item, ['etiqueta']), placeholder: 'Opcional' },
+        { name: 'proveedorId', label: 'ID del proveedor', type: 'number', value: obtenerValorTexto(item, ['proveedorId']), required: true },
+      ];
+    default:
+      return [];
+  }
+}
+
+function renderCamposEdicionSoporte(tabla, item) {
+  const campos = camposEdicionSoporte(tabla, item);
+  if (!campos.length) {
+    return '<div class="alert alert-warning mb-0">La edición no está disponible para esta tabla.</div>';
+  }
+
+  return `<div class="row g-3">${campos.map((campo) => `
+    <div class="${campo.name === 'contraseña' || campo.name === 'direccion' || campo.name === 'etiqueta' ? 'col-md-12' : 'col-md-6'}">
+      <label class="form-label" for="soporte-${escapeHtml(campo.name)}">${escapeHtml(campo.label)}</label>
+      ${campo.type === 'select' ? construirSelectCampo(campo) : construirInputCampo(campo)}
+      ${campo.placeholder ? `<small class="text-muted d-block mt-1">${escapeHtml(campo.placeholder)}</small>` : ''}
+    </div>
+  `).join('')}</div>`;
+}
+
+function abrirModalEdicionSoporte(tabla, item) {
+  soporteEditState = { tabla, item };
+  soporteEditTitle.textContent = `Editar ${tabla.replaceAll('_', ' ')}`;
+  soporteEditBody.innerHTML = renderCamposEdicionSoporte(tabla, item);
+  soporteEditModal.classList.remove('d-none');
+  soporteEditModal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  window.setTimeout(() => {
+    const primerCampo = soporteEditBody.querySelector('input, select, textarea');
+    if (primerCampo) primerCampo.focus();
+  }, 0);
+}
+
+function cerrarModalEdicionSoporte() {
+  soporteEditState = null;
+  soporteEditBody.innerHTML = '';
+  soporteEditModal.classList.add('d-none');
+  soporteEditModal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+}
+
+function valorCampoFormulario(formData, name) {
+  const value = formData.get(name);
+  return value === null ? '' : String(value).trim();
+}
+
+function construirPayloadEdicion(tabla, item, formData) {
+  switch (tabla) {
+    case 'usuarios':
+    case 'usuario':
+      return {
+        nombre: valorCampoFormulario(formData, 'nombre'),
+        cedula: Number(valorCampoFormulario(formData, 'cedula')),
+        contraseña: valorCampoFormulario(formData, 'contraseña'),
+        rol: valorCampoFormulario(formData, 'rol'),
+        email: valorCampoFormulario(formData, 'email'),
+        telefono: Number(valorCampoFormulario(formData, 'telefono') || 0),
+        tenantDatabase: valorCampoFormulario(formData, 'tenantDatabase'),
+      };
+    case 'clientes':
+    case 'cliente':
+      return {
+        name: valorCampoFormulario(formData, 'name'),
+        email: valorCampoFormulario(formData, 'email'),
+        telefono: Number(valorCampoFormulario(formData, 'telefono') || 0),
+      };
+    case 'proveedores':
+    case 'proveedor':
+      return {
+        name: valorCampoFormulario(formData, 'name'),
+        email: valorCampoFormulario(formData, 'email'),
+        telefono: Number(valorCampoFormulario(formData, 'telefono') || 0),
+        numeroDocumento: valorCampoFormulario(formData, 'numeroDocumento'),
+        direccion: valorCampoFormulario(formData, 'direccion'),
+        razonSocial: valorCampoFormulario(formData, 'razonSocial'),
+        tipoDocumento: valorCampoFormulario(formData, 'tipoDocumento'),
+      };
+    case 'empresas':
+    case 'empresa':
+      return {
+        name: valorCampoFormulario(formData, 'name'),
+        email: valorCampoFormulario(formData, 'email'),
+        telefono: Number(valorCampoFormulario(formData, 'telefono') || 0),
+        razonSocial: valorCampoFormulario(formData, 'razonSocial'),
+        tipoDocumento: valorCampoFormulario(formData, 'tipoDocumento'),
+        direccion: valorCampoFormulario(formData, 'direccion'),
+        numeroDocumento: valorCampoFormulario(formData, 'numeroDocumento'),
+      };
+    case 'productos':
+    case 'producto':
+      return {
+        codigoDeBarras: Number(item.codigoDeBarras),
+        descripcion: valorCampoFormulario(formData, 'descripcion'),
+        precioVenta: Number(valorCampoFormulario(formData, 'precioVenta') || 0),
+        precioCompra: Number(valorCampoFormulario(formData, 'precioCompra') || 0),
+        stock: Number(valorCampoFormulario(formData, 'stock') || 0),
+        unidadDeMedida: valorCampoFormulario(formData, 'unidadDeMedida'),
+        etiqueta: valorCampoFormulario(formData, 'etiqueta'),
+        proveedorId: Number(valorCampoFormulario(formData, 'proveedorId') || 0),
+      };
+    default:
+      return {};
+  }
+}
+
+async function guardarEdicionSoporte(event) {
+  event.preventDefault();
+  if (!soporteEditState) {
+    return;
+  }
+
+  const { tabla, item } = soporteEditState;
+  const formData = new FormData(soporteEditForm);
+  const clave = obtenerClaveSoporte(tabla, item);
+  const payload = construirPayloadEdicion(tabla, item, formData);
+
+  if (!clave) {
+    mostrarMensaje('No se pudo identificar el registro', 'error');
+    return;
+  }
+
+  if (tabla === 'usuarios' || tabla === 'usuario') {
+    if (!payload.rol) {
+      mostrarMensaje('Debe seleccionar un rol', 'error');
+      return;
+    }
+    if (!payload.tenantDatabase) {
+      mostrarMensaje('Debe seleccionar una base de datos', 'error');
+      return;
+    }
+  }
+
+  try {
+    await editarRegistroSoporte(String(clave), payload);
+    mostrarMensaje('Registro actualizado correctamente', 'success');
+    cerrarModalEdicionSoporte();
+    await cargarSoporteTabla();
+  } catch (error) {
+    mostrarMensaje(error.message || 'No se pudo actualizar el registro', 'error');
+  }
 }
 
 if (usuarioPassword && toggleUsuarioPassword) {
@@ -64,34 +333,98 @@ async function cerrarSesion() {
   window.location.href = './login.html';
 }
 
+async function obtenerBasesDeDatos() {
+  const response = await fetch('/api/admin-sistema/bases-datos', { credentials: 'include' });
+  if (!response.ok) throw new Error('No se pudieron cargar las BDD');
+  const payload = await response.json();
+  return Array.isArray(payload.data) ? payload.data : [];
+}
+
+function poblarSelectBases(selectElement, bases, placeholder, selectedValue = '') {
+  selectElement.innerHTML = '';
+
+  if (!bases.length) {
+    selectElement.innerHTML = `<option value="">${placeholder}</option>`;
+    return;
+  }
+
+  selectElement.insertAdjacentHTML('beforeend', `<option value="">${placeholder}</option>`);
+  bases.forEach((base) => {
+    const option = document.createElement('option');
+    option.value = base;
+    option.textContent = base;
+    selectElement.appendChild(option);
+  });
+
+  if (selectedValue && bases.includes(selectedValue)) {
+    selectElement.value = selectedValue;
+  }
+}
+
 async function cargarBasesDeDatos() {
   try {
-    const selectedValue = usuarioDbSelect.value;
     usuarioDbSelect.innerHTML = '<option value="">Cargando BDD...</option>';
-    const response = await fetch('/api/admin-sistema/bases-datos', { credentials: 'include' });
-    if (!response.ok) throw new Error('No se pudieron cargar las BDD');
-    const payload = await response.json();
-    const bases = Array.isArray(payload.data) ? payload.data : [];
-    usuarioDbSelect.innerHTML = '';
+    const bases = await obtenerBasesDeDatos();
+    poblarSelectBases(usuarioDbSelect, bases, 'Seleccionar BDD...', usuarioDbSelect.value);
+  } catch (error) {
+    usuarioDbSelect.innerHTML = '<option value="">Error al cargar BDD</option>';
+    mostrarMensajeError(error);
+  }
+}
 
-    if (!bases.length) {
-      usuarioDbSelect.innerHTML = '<option value="">No hay bases disponibles</option>';
+async function cargarBasesSoporte() {
+  try {
+    baseSoporteSelect.innerHTML = '<option value="">Cargando BDD...</option>';
+    const bases = await obtenerBasesDeDatos();
+    poblarSelectBases(baseSoporteSelect, bases, 'Seleccionar BDD...', baseSoporteActual);
+    baseSoporteActual = baseSoporteSelect.value;
+    await cargarTablasSoporte();
+  } catch (error) {
+    baseSoporteSelect.innerHTML = '<option value="">Error al cargar BDD</option>';
+    mostrarMensajeError(error);
+  }
+}
+
+async function cargarTablasSoporte() {
+  const baseDatos = baseSoporteSelect.value.trim();
+  baseSoporteActual = baseDatos;
+  tablaSoporte.innerHTML = '<option value="">Cargando tablas...</option>';
+  tablaSoporte.disabled = true;
+  soporteHead.innerHTML = '<tr><th>Tabla</th></tr>';
+  soporteBody.innerHTML = '<tr><td>Selecciona una BDD para ver sus tablas</td></tr>';
+
+  if (!baseDatos) {
+    tablaSoporte.innerHTML = '<option value="">Seleccionar tabla...</option>';
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/admin-sistema/tablas?baseDatos=${encodeURIComponent(baseDatos)}`, { credentials: 'include' });
+    if (!response.ok) throw new Error('No se pudieron cargar las tablas');
+    const payload = await response.json();
+    const tablas = Array.isArray(payload.data) ? payload.data : [];
+    tablaSoporte.innerHTML = '';
+
+    if (!tablas.length) {
+      tablaSoporte.innerHTML = '<option value="">No hay tablas disponibles</option>';
+      soporteBody.innerHTML = '<tr><td>No se encontraron tablas en esta BDD</td></tr>';
       return;
     }
 
-    usuarioDbSelect.insertAdjacentHTML('beforeend', '<option value="">Seleccionar BDD...</option>');
-    bases.forEach((base) => {
+    tablaSoporte.insertAdjacentHTML('beforeend', '<option value="">Seleccionar tabla...</option>');
+    tablas.forEach((tabla) => {
       const option = document.createElement('option');
-      option.value = base;
-      option.textContent = base;
-      usuarioDbSelect.appendChild(option);
+      option.value = tabla;
+      option.textContent = tabla;
+      tablaSoporte.appendChild(option);
     });
 
-    if (selectedValue && bases.includes(selectedValue)) {
-      usuarioDbSelect.value = selectedValue;
-    }
+    tablaSoporte.disabled = false;
+    tablaSoporte.value = tablas[0];
+    tablaSoporteActual = tablaSoporte.value;
+    await cargarSoporteTabla();
   } catch (error) {
-    usuarioDbSelect.innerHTML = '<option value="">Error al cargar BDD</option>';
+    tablaSoporte.innerHTML = '<option value="">Error al cargar tablas</option>';
     mostrarMensajeError(error);
   }
 }
@@ -117,58 +450,14 @@ function formDataUsuario() {
   };
 }
 
-function pedirTexto(titulo, valorActual = '', obligatorio = false) {
-  const respuesta = window.prompt(titulo, valorActual ?? '');
-  if (respuesta === null) {
-    return null;
-  }
-  const limpio = respuesta.trim();
-  if (obligatorio && !limpio) {
-    mostrarMensaje('Debe completar todos los campos requeridos', 'error');
-    return undefined;
-  }
-  return limpio;
-}
-
-function pedirNumero(titulo, valorActual = '', obligatorio = false) {
-  const respuesta = window.prompt(titulo, valorActual === null || valorActual === undefined ? '' : String(valorActual));
-  if (respuesta === null) {
-    return null;
-  }
-  const limpio = respuesta.trim();
-  if (!limpio) {
-    if (obligatorio) {
-      mostrarMensaje('Debe completar todos los campos requeridos', 'error');
-      return undefined;
-    }
-    return 0;
-  }
-  const numero = Number(limpio);
-  if (Number.isNaN(numero)) {
-    mostrarMensaje('Debe ingresar un número válido', 'error');
-    return undefined;
-  }
-  return numero;
-}
-
-function pedirUnidadMedida(valorActual = '') {
-  const respuesta = window.prompt('Unidad de medida (KILOGRAMO, LITRO, UNIDAD)', valorActual ?? 'UNIDAD');
-  if (respuesta === null) {
-    return null;
-  }
-  const limpio = respuesta.trim().toUpperCase();
-  if (!['KILOGRAMO', 'LITRO', 'UNIDAD'].includes(limpio)) {
-    mostrarMensaje('Unidad de medida inválida', 'error');
-    return undefined;
-  }
-  return limpio;
-}
-
 function obtenerClaveSoporte(tabla, item) {
   switch (tabla) {
     case 'usuarios':
     case 'usuario':
       return String(item.cedula ?? item.id ?? '');
+    case 'clientes':
+    case 'cliente':
+      return String(item.email ?? item.id ?? '');
     case 'proveedores':
     case 'proveedor':
     case 'empresas':
@@ -201,7 +490,7 @@ function accionesSoporteHtml(tabla, item) {
     return '<button class="btn btn-sm btn-outline-secondary" type="button" disabled>Sin acciones</button>';
   }
 
-  const accionesEdicion = new Set(['usuarios', 'usuario', 'proveedores', 'proveedor', 'empresas', 'empresa', 'productos', 'producto']);
+  const accionesEdicion = new Set(['usuarios', 'usuario', 'clientes', 'cliente', 'proveedores', 'proveedor', 'empresas', 'empresa', 'productos', 'producto']);
   if (accionesEdicion.has(tabla)) {
     return `
       <button class="btn btn-sm btn-outline-primary me-2" type="button" data-accion-soporte="editar" data-clave-soporte="${clave}">Editar</button>
@@ -238,8 +527,21 @@ function renderSoporteTabla(items) {
 
 async function cargarSoporteTabla() {
   try {
-    tablaSoporteActual = tablaSoporte.value;
-    const response = await fetch(`/api/admin-sistema/soporte?tabla=${encodeURIComponent(tablaSoporteActual)}`, { credentials: 'include' });
+    const tablaSeleccionada = tablaSoporte.value.trim();
+    const baseDatosSeleccionada = baseSoporteSelect.value.trim();
+    if (!baseDatosSeleccionada) {
+      soporteHead.innerHTML = '<tr><th>Tabla</th></tr>';
+      soporteBody.innerHTML = '<tr><td>Selecciona una BDD para ver el soporte</td></tr>';
+      return;
+    }
+    if (!tablaSeleccionada) {
+      soporteHead.innerHTML = '<tr><th>Tabla</th></tr>';
+      soporteBody.innerHTML = '<tr><td>Selecciona una tabla para ver el soporte</td></tr>';
+      return;
+    }
+
+    tablaSoporteActual = tablaSeleccionada;
+    const response = await fetch(`/api/admin-sistema/soporte?baseDatos=${encodeURIComponent(baseDatosSeleccionada)}&tabla=${encodeURIComponent(tablaSoporteActual)}`, { credentials: 'include' });
     if (!response.ok) throw new Error('No se pudo cargar la tabla');
     const payload = await response.json();
     const items = Array.isArray(payload.data?.data) ? payload.data.data : [];
@@ -248,6 +550,31 @@ async function cargarSoporteTabla() {
     soporteHead.innerHTML = '<tr><th>Error</th></tr>';
     soporteBody.innerHTML = `<tr><td>${error.message || 'No se pudo cargar el soporte'}</td></tr>`;
   }
+}
+
+async function editarRegistroSoporte(clave, data) {
+  return fetchApi('/api/admin-sistema/soporte', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      baseDatos: baseSoporteSelect.value.trim(),
+      tabla: tablaSoporteActual,
+      clave,
+      data,
+    }),
+  });
+}
+
+async function eliminarRegistroSoporte(clave) {
+  return fetchApi('/api/admin-sistema/soporte', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      baseDatos: baseSoporteSelect.value.trim(),
+      tabla: tablaSoporteActual,
+      clave,
+    }),
+  });
 }
 
 async function guardarUsuarioNuevo() {
@@ -320,26 +647,7 @@ async function manejarAccionSoporte(tabla, accion, clave) {
 }
 
 async function editarItemSoporte(tabla, item) {
-  switch (tabla) {
-    case 'usuarios':
-    case 'usuario':
-      await editarUsuarioSoporte(item);
-      break;
-    case 'proveedores':
-    case 'proveedor':
-      await editarProveedorSoporte(item);
-      break;
-    case 'empresas':
-    case 'empresa':
-      await editarEmpresaSoporte(item);
-      break;
-    case 'productos':
-    case 'producto':
-      await editarProductoSoporte(item);
-      break;
-    default:
-      throw new Error('La edición no está disponible para esta tabla.');
-  }
+  abrirModalEdicionSoporte(tabla, item);
 }
 
 async function eliminarItemSoporte(tabla, item) {
@@ -347,25 +655,31 @@ async function eliminarItemSoporte(tabla, item) {
     case 'usuarios':
     case 'usuario':
       if (!window.confirm(`¿Eliminar el usuario ${item.cedula}?`)) return;
-      await fetchApi('/api/admin-sistema/usuarios/' + encodeURIComponent(item.cedula), { method: 'DELETE' });
+      await eliminarRegistroSoporte(String(item.cedula));
       mostrarMensaje('Usuario eliminado correctamente', 'success');
+      break;
+    case 'clientes':
+    case 'cliente':
+      if (!window.confirm(`¿Eliminar el cliente ${item.email}?`)) return;
+      await eliminarRegistroSoporte(String(item.email));
+      mostrarMensaje('Cliente eliminado correctamente', 'success');
       break;
     case 'proveedores':
     case 'proveedor':
       if (!window.confirm(`¿Eliminar el proveedor ${item.numeroDocumento}?`)) return;
-      await fetchApi('/api/proveedores/desactivar/' + encodeURIComponent(item.numeroDocumento), { method: 'DELETE' });
+      await eliminarRegistroSoporte(String(item.numeroDocumento));
       mostrarMensaje('Proveedor eliminado correctamente', 'success');
       break;
     case 'empresas':
     case 'empresa':
       if (!window.confirm(`¿Eliminar la empresa ${item.numeroDocumento}?`)) return;
-      await fetchApi('/api/empresas/desactivar/' + encodeURIComponent(item.numeroDocumento), { method: 'DELETE' });
+      await eliminarRegistroSoporte(String(item.numeroDocumento));
       mostrarMensaje('Empresa eliminada correctamente', 'success');
       break;
     case 'productos':
     case 'producto':
       if (!window.confirm(`¿Eliminar el producto ${item.codigoDeBarras}?`)) return;
-      await fetchApi('/api/productos/' + encodeURIComponent(item.codigoDeBarras), { method: 'DELETE' });
+      await eliminarRegistroSoporte(String(item.codigoDeBarras));
       mostrarMensaje('Producto eliminado correctamente', 'success');
       break;
     default:
@@ -377,184 +691,15 @@ async function eliminarItemSoporte(tabla, item) {
 
 async function desactivarTicket(item) {
   if (!window.confirm(`¿Desactivar el ticket ${item.id}?`)) return;
-  await fetchApi('/api/tickets/desactivar', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ticket_id: Number(item.id) }),
-  });
+  await eliminarRegistroSoporte(String(item.id));
   mostrarMensaje('Ticket desactivado correctamente', 'success');
   await cargarSoporteTabla();
 }
 
 async function eliminarArticulosDetalle(item) {
   if (!window.confirm(`¿Eliminar el detalle ${item.id}?`)) return;
-  await fetchApi('/api/tickets/eliminar-articulos', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ detalles_ids: [Number(item.id)] }),
-  });
+  await eliminarRegistroSoporte(String(item.id));
   mostrarMensaje('Detalle eliminado correctamente', 'success');
-  await cargarSoporteTabla();
-}
-
-async function editarUsuarioSoporte(item) {
-  const nombre = pedirTexto('Nombre completo', item.nombre ?? '', true);
-  if (nombre === null || nombre === undefined) return;
-
-  const cedula = pedirNumero('Cédula', item.cedula ?? '', true);
-  if (cedula === null || cedula === undefined) return;
-
-  const contraseña = window.prompt('Contraseña (dejar vacío para no cambiarla)', '');
-  if (contraseña === null) return;
-
-  const rol = pedirTexto('Rol (ADMIN, RECEPCION o CAJERO)', (item.rol ?? '').toUpperCase(), true);
-  if (rol === null || rol === undefined) return;
-
-  const email = pedirTexto('Email', item.email ?? '', false);
-  if (email === null || email === undefined) return;
-
-  const telefono = pedirNumero('Teléfono', item.telefono ?? '', false);
-  if (telefono === null || telefono === undefined) return;
-
-  const tenantDatabase = pedirTexto('Base de datos asignada', item.tenantDatabase ?? '', true);
-  if (tenantDatabase === null || tenantDatabase === undefined) return;
-
-  await fetchApi('/api/admin-sistema/usuarios/' + encodeURIComponent(item.cedula), {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      nombre,
-      cedula,
-      contraseña: contraseña.trim(),
-      rol,
-      email,
-      telefono,
-      tenantDatabase,
-    }),
-  });
-
-  mostrarMensaje('Usuario actualizado correctamente', 'success');
-  await cargarSoporteTabla();
-}
-
-async function editarProveedorSoporte(item) {
-  const name = pedirTexto('Nombre', item.name ?? '', true);
-  if (name === null || name === undefined) return;
-
-  const email = pedirTexto('Email', item.email ?? '', false);
-  if (email === null || email === undefined) return;
-
-  const telefono = pedirNumero('Teléfono', item.telefono ?? '', false);
-  if (telefono === null || telefono === undefined) return;
-
-  const numeroDocumento = pedirTexto('Número de documento', item.numeroDocumento ?? '', true);
-  if (numeroDocumento === null || numeroDocumento === undefined) return;
-
-  const direccion = pedirTexto('Dirección', item.direccion ?? '', false);
-  if (direccion === null || direccion === undefined) return;
-
-  const razonSocial = pedirTexto('Razón social', item.razonSocial ?? '', true);
-  if (razonSocial === null || razonSocial === undefined) return;
-
-  const tipoDocumento = pedirTexto('Tipo de documento (CI, RUT, RUC)', item.tipoDocumento ?? 'CI', false);
-  if (tipoDocumento === null || tipoDocumento === undefined) return;
-
-  await fetchApi('/api/proveedores/' + encodeURIComponent(item.numeroDocumento), {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name,
-      email,
-      telefono,
-      numeroDocumento,
-      direccion,
-      razonSocial,
-      tipoDocumento,
-    }),
-  });
-
-  mostrarMensaje('Proveedor actualizado correctamente', 'success');
-  await cargarSoporteTabla();
-}
-
-async function editarEmpresaSoporte(item) {
-  const name = pedirTexto('Nombre', item.name ?? '', true);
-  if (name === null || name === undefined) return;
-
-  const email = pedirTexto('Email', item.email ?? '', false);
-  if (email === null || email === undefined) return;
-
-  const telefono = pedirNumero('Teléfono', item.telefono ?? '', false);
-  if (telefono === null || telefono === undefined) return;
-
-  const razonSocial = pedirTexto('Razón social', item.razonSocial ?? '', true);
-  if (razonSocial === null || razonSocial === undefined) return;
-
-  const tipoDocumento = pedirTexto('Tipo de documento', item.tipoDocumento ?? '', true);
-  if (tipoDocumento === null || tipoDocumento === undefined) return;
-
-  const direccion = pedirTexto('Dirección', item.direccion ?? '', false);
-  if (direccion === null || direccion === undefined) return;
-
-  const numeroDocumento = pedirTexto('Número de documento', item.numeroDocumento ?? '', true);
-  if (numeroDocumento === null || numeroDocumento === undefined) return;
-
-  await fetchApi('/api/empresas/' + encodeURIComponent(item.numeroDocumento), {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name,
-      email,
-      telefono,
-      razonSocial,
-      tipoDocumento,
-      direccion,
-      numeroDocumento,
-    }),
-  });
-
-  mostrarMensaje('Empresa actualizada correctamente', 'success');
-  await cargarSoporteTabla();
-}
-
-async function editarProductoSoporte(item) {
-  const descripcion = pedirTexto('Descripción', item.descripcion ?? '', true);
-  if (descripcion === null || descripcion === undefined) return;
-
-  const precioVenta = pedirNumero('Precio de venta', item.precioVenta ?? '', true);
-  if (precioVenta === null || precioVenta === undefined) return;
-
-  const precioCompra = pedirNumero('Precio de compra', item.precioCompra ?? '', true);
-  if (precioCompra === null || precioCompra === undefined) return;
-
-  const stock = pedirNumero('Stock', item.stock ?? '', true);
-  if (stock === null || stock === undefined) return;
-
-  const unidadDeMedida = pedirUnidadMedida(item.unidadDeMedida ?? 'UNIDAD');
-  if (unidadDeMedida === null || unidadDeMedida === undefined) return;
-
-  const etiqueta = pedirTexto('Etiqueta', item.etiqueta ?? '', false);
-  if (etiqueta === null || etiqueta === undefined) return;
-
-  const proveedorId = pedirNumero('ID del proveedor', item.proveedorId ?? '', true);
-  if (proveedorId === null || proveedorId === undefined) return;
-
-  await fetchApi('/api/productos/' + encodeURIComponent(item.codigoDeBarras), {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      codigoDeBarras: Number(item.codigoDeBarras),
-      descripcion,
-      precioVenta,
-      precioCompra,
-      stock,
-      unidadDeMedida,
-      etiqueta,
-      proveedorId,
-    }),
-  });
-
-  mostrarMensaje('Producto actualizado correctamente', 'success');
   await cargarSoporteTabla();
 }
 
@@ -576,10 +721,28 @@ usuarioForm.addEventListener('submit', async (event) => {
   await guardarUsuarioNuevo();
 });
 
+if (soporteEditForm) {
+  soporteEditForm.addEventListener('submit', guardarEdicionSoporte);
+}
+
+document.addEventListener('click', (event) => {
+  if (event.target.closest('[data-soporte-close]')) {
+    cerrarModalEdicionSoporte();
+  }
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && soporteEditModal && !soporteEditModal.classList.contains('d-none')) {
+    cerrarModalEdicionSoporte();
+  }
+});
+
 cargarSoporte.addEventListener('click', cargarSoporteTabla);
+baseSoporteSelect.addEventListener('change', cargarTablasSoporte);
+tablaSoporte.addEventListener('change', cargarSoporteTabla);
 logoutBtn.addEventListener('click', cerrarSesion);
 document.addEventListener('DOMContentLoaded', async () => {
   await verificarRolSistema();
   await cargarBasesDeDatos();
-  await cargarSoporteTabla();
+  await cargarBasesSoporte();
 });

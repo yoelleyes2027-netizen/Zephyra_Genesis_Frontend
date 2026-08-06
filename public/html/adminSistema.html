@@ -8,6 +8,37 @@
   <link rel="stylesheet" href="../css/css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    .support-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1050;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .support-modal.d-none {
+      display: none !important;
+    }
+
+    .support-modal__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 13, 28, 0.68);
+      backdrop-filter: blur(4px);
+    }
+
+    .support-modal__panel {
+      position: relative;
+      width: min(940px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      border: 0;
+      border-radius: 1.25rem;
+    }
+  </style>
 </head>
 
 <body>
@@ -18,7 +49,7 @@
     </div>
 
     <section class="dashboard-section mb-4">
-      <h2 class="mb-3">Usuarios por base de datos</h2>
+      <h2 class="mb-3">Crear usuario</h2>
       <form id="usuario-form" class="row g-3">
         <div class="col-md-4"><input id="usuario-nombre" class="form-control" placeholder="Nombre completo" required></div>
         <div class="col-md-2"><input id="usuario-cedula" type="number" class="form-control" placeholder="Cédula" required></div>
@@ -49,14 +80,13 @@
       <h2 class="mb-3">Soporte por tabla</h2>
       <div class="row g-3 align-items-end">
         <div class="col-md-4">
-          <select id="tabla-soporte" class="form-select">
-            <option value="usuarios">Usuario</option>
-            <option value="proveedores">Proveedores</option>
-            <option value="empresas">Empresa</option>
-            <option value="productos">Productos</option>
-            <option value="tickets">Ticket</option>
-            <option value="detalle_ticket">Detalle_Ticket</option>
-            <option value="caja_diaria">Caja_Diaria</option>
+          <select id="base-soporte" class="form-select">
+            <option value="">Seleccionar BDD...</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <select id="tabla-soporte" class="form-select" disabled>
+            <option value="">Seleccionar tabla...</option>
           </select>
         </div>
         <div class="col-md-3"><button id="cargar-soporte" class="btn btn-light w-100">Cargar tabla</button></div>
@@ -68,6 +98,26 @@
         </table>
       </div>
     </section>
+
+    <div id="soporte-edit-modal" class="support-modal d-none" aria-hidden="true">
+      <div class="support-modal__backdrop" data-soporte-close></div>
+      <div class="support-modal__panel card shadow-lg">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <div>
+            <h3 id="soporte-edit-title" class="h5 mb-0">Editar registro</h3>
+            <small class="text-muted">Ajusta los campos y guarda los cambios en la BDD seleccionada</small>
+          </div>
+          <button type="button" class="btn-close" aria-label="Cerrar" data-soporte-close></button>
+        </div>
+        <form id="soporte-edit-form">
+          <div id="soporte-edit-body" class="card-body"></div>
+          <div class="card-footer d-flex gap-2 justify-content-end">
+            <button type="button" class="btn btn-light" data-soporte-close>Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <div class="text-center mt-4">
       <button id="logout-btn" class="btn btn-danger px-4 py-2">⛔ Cerrar sesión</button>
