@@ -103,10 +103,12 @@ function editarProveedor(documento) {
 }
 
 async function eliminarProveedor(documento) {
-  if (!confirm(`¿Eliminar el proveedor ${documento}?`)) return;
+  const mensajeConfirmacion = `Si eliminas este proveedor, se eliminarán todos los productos asociados.\n\n¿Deseas continuar?`;
+  if (!confirm(mensajeConfirmacion)) return;
   const response = await fetch(`/api/proveedores/desactivar/${encodeURIComponent(documento)}`, { method: 'DELETE', credentials: 'include' });
   if (!response.ok) {
-    alert('No se pudo eliminar el proveedor');
+    const payload = await response.json().catch(() => ({}));
+    alert(payload.msg || payload.mensaje || 'No se pudo eliminar el proveedor');
     return;
   }
   await cargarProveedores();
