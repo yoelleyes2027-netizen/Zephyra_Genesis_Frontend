@@ -7,6 +7,37 @@
   <link rel="stylesheet" href="../css/css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    .provider-edit-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1050;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .provider-edit-modal.d-none {
+      display: none !important;
+    }
+
+    .provider-edit-modal__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 13, 28, 0.68);
+      backdrop-filter: blur(4px);
+    }
+
+    .provider-edit-modal__panel {
+      position: relative;
+      width: min(940px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      border: 0;
+      border-radius: 1.25rem;
+    }
+  </style>
 </head>
 <body>
   <div class="dashboard-container container">
@@ -84,6 +115,61 @@
         </table>
       </div>
     </section>
+
+    <div id="proveedor-edit-modal" class="provider-edit-modal d-none" aria-hidden="true">
+      <div class="provider-edit-modal__backdrop" data-proveedor-close></div>
+      <div class="provider-edit-modal__panel card shadow-lg">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <div>
+            <h3 class="h5 mb-0">Editar proveedor</h3>
+            <small class="text-muted">Modifica los campos y guarda los cambios</small>
+          </div>
+          <button type="button" class="btn-close" aria-label="Cerrar" data-proveedor-close></button>
+        </div>
+        <form id="proveedor-edit-form">
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label for="proveedor-edit-name" class="form-label">Nombre</label>
+                <input id="proveedor-edit-name" class="form-control" required>
+              </div>
+              <div class="col-md-4">
+                <label for="proveedor-edit-email" class="form-label">Email</label>
+                <input id="proveedor-edit-email" type="email" class="form-control">
+              </div>
+              <div class="col-md-4">
+                <label for="proveedor-edit-telefono" class="form-label">Teléfono</label>
+                <input id="proveedor-edit-telefono" type="number" class="form-control">
+              </div>
+              <div class="col-md-3">
+                <label for="proveedor-edit-documento" class="form-label">Número documento</label>
+                <input id="proveedor-edit-documento" class="form-control" required>
+              </div>
+              <div class="col-md-3">
+                <label for="proveedor-edit-tipo-documento" class="form-label">Tipo documento</label>
+                <select id="proveedor-edit-tipo-documento" class="form-select" required>
+                  <option value="RUT">RUT</option>
+                  <option value="RUC">RUC</option>
+                  <option value="CI">CI</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="proveedor-edit-razon-social" class="form-label">Razón social</label>
+                <input id="proveedor-edit-razon-social" class="form-control" required>
+              </div>
+              <div class="col-md-3">
+                <label for="proveedor-edit-direccion" class="form-label">Dirección</label>
+                <input id="proveedor-edit-direccion" class="form-control" required>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer d-flex gap-2 justify-content-end">
+            <button type="button" class="btn btn-light" data-proveedor-close>Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <div class="text-center mt-4">
       <button class="btn btn-secondary px-4 py-2" onclick="window.location.href='./adminUsuario.html'">← Ir para atrás</button>
