@@ -148,7 +148,8 @@ productoForm.addEventListener('submit', async (event) => {
     body: JSON.stringify(body),
   });
   if (!response.ok) {
-    alert('No se pudo guardar el producto');
+    const payload = await response.json().catch(() => ({}));
+    alert(payload.msg || payload.mensaje || 'No se pudo guardar el producto');
     return;
   }
   limpiarFormulario();
