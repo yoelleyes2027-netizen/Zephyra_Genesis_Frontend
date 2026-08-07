@@ -7,9 +7,19 @@ const productoBody = document.getElementById('producto-body');
 const productoBusqueda = document.getElementById('producto-busqueda');
 const productoBuscarPor = document.getElementById('producto-buscar-por');
 const productoProveedor = document.getElementById('producto-proveedor');
+const productoEditModal = document.getElementById('producto-edit-modal');
+const productoEditForm = document.getElementById('producto-edit-form');
+const productoEditCodigo = document.getElementById('producto-edit-codigo');
+const productoEditDescripcion = document.getElementById('producto-edit-descripcion');
+const productoEditPrecioVenta = document.getElementById('producto-edit-precio-venta');
+const productoEditPrecioCompra = document.getElementById('producto-edit-precio-compra');
+const productoEditStock = document.getElementById('producto-edit-stock');
+const productoEditUnidad = document.getElementById('producto-edit-unidad');
+const productoEditEtiqueta = document.getElementById('producto-edit-etiqueta');
+const productoEditProveedor = document.getElementById('producto-edit-proveedor');
 
 let productosCache = [];
-let codigoEdicion = null;
+let codigoEdicionProducto = null;
 
 function formDataProducto() {
   return {
@@ -26,10 +36,35 @@ function formDataProducto() {
 
 function limpiarFormulario() {
   productoForm.reset();
-  codigoEdicion = null;
   productoSubmit.textContent = 'Guardar producto';
   document.getElementById('producto-unidad').value = 'UNIDAD';
   productoProveedor.value = '';
+}
+
+function abrirModalEdicionProducto(producto) {
+  codigoEdicionProducto = Number(producto.codigoDeBarras);
+  productoEditCodigo.value = producto.codigoDeBarras ?? '';
+  productoEditDescripcion.value = producto.descripcion ?? '';
+  productoEditPrecioVenta.value = producto.precioVenta ?? '';
+  productoEditPrecioCompra.value = producto.precioCompra ?? '';
+  productoEditStock.value = producto.stock ?? '';
+  productoEditUnidad.value = producto.unidadDeMedida ?? 'UNIDAD';
+  productoEditEtiqueta.value = producto.etiqueta ?? '';
+  productoEditProveedor.value = producto.proveedorNumeroDocumento ?? '';
+  productoEditModal.classList.remove('d-none');
+  productoEditModal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  window.setTimeout(() => productoEditDescripcion.focus(), 0);
+}
+
+function cerrarModalEdicionProducto() {
+  codigoEdicionProducto = null;
+  productoEditForm.reset();
+  productoEditUnidad.value = 'UNIDAD';
+  productoEditProveedor.value = '';
+  productoEditModal.classList.add('d-none');
+  productoEditModal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
 }
 
 function normalizarTexto(valor) {
@@ -98,21 +133,13 @@ async function cargarProveedores() {
   productoProveedor.innerHTML = '<option value="" selected disabled>Seleccione proveedor</option>' + proveedores
     .map((proveedor) => `<option value="${proveedor.numeroDocumento ?? ''}">${proveedor.numeroDocumento ?? ''} - ${proveedor.razonSocial ?? proveedor.name ?? ''}</option>`)
     .join('');
+  productoEditProveedor.innerHTML = productoProveedor.innerHTML;
 }
 
 function editarProducto(codigo) {
   const producto = productosCache.find((item) => Number(item.codigoDeBarras) === Number(codigo));
   if (!producto) return;
-  codigoEdicion = Number(producto.codigoDeBarras);
-  document.getElementById('producto-codigo').value = producto.codigoDeBarras ?? '';
-  document.getElementById('producto-descripcion').value = producto.descripcion ?? '';
-  document.getElementById('producto-precio-venta').value = producto.precioVenta ?? '';
-  document.getElementById('producto-precio-compra').value = producto.precioCompra ?? '';
-  document.getElementById('producto-stock').value = producto.stock ?? '';
-  document.getElementById('producto-unidad').value = producto.unidadDeMedida ?? 'UNIDAD';
-  document.getElementById('producto-etiqueta').value = producto.etiqueta ?? '';
-  productoProveedor.value = producto.proveedorNumeroDocumento ?? '';
-  productoSubmit.textContent = 'Actualizar producto';
+  abrirModalEdicionProducto(producto);
 }
 
 async function eliminarProducto(codigo) {
@@ -138,11 +165,8 @@ async function buscarProductos() {
 productoForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const body = formDataProducto();
-  const isEdit = codigoEdicion !== null;
-  const endpoint = isEdit ? `/api/productos/${codigoEdicion}` : '/api/productos';
-  const method = isEdit ? 'PUT' : 'POST';
-  const response = await fetch(endpoint, {
-    method,
+  const response = await fetch('/api/productos', {
+    method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -154,6 +178,44 @@ productoForm.addEventListener('submit', async (event) => {
   }
   limpiarFormulario();
   await cargarProductos();
+});
+
+productoEditForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  if (codigoEdicionProducto === null) return;
+  const body = {
+    codigoDeBarras: Number(productoEditCodigo.value),
+    descripcion: productoEditDescripcion.value.trim(),
+    precioVenta: Number(productoEditPrecioVenta.value),
+    precioCompra: Number(productoEditPrecioCompra.value),
+    stock: Number(productoEditStock.value),
+    unidadDeMedida: productoEditUnidad.value.trim().toUpperCase(),
+    etiqueta: productoEditEtiqueta.value.trim(),
+    proveedorNumeroDocumento: productoEditProveedor.value.trim(),
+  };
+  const response = await fetch(`/api/productos/${codigoEdicionProducto}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    alert(payload.msg || payload.mensaje || 'No se pudo actualizar el producto');
+    return;
+  }
+  cerrarModalEdicionProducto();
+  await cargarProductos();
+});
+
+document.querySelectorAll('[data-producto-close]').forEach((button) => {
+  button.addEventListener('click', cerrarModalEdicionProducto);
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && productoEditModal && !productoEditModal.classList.contains('d-none')) {
+    cerrarModalEdicionProducto();
+  }
 });
 
 productoCancelar.addEventListener('click', limpiarFormulario);
