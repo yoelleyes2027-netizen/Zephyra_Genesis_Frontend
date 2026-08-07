@@ -19,7 +19,7 @@ function formDataProducto() {
     stock: Number(document.getElementById('producto-stock').value),
     unidadDeMedida: document.getElementById('producto-unidad').value.trim().toUpperCase(),
     etiqueta: document.getElementById('producto-etiqueta').value.trim(),
-    proveedorId: Number(document.getElementById('producto-proveedor').value),
+    proveedorNumeroDocumento: document.getElementById('producto-proveedor').value.trim(),
   };
 }
 
@@ -99,7 +99,7 @@ function editarProducto(codigo) {
   document.getElementById('producto-stock').value = producto.stock ?? '';
   document.getElementById('producto-unidad').value = producto.unidadDeMedida ?? 'UNIDAD';
   document.getElementById('producto-etiqueta').value = producto.etiqueta ?? '';
-  document.getElementById('producto-proveedor').value = producto.proveedorId ?? '';
+  document.getElementById('producto-proveedor').value = producto.proveedorNumeroDocumento ?? '';
   productoSubmit.textContent = 'Actualizar producto';
 }
 
