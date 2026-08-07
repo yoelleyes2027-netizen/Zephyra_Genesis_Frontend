@@ -6,6 +6,7 @@ const productoVerTodos = document.getElementById('producto-ver-todos');
 const productoBody = document.getElementById('producto-body');
 const productoBusqueda = document.getElementById('producto-busqueda');
 const productoBuscarPor = document.getElementById('producto-buscar-por');
+const productoProveedor = document.getElementById('producto-proveedor');
 
 let productosCache = [];
 let codigoEdicion = null;
@@ -19,7 +20,7 @@ function formDataProducto() {
     stock: Number(document.getElementById('producto-stock').value),
     unidadDeMedida: document.getElementById('producto-unidad').value.trim().toUpperCase(),
     etiqueta: document.getElementById('producto-etiqueta').value.trim(),
-    proveedorNumeroDocumento: document.getElementById('producto-proveedor').value.trim(),
+    proveedorNumeroDocumento: productoProveedor.value.trim(),
   };
 }
 
@@ -28,6 +29,7 @@ function limpiarFormulario() {
   codigoEdicion = null;
   productoSubmit.textContent = 'Guardar producto';
   document.getElementById('producto-unidad').value = 'UNIDAD';
+  productoProveedor.value = '';
 }
 
 function normalizarTexto(valor) {
@@ -88,6 +90,16 @@ async function cargarProductos() {
   renderProductos(Array.isArray(data) ? data : []);
 }
 
+async function cargarProveedores() {
+  const response = await fetch('/api/proveedores', { credentials: 'include' });
+  if (!response.ok) return;
+  const payload = await response.json().catch(() => ({}));
+  const proveedores = Array.isArray(payload?.data) ? payload.data : [];
+  productoProveedor.innerHTML = '<option value="" selected disabled>Seleccione proveedor</option>' + proveedores
+    .map((proveedor) => `<option value="${proveedor.numeroDocumento ?? ''}">${proveedor.numeroDocumento ?? ''} - ${proveedor.razonSocial ?? proveedor.name ?? ''}</option>`)
+    .join('');
+}
+
 function editarProducto(codigo) {
   const producto = productosCache.find((item) => Number(item.codigoDeBarras) === Number(codigo));
   if (!producto) return;
@@ -99,7 +111,7 @@ function editarProducto(codigo) {
   document.getElementById('producto-stock').value = producto.stock ?? '';
   document.getElementById('producto-unidad').value = producto.unidadDeMedida ?? 'UNIDAD';
   document.getElementById('producto-etiqueta').value = producto.etiqueta ?? '';
-  document.getElementById('producto-proveedor').value = producto.proveedorNumeroDocumento ?? '';
+  productoProveedor.value = producto.proveedorNumeroDocumento ?? '';
   productoSubmit.textContent = 'Actualizar producto';
 }
 
@@ -146,4 +158,7 @@ productoForm.addEventListener('submit', async (event) => {
 productoCancelar.addEventListener('click', limpiarFormulario);
 productoBuscar.addEventListener('click', buscarProductos);
 productoVerTodos.addEventListener('click', cargarProductos);
-document.addEventListener('DOMContentLoaded', cargarProductos);
+document.addEventListener('DOMContentLoaded', async () => {
+  await cargarProveedores();
+  await cargarProductos();
+});

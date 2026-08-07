@@ -52,7 +52,9 @@
         </div>
         <div class="col-md-3">
           <label for="producto-proveedor" class="form-label">Documento proveedor</label>
-          <input id="producto-proveedor" class="form-control" placeholder="Documento proveedor" required>
+          <select id="producto-proveedor" class="form-select" required>
+            <option value="" selected disabled>Seleccione proveedor</option>
+          </select>
         </div>
         <div class="col-12 d-flex gap-2">
           <button id="producto-submit" class="btn btn-primary" type="submit">Guardar producto</button>
