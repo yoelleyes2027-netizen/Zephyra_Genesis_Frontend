@@ -1,4 +1,52 @@
-document.getElementById('login-form').addEventListener('submit', async function (e) {
+const REMEMBER_LOGIN_KEY = 'zephyra-remember-login';
+const loginForm = document.getElementById('login-form');
+const cedulaLogin = document.getElementById('cedula');
+const contraseñaLogin = document.getElementById('contraseña');
+const recordarCredenciales = document.getElementById('recordar-credenciales');
+
+async function restaurarCredencialesRecordadas() {
+  const cedulaRecordada = localStorage.getItem(REMEMBER_LOGIN_KEY);
+  if (!cedulaRecordada) {
+    return;
+  }
+
+  recordarCredenciales.checked = true;
+  cedulaLogin.value = cedulaRecordada;
+
+  if (!navigator.credentials || !window.PasswordCredential) {
+    return;
+  }
+
+  try {
+    const credencial = await navigator.credentials.get({ password: true, mediation: 'optional' });
+    if (credencial?.id === cedulaRecordada) {
+      contraseñaLogin.value = credencial.password;
+    }
+  } catch (error) {
+    console.debug('El navegador no restauró las credenciales:', error);
+  }
+}
+
+async function guardarPreferenciaDeCredenciales(cedula, contraseña) {
+  if (!recordarCredenciales.checked) {
+    localStorage.removeItem(REMEMBER_LOGIN_KEY);
+    return;
+  }
+
+  localStorage.setItem(REMEMBER_LOGIN_KEY, cedula);
+  if (!navigator.credentials || !window.PasswordCredential) {
+    return;
+  }
+
+  try {
+    const credencial = new PasswordCredential({ id: cedula, password: contraseña, name: cedula });
+    await navigator.credentials.store(credencial);
+  } catch (error) {
+    console.debug('El navegador no guardó las credenciales:', error);
+  }
+}
+
+loginForm.addEventListener('submit', async function (e) {
   e.preventDefault();
 
   const submitButton = document.getElementById('ingresar');
@@ -32,14 +80,28 @@ document.getElementById('login-form').addEventListener('submit', async function 
       const rol = data.user.rol;
       const nombre = data.user.nombre;
 
+      await guardarPreferenciaDeCredenciales(cedula, contraseña);
+
       const loginContainer = document.querySelector('.login-container');
       const bienvenida = document.createElement('div');
+      const iconoBienvenida = document.createElement('div');
+      const contenidoBienvenida = document.createElement('div');
+      const estadoBienvenida = document.createElement('span');
+      const mensajeBienvenida = document.createElement('p');
       const nombreUsuario = document.createElement('strong');
 
-      bienvenida.className = 'bienvenida';
-      bienvenida.append('Bienvenido, ');
+      bienvenida.className = 'bienvenida login-success';
+      iconoBienvenida.className = 'login-success__icon';
+      iconoBienvenida.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i>';
+      contenidoBienvenida.className = 'login-success__content';
+      estadoBienvenida.className = 'login-success__status';
+      estadoBienvenida.textContent = 'Acceso confirmado';
+      mensajeBienvenida.className = 'login-success__message';
+      mensajeBienvenida.append('Bienvenido, ');
       nombreUsuario.textContent = nombre;
-      bienvenida.append(nombreUsuario, '!');
+      mensajeBienvenida.append(nombreUsuario, '!');
+      contenidoBienvenida.append(estadoBienvenida, mensajeBienvenida);
+      bienvenida.append(iconoBienvenida, contenidoBienvenida);
       loginContainer.replaceChildren(bienvenida);
 
       // Redirigir según rol después de 1.5 segundos
@@ -70,9 +132,10 @@ document.getElementById('login-form').addEventListener('submit', async function 
   }
 });
 
-const contraseñaLogin = document.getElementById('contraseña');
 const toggleContraseñaLogin = document.getElementById('toggle-contraseña');
 const themeToggle = document.getElementById('theme-toggle');
+
+restaurarCredencialesRecordadas();
 
 function actualizarBotonTema() {
   const isDark = document.documentElement.dataset.theme === 'dark';

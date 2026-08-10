@@ -20,9 +20,7 @@
 
   <main class="login-page__content">
     <header class="login-brand" aria-label="Genesis, sistema de gestión para supermercados">
-      <div class="login-brand__mark" aria-hidden="true">
-        <span>G</span><i class="fas fa-shopping-cart"></i>
-      </div>
+      <img class="login-brand__logo" src="../assets/genesis-logo-mark.png" alt="" width="299" height="174">
       <p class="login-brand__name">GENESIS</p>
       <p class="login-brand__tagline">Sistema de gestión para supermercados</p>
     </header>
@@ -52,6 +50,12 @@
             </button>
           </div>
         </div>
+
+        <label class="login-form__remember" for="recordar-credenciales">
+          <input type="checkbox" id="recordar-credenciales" name="recordar-credenciales">
+          <span class="login-form__checkbox" aria-hidden="true"><i class="fas fa-check"></i></span>
+          <span>Recordar contraseña</span>
+        </label>
 
         <button id="ingresar" type="submit" class="btn login-form__submit">
           <span class="login-form__submit-icon" aria-hidden="true"><i class="fas fa-sign-in-alt"></i></span>
