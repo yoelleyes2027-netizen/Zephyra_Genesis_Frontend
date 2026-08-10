@@ -1,15 +1,11 @@
-@import url('./vars.css');
+@import url('./app.css');
 
 body {
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
-  font-family: 'Inter', sans-serif;
-  background-color: var(--blanco);
-  color: var(--color-texto);
-  margin: 0;
-  padding: 0;
+  justify-content: center;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .theme-toggle {
@@ -20,120 +16,100 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  border-color: var(--borde);
+  background: var(--superficie);
+  color: var(--color-texto);
+  box-shadow: 0 4px 12px rgba(25, 57, 96, 0.08);
 }
 
 .login-container {
-  background-color: var(--color-secundario);
-  color: var(--color-texto);
+  position: relative;
+  width: min(440px, calc(100% - 2rem));
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  width: 100%;
-  max-width: 400px;
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-panel);
+  background-color: var(--superficie);
+  color: var(--color-texto);
+  box-shadow: var(--sombra-panel);
+  animation: login-enter 420ms ease-out both;
 }
 
-.logo {
-  font-size: 2.5rem;
-  font-weight: 700;
-  background-color: var(--blanco);
-  color: var(--color-primario);
-  padding: 0.5rem 1.2rem;
-  border-radius: 12px;
-  box-shadow: inset 0 0.5px rgba(0, 0, 0, 0.05);
-  display: inline-block;
-  margin-right: 1rem;
-}
-
-.dashboard-header {
-  background-color: var(--color-primario);
-  color: var(--blanco);
-  padding: 1.2rem 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.login-container::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 4px;
+  content: '';
+  background: var(--color-acento);
 }
 
 .login-container h2 {
-  color: var(--color-texto);
-  font-weight: 600;
-  font-size: 24px;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .login-container label {
+  display: block;
   margin-top: 1rem;
-  font-weight: 500;
-  font-size: 15px;
+  color: var(--texto-suave);
+  font-size: 0.94rem;
+  font-weight: 700;
 }
 
 .login-container input {
   width: 100%;
-  padding: 0.4rem;
-  padding-left: 0.6rem;
+  min-height: 44px;
   margin-top: 0.3rem;
-  border: 1px solid #dddddd;
-  border-radius: 50px;
-  background-color: var(--blanco);
-  font-size: 16px;
+  border-radius: var(--radio-control);
+  background: var(--superficie);
 }
 
-.login-container input:hover {
-  border: 1px solid var(--color-primario);
-}
-
-/* Estilo de botón unificado */
 .boton-producto {
-  border-radius: 10px !important;
-  font-size: 1rem !important;
-  padding: 0.9rem !important;
-  background-color: var(--blanco) !important;
-  border: 1px solid #dddddd !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
-  transition: all 0.25s ease-in-out !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.5rem !important;
-  color: var(--color-texto) !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  gap: 0.5rem;
+  border-color: var(--color-primario) !important;
+  border-radius: var(--radio-control) !important;
+  background-color: var(--color-primario) !important;
+  color: #fff !important;
+  font-weight: 700;
 }
 
 .boton-producto:hover {
-  background-color: var(--color-primario) !important;
-  color: var(--blanco) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1) !important;
+  background-color: var(--color-primario-fuerte) !important;
+  box-shadow: var(--sombra-activa) !important;
 }
 
 .boton-producto i {
-  font-size: 1.2rem !important;
+  font-size: 1.1rem;
 }
 
 #mensaje-error {
-  color: red;
   margin-top: 1rem;
+  color: var(--color-error);
   text-align: center;
 }
 
-/* Mensaje de bienvenida (si lo usás luego) */
 .bienvenida {
-  display: inline-block !important;
-  color: green;
-  font-size: 22px;
+  display: inline-block;
+  padding-bottom: 1rem;
+  color: var(--color-acento);
+  font-size: 1.15rem;
+  font-weight: 700;
   text-align: center;
-  font-weight: bold;
-  animation: fadeIn 1s ease-in-out;
-  padding-bottom: 16px;
-}
-
-/* Animación */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 #icono {
   color: var(--color-primario);
+}
+
+@keyframes login-enter {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 575px) {

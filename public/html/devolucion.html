@@ -9,12 +9,14 @@
   <link rel="stylesheet" href="../css/venta-caja.css">
 </head>
 
-<body>
+<body class="cash-register">
   <div class="container">
     <h1>Devolucion en Caja</h1>
 
     <form style="display: block;" id="producto-form">
+      <label class="visually-hidden" for="codigo">Código del producto</label>
       <input type="text" id="codigo" placeholder="Código del producto" required>
+      <label class="visually-hidden" for="cantidad">Cantidad</label>
       <input type="number" id="cantidad" placeholder="Cantidad" min="1" value="1" required>
       <button type="submit">Agregar</button>
     </form>
@@ -94,6 +96,7 @@
       <div class="modal-content">
         <h3>Buscar Cliente por Documento</h3>
 
+        <label class="visually-hidden" for="documento-cliente">RUT o documento del cliente</label>
         <input type="text" id="documento-cliente" placeholder="Ingrese RUT o documento" />
         <br><br>
 
@@ -127,7 +130,6 @@
         <button id="volver-tipo-comprobante-moneda">⬅</button>
       </div>
     </div>
-  </div>
   </div>
 
 

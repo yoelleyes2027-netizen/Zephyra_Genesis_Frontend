@@ -1,6 +1,6 @@
-@import url('./vars.css');
+@import url('./app.css');
 
-body {
+body.ticket-return {
   font-family: Arial, sans-serif;
   background-color: var(--color1);
   color: var(--color2);
@@ -8,13 +8,13 @@ body {
   padding: 0;
 }
 
-.container {
+.ticket-return .container {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
 }
 
-h1 {
+.ticket-return h1 {
   background-color: var(--color3);
   padding: 1rem 2rem;
   border-radius: 8px;
@@ -30,7 +30,7 @@ label {
   font-weight: bold;
 }
 
-input[type="number"] {
+.ticket-return input[type="number"] {
   width: 100%;
   padding: 0.8rem;
   border-radius: 5px;
@@ -39,7 +39,7 @@ input[type="number"] {
   font-size: 1rem;
 }
 
-button {
+.ticket-return button {
   padding: 0.8rem 1.5rem;
   background-color: var(--color3);
   color: var(--color2);
@@ -138,4 +138,89 @@ button:hover {
 
 .tabla-articulos th {
   background-color: #f2f2f2;
+}
+
+/* Ticket return workspace */
+body {
+  padding: 1rem;
+  color: var(--color-texto);
+}
+
+.container {
+  max-width: 1040px;
+  padding: 1.5rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-panel);
+  background: var(--color-secundario);
+  box-shadow: var(--sombra-panel);
+}
+
+h1 {
+  padding: 0 0 0.85rem;
+  border-radius: 0;
+  border-bottom: 1px solid var(--borde);
+  background: transparent;
+  color: var(--color-texto);
+  text-align: left;
+  box-shadow: none;
+}
+
+input[type="number"] {
+  max-width: 380px;
+  margin-right: 0.5rem;
+  border-color: var(--borde);
+  border-radius: var(--radio-control);
+  background: var(--superficie);
+  color: var(--color-texto);
+}
+
+button {
+  min-height: 42px;
+  border: 1px solid var(--color-primario);
+  border-radius: var(--radio-control);
+  background: var(--color-primario);
+  color: #fff;
+}
+
+.ticket-return #datos-ticket,
+.ticket-return #lista-articulos {
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-control);
+  background: var(--superficie);
+  color: var(--color-texto);
+  box-shadow: none;
+}
+
+.ticket-return #datos-ticket h3,
+.ticket-return #lista-articulos h3 {
+  color: var(--color-texto);
+}
+
+.ticket-return .tabla-articulos {
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-control);
+  background: var(--superficie);
+}
+
+.ticket-return .tabla-articulos th,
+.ticket-return .tabla-articulos td {
+  border-color: var(--borde);
+  color: var(--color-texto);
+}
+
+.ticket-return .tabla-articulos th {
+  background: var(--superficie-suave);
+  color: var(--texto-suave);
+}
+
+.ticket-return #btn-anular {
+  border-color: var(--color-error);
+  background: var(--color-error);
+}
+
+@media (max-width: 640px) {
+  body.ticket-return { padding: 0.5rem; }
+  .ticket-return .container { padding: 1rem; }
+  .ticket-return input[type="number"] { max-width: 100%; margin-right: 0; }
 }

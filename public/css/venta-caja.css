@@ -1,4 +1,4 @@
-@import url('./vars.css');
+@import url('./app.css');
 
 body {
   font-family: Arial, sans-serif;
@@ -163,7 +163,7 @@ button:hover {
 }
 
 .opcion.selected {
-  background-color: #007bff;
+  background-color: #0f4f9b;
   color: white;
   font-weight: bold;
 }
@@ -194,4 +194,119 @@ button:hover {
   .botones button {
     width: 220px;
   }
+}
+
+/* Cash register workspace */
+body.cash-register {
+  display: block;
+  padding: 1rem;
+  color: var(--color-texto);
+  font-size: 16px;
+}
+
+.cash-register .container {
+  width: min(100%, 1040px);
+  padding: 1.25rem;
+  margin: 0 auto;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-panel);
+  background: var(--color-secundario);
+  box-shadow: var(--sombra-panel);
+}
+
+.cash-register .container h1 {
+  padding-bottom: 0.85rem;
+  margin: 0 0 1.25rem;
+  border-bottom: 1px solid var(--borde);
+  color: var(--color-texto);
+  font-size: 1.4rem;
+  font-weight: 750;
+}
+
+.cash-register #producto-form {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 130px auto;
+  gap: 0.75rem;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+
+.cash-register #producto-form button,
+.cash-register #cerrar-ticket,
+.cash-register .modal-content button {
+  min-height: 42px;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--color-primario);
+  border-radius: var(--radio-control);
+  background: var(--color-primario);
+  color: #fff;
+  font-weight: 700;
+}
+
+.cash-register #tabla-productos {
+  overflow: hidden;
+  width: 100%;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-control);
+  background: var(--superficie);
+  box-shadow: none;
+}
+
+.cash-register #tabla-productos th,
+.cash-register #tabla-productos td {
+  padding: 0.75rem;
+  color: var(--color-texto);
+  border-bottom: 1px solid var(--borde);
+}
+
+.cash-register #tabla-productos th {
+  background: var(--superficie-suave);
+  color: var(--texto-suave);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.cash-register #tabla-productos tr:nth-child(even),
+.cash-register #tabla-productos tr:nth-child(odd) {
+  background: var(--superficie);
+}
+
+.cash-register #total {
+  color: var(--color-primario-fuerte);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.cash-register .modal {
+  backdrop-filter: blur(3px);
+}
+
+.cash-register .modal-content {
+  width: min(92vw, 480px);
+  padding: 1.5rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-panel);
+  background: var(--superficie);
+  color: var(--color-texto);
+  box-shadow: var(--sombra-panel);
+}
+
+.cash-register .opcion {
+  border-color: var(--borde);
+  border-radius: var(--radio-control);
+  background: var(--superficie);
+  color: var(--color-texto);
+}
+
+.cash-register .opcion.selected {
+  border-color: var(--color-primario);
+  background: var(--color-primario);
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  body.cash-register { padding: 0.5rem; }
+  .cash-register .container { padding: 1rem; }
+  .cash-register #producto-form { grid-template-columns: 1fr; }
+  .cash-register #producto-form button { width: 100%; }
 }
