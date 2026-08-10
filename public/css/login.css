@@ -5,9 +5,10 @@
   display: grid;
   grid-template-rows: 1fr auto;
   min-height: 100svh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   isolation: isolate;
-  background: #eff5ff;
+  background: #eff5ff url('../assets/supermarket-aisle.jpg') center / cover fixed no-repeat;
 }
 
 .login-page::before {
@@ -16,10 +17,9 @@
   inset: 0;
   content: '';
   background:
-    linear-gradient(128deg, rgba(255, 255, 255, 0.96) 0 28%, transparent 28% 100%),
-    linear-gradient(34deg, rgba(35, 126, 232, 0.15) 0 13%, transparent 13% 100%),
-    repeating-linear-gradient(0deg, rgba(36, 108, 209, 0.065) 0 2px, transparent 2px 38px),
-    linear-gradient(108deg, #dceaff 0%, #f8fbff 45%, #d7e7ff 100%);
+    linear-gradient(180deg, rgba(249, 252, 255, 0.76) 0%, rgba(239, 247, 255, 0.88) 62%, rgba(224, 238, 255, 0.94) 100%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.68), transparent 35% 65%, rgba(255, 255, 255, 0.62));
+  backdrop-filter: blur(2px) saturate(0.84);
 }
 
 .login-page::after {
@@ -27,7 +27,7 @@
   z-index: -1;
   bottom: -8rem;
   left: -1.5rem;
-  color: rgba(28, 112, 220, 0.16);
+  color: rgba(28, 112, 220, 0.22);
   content: '\f07a';
   font-family: "Font Awesome 5 Free", sans-serif;
   font-size: clamp(16rem, 33vw, 32rem);
@@ -40,9 +40,9 @@
   display: grid;
   place-items: center;
   align-content: center;
-  gap: clamp(1.5rem, 4vh, 2.8rem);
-  width: min(100% - 2rem, 500px);
-  padding: 5rem 0 2rem;
+  gap: clamp(0.9rem, 1.8vh, 1.35rem);
+  width: min(calc(100% - 2rem), 440px);
+  padding: 1.1rem 0 0.5rem;
   margin: 0 auto;
 }
 
@@ -77,13 +77,13 @@
   display: grid;
   place-items: center;
   width: 130px;
-  height: 86px;
+  height: 80px;
   color: #0c4ab2;
 }
 
 .login-brand__mark span {
   z-index: 1;
-  font-size: 5.5rem;
+  font-size: 5.45rem;
   font-style: italic;
   font-weight: 800;
   letter-spacing: 0;
@@ -92,16 +92,16 @@
 
 .login-brand__mark i {
   position: absolute;
-  right: 3px;
-  bottom: 4px;
+  right: -1px;
+  bottom: 2px;
   color: #258cf5;
-  font-size: 3rem;
+  font-size: 2.95rem;
 }
 
 .login-brand__name {
-  margin: 0.35rem 0 0;
+  margin: 0.2rem 0 0;
   color: #073a8f;
-  font-size: clamp(2.15rem, 7vw, 3.05rem);
+  font-size: clamp(2rem, 6vw, 2.65rem);
   font-style: italic;
   font-weight: 800;
   letter-spacing: 0.12rem;
@@ -109,7 +109,7 @@
 }
 
 .login-brand__tagline {
-  margin: 0.5rem 0 0;
+  margin: 0.35rem 0 0;
   color: #1769d1;
   font-size: 0.73rem;
   font-weight: 800;
@@ -119,10 +119,10 @@
 
 .login-card {
   width: 100%;
-  padding: clamp(1.5rem, 4vw, 2rem);
+  padding: clamp(1.15rem, 2.5vw, 1.5rem);
   border: 1px solid rgba(76, 133, 207, 0.2);
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   box-shadow: 0 18px 38px rgba(30, 89, 170, 0.17);
   animation: login-enter 420ms ease-out both;
   backdrop-filter: blur(10px);
@@ -131,17 +131,17 @@
 .login-card__icon {
   display: grid;
   place-items: center;
-  width: 54px;
-  height: 54px;
-  margin: -0.15rem auto 0.75rem;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 0.45rem;
   border-radius: 50%;
   background: #e8f1ff;
   color: #1164d7;
-  font-size: 1.65rem;
+  font-size: 1.45rem;
 }
 
 .login-card__heading {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.9rem;
   text-align: center;
 }
 
@@ -153,14 +153,14 @@
 }
 
 .login-card__heading p {
-  margin: 0.25rem 0 0;
+  margin: 0.2rem 0 0;
   color: var(--texto-suave);
   font-size: 0.88rem;
 }
 
 .login-form {
   display: grid;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 
 .login-form__field {
@@ -228,29 +228,87 @@
 }
 
 .login-form__submit {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 46px;
+  justify-content: space-between;
+  min-height: 44px;
   gap: 0.6rem;
   margin-top: 0.35rem;
   border: 0;
-  border-radius: 11px;
-  background: #1164d7;
-  box-shadow: 0 8px 16px rgba(17, 100, 215, 0.22);
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 12px;
+  background: linear-gradient(100deg, #0645c0, #1478e8 66%, #2495f3);
+  box-shadow: 0 8px 16px rgba(17, 100, 215, 0.26), inset 0 1px rgba(255, 255, 255, 0.34);
   color: #fff;
   font-size: 1rem;
   font-weight: 800;
 }
 
+.login-form__submit::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -32%;
+  width: 24%;
+  content: '';
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+  transform: skewX(-18deg);
+  transition: left 280ms ease;
+}
+
 .login-form__submit:hover:not(:disabled) {
-  background: #084ba9;
-  box-shadow: 0 10px 20px rgba(17, 100, 215, 0.3);
+  background: linear-gradient(100deg, #043a9e, #1068d0 66%, #167fdc);
+  box-shadow: 0 11px 22px rgba(17, 100, 215, 0.34), inset 0 1px rgba(255, 255, 255, 0.34);
+}
+
+.login-form__submit:hover:not(:disabled)::before {
+  left: 112%;
+}
+
+.login-form__submit-icon,
+.login-form__submit-arrow {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+}
+
+.login-form__submit-icon {
+  background: rgba(0, 47, 142, 0.34);
+  font-size: 0.95rem;
+}
+
+.login-form__submit-arrow {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.8rem;
+  transition: transform 160ms ease;
+}
+
+.login-form__submit:hover:not(:disabled) .login-form__submit-arrow {
+  transform: translateX(3px);
+}
+
+.login-form__submit-text {
+  position: relative;
+  z-index: 1;
+}
+
+.login-form__submit:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
 }
 
 #mensaje-error {
   min-height: 1.25rem;
-  margin-top: 0.9rem;
+  margin-top: 0.45rem;
   color: var(--color-error);
   font-size: 0.85rem;
   font-weight: 700;
@@ -258,13 +316,15 @@
 }
 
 .login-card .bienvenida {
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 180px;
-  place-items: center;
   padding: 1.5rem;
   color: var(--color-acento);
   font-size: 1.12rem;
   font-weight: 700;
+  white-space: nowrap;
   text-align: center;
 }
 
@@ -280,15 +340,13 @@
 }
 
 html[data-theme="dark"] .login-page {
-  background: #101a28;
+  background: #101a28 url('../assets/supermarket-aisle.jpg') center / cover fixed no-repeat;
 }
 
 html[data-theme="dark"] .login-page::before {
   background:
-    linear-gradient(128deg, rgba(16, 26, 40, 0.96) 0 28%, transparent 28% 100%),
-    linear-gradient(34deg, rgba(65, 146, 247, 0.18) 0 13%, transparent 13% 100%),
-    repeating-linear-gradient(0deg, rgba(123, 177, 255, 0.05) 0 2px, transparent 2px 38px),
-    linear-gradient(108deg, #0f1d31 0%, #17283d 45%, #10233e 100%);
+    linear-gradient(180deg, rgba(8, 18, 31, 0.75), rgba(12, 27, 46, 0.9)),
+    linear-gradient(90deg, rgba(14, 30, 50, 0.7), transparent 45% 55%, rgba(14, 30, 50, 0.7));
 }
 
 html[data-theme="dark"] .login-card {
@@ -324,8 +382,8 @@ html[data-theme="dark"] .login-form__password-toggle:hover {
 
 @media (max-width: 575px) {
   .login-page__content {
-    width: min(100% - 1.25rem, 500px);
-    padding-top: 4.75rem;
+    width: min(calc(100% - 1.25rem), 440px);
+    padding-top: 4.25rem;
   }
 
   .login-brand__mark {

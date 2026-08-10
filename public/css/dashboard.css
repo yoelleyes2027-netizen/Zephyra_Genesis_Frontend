@@ -1,21 +1,83 @@
 @import url('./app.css');
 
+body {
+  position: relative;
+  background:
+    linear-gradient(rgba(244, 249, 255, 0.94), rgba(229, 240, 255, 0.97)),
+    url('../assets/supermarket-aisle.jpg') center / cover fixed no-repeat;
+}
+
 .dashboard-container {
   max-width: 1200px;
-  padding: 1.5rem 0 2.5rem;
+  padding: 2rem 0 2.75rem;
 }
 
 .dashboard-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-color: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.9);
+  color: #073a8f;
+  box-shadow: 0 14px 34px rgba(22, 79, 156, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.dashboard-header h1 {
+  color: #073a8f;
+  font-weight: 800;
+}
+
+.dashboard-header .logo {
+  position: relative;
+  overflow: visible;
+  border: 1px solid #c9dcf6 !important;
+  background: linear-gradient(145deg, #fff, #e7f1ff);
+  color: #0b55bb;
+  font-style: italic;
+  box-shadow: 0 7px 18px rgba(17, 100, 215, 0.16);
+}
+
+.dashboard-header .logo::after {
+  position: absolute;
+  right: -7px;
+  bottom: -5px;
+  content: '\f07a';
+  color: #258cf5;
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 900;
 }
 
 .dashboard-section h2 {
   margin-top: 0;
+  color: #082e75;
+  font-weight: 800;
+}
+
+.dashboard-section {
+  position: relative;
+  border-color: rgba(137, 174, 222, 0.38);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 14px 34px rgba(22, 79, 156, 0.13);
+  backdrop-filter: blur(10px);
+}
+
+.dashboard-section::before {
+  position: absolute;
+  top: 0;
+  right: 1.5rem;
+  left: 1.5rem;
+  height: 3px;
+  content: '';
+  border-radius: 0 0 4px 4px;
+  background: linear-gradient(90deg, var(--color-primario), #67b6ff 55%, transparent 55%);
+  opacity: 0.8;
 }
 
 .dashboard-menu button {
+  position: relative;
   display: flex;
   align-items: center;
   min-height: 76px;
@@ -24,7 +86,20 @@
   border-radius: var(--radio-control) !important;
   background-color: var(--superficie);
   color: var(--color-texto);
-  box-shadow: none;
+  box-shadow: 0 3px 10px rgba(25, 75, 140, 0.05);
+  font-weight: 750;
+  text-align: left;
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.dashboard-menu button i {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e7f1ff;
+  color: #1164d7;
 }
 
 .dashboard-menu button:hover {
@@ -32,10 +107,143 @@
   background-color: var(--superficie-suave);
   color: var(--color-primario-fuerte);
   box-shadow: var(--sombra-activa);
+  transform: translateY(-2px);
+}
+
+.dashboard-section .btn-primary {
+  border: 0;
+  background: linear-gradient(100deg, #0645c0, #1478e8 70%, #2495f3);
+  box-shadow: 0 8px 16px rgba(17, 100, 215, 0.2);
+}
+
+.dashboard-section .btn-primary:hover:not(:disabled) {
+  background: linear-gradient(100deg, #043a9e, #1068d0 70%, #167fdc);
+}
+
+.dashboard-section .btn-light,
+.dashboard-section .btn-outline-secondary {
+  border-color: #c9dbf0;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.dashboard-section .form-control,
+.dashboard-section .form-select {
+  border-color: #c8d9ef;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.dashboard-section .table-responsive {
+  box-shadow: 0 4px 15px rgba(25, 75, 140, 0.06);
 }
 
 #logout-btn:hover {
   border-color: var(--color-error);
   background-color: var(--color-error);
   color: #fff;
+}
+
+html[data-theme="dark"] body {
+  background:
+    linear-gradient(rgba(10, 20, 34, 0.93), rgba(15, 29, 47, 0.97)),
+    url('../assets/supermarket-aisle.jpg') center / cover fixed no-repeat;
+}
+
+html[data-theme="dark"] .dashboard-header,
+html[data-theme="dark"] .dashboard-section {
+  border-color: rgba(105, 147, 201, 0.28);
+  background: rgba(23, 34, 49, 0.92);
+}
+
+html[data-theme="dark"] .dashboard-header h1,
+html[data-theme="dark"] .dashboard-section h2 {
+  color: #eaf1f8;
+}
+
+html[data-theme="dark"] .dashboard-section::before {
+  background: linear-gradient(90deg, #73b7ff, #b0d5ff 55%, transparent 55%);
+}
+
+html[data-theme="dark"] .dashboard-section .form-control,
+html[data-theme="dark"] .dashboard-section .form-select,
+html[data-theme="dark"] .dashboard-section .btn-light,
+html[data-theme="dark"] .dashboard-section .btn-outline-secondary {
+  border-color: #405b7c;
+  background: rgba(17, 30, 46, 0.9);
+}
+
+.ticket-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.ticket-tab {
+  min-height: 100px;
+  padding: 1rem;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: var(--superficie);
+  color: #203c60;
+  text-align: left;
+}
+
+.ticket-tab.active {
+  border-color: var(--color-primario);
+  background: var(--color-primario);
+  color: #fff;
+  box-shadow: var(--sombra-activa);
+}
+
+.ticket-tab i {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--color-primario);
+  font-size: 1.2rem;
+}
+
+.ticket-tab.active i {
+  color: #fff;
+}
+
+.ticket-tab small {
+  color: var(--texto-suave);
+}
+
+.ticket-tab.active small {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.ticket-frame {
+  width: 100%;
+  min-height: 760px;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: var(--superficie);
+}
+
+html[data-theme="dark"] .ticket-tab {
+  color: var(--color-texto);
+}
+
+html[data-theme="dark"] .ticket-tab.active {
+  color: #07182b;
+}
+
+@media (max-width: 767px) {
+  .dashboard-header {
+    align-items: center !important;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.1rem;
+    text-align: right;
+  }
+
+  .ticket-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-frame {
+    min-height: 820px;
+  }
 }

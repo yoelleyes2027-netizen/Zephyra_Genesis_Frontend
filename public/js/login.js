@@ -1,8 +1,13 @@
 document.getElementById('login-form').addEventListener('submit', async function (e) {
   e.preventDefault();
 
+  const submitButton = document.getElementById('ingresar');
+  const submitText = submitButton.querySelector('.login-form__submit-text');
   const cedula = document.getElementById('cedula').value;
   const contraseña = document.getElementById('contraseña').value;
+
+  submitButton.disabled = true;
+  submitText.textContent = 'Verificando...';
 
   try {
     const res = await fetch('/api/auth/login', {
@@ -26,14 +31,17 @@ document.getElementById('login-form').addEventListener('submit', async function 
     if (res.ok) {
       const rol = data.user.rol;
       const nombre = data.user.nombre;
-    
+
       const loginContainer = document.querySelector('.login-container');
-      loginContainer.innerHTML = `
-        <div class="bienvenida">
-          Bienvenido, <strong>${nombre}</strong>!
-        </div>
-      `;
-    
+      const bienvenida = document.createElement('div');
+      const nombreUsuario = document.createElement('strong');
+
+      bienvenida.className = 'bienvenida';
+      bienvenida.append('Bienvenido, ');
+      nombreUsuario.textContent = nombre;
+      bienvenida.append(nombreUsuario, '!');
+      loginContainer.replaceChildren(bienvenida);
+
       // Redirigir según rol después de 1.5 segundos
       setTimeout(() => {
         if (rol === 'admin_sistema') {
@@ -56,6 +64,9 @@ document.getElementById('login-form').addEventListener('submit', async function 
   } catch (error) {
     console.error('Error en el login:', error);
     document.getElementById('mensaje-error').textContent = 'Error al conectar con el servidor';
+  } finally {
+    submitButton.disabled = false;
+    submitText.textContent = 'Ingresar';
   }
 });
 
