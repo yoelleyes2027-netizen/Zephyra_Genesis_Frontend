@@ -8,11 +8,22 @@ const logoutBtn = document.getElementById('logout-btn');
 const usuarioDbSelect = document.getElementById('usuario-db');
 const adminSistemaMensaje = document.getElementById('admin-sistema-mensaje');
 const usuarioPassword = document.getElementById('usuario-password');
+const usuarioPasswordError = document.getElementById('usuario-password-error');
 const toggleUsuarioPassword = document.getElementById('toggle-usuario-password');
 const soporteEditModal = document.getElementById('soporte-edit-modal');
 const soporteEditTitle = document.getElementById('soporte-edit-title');
 const soporteEditBody = document.getElementById('soporte-edit-body');
 const soporteEditForm = document.getElementById('soporte-edit-form');
+const passwordSeguraRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+function mostrarErrorContrasena(mensaje = '') {
+  if (usuarioPasswordError) {
+    usuarioPasswordError.textContent = mensaje;
+  }
+  if (usuarioPassword) {
+    usuarioPassword.setCustomValidity(mensaje);
+  }
+}
 
 let soporteItemsCache = [];
 let baseSoporteActual = '';
@@ -306,6 +317,15 @@ if (usuarioPassword && toggleUsuarioPassword) {
       : '<i class="fas fa-eye"></i>';
     toggleUsuarioPassword.setAttribute('aria-label', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
   });
+
+  usuarioPassword.addEventListener('input', () => {
+    if (!usuarioPassword.value || passwordSeguraRegex.test(usuarioPassword.value)) {
+      mostrarErrorContrasena('');
+      if (adminSistemaMensaje && adminSistemaMensaje.className.includes('text-danger')) {
+        mostrarMensaje('');
+      }
+    }
+  });
 }
 
 soporteBody.addEventListener('click', async (event) => {
@@ -435,6 +455,7 @@ function limpiarFormularioUsuario() {
   if (usuarioDbSelect) {
     usuarioDbSelect.value = '';
   }
+  mostrarErrorContrasena('');
   mostrarMensaje('');
 }
 
@@ -586,9 +607,17 @@ async function guardarUsuarioNuevo() {
     return;
   }
   if (!body.contraseña) {
+    mostrarErrorContrasena('La contraseña es obligatoria para crear un usuario');
     mostrarMensaje('La contraseña es obligatoria para crear un usuario', 'error');
     return;
   }
+  if (!passwordSeguraRegex.test(body.contraseña)) {
+    mostrarErrorContrasena('Debe tener al menos 8 caracteres, una mayúscula y un número');
+    mostrarMensaje('La contraseña debe tener al menos 8 caracteres, una mayúscula y un número', 'error');
+    usuarioPassword.focus();
+    return;
+  }
+  mostrarErrorContrasena('');
   if (!body.tenantDatabase) {
     mostrarMensaje('Selecciona una base de datos', 'error');
     return;

@@ -56,11 +56,13 @@
         <div class="col-md-2"><input id="usuario-cedula" type="number" class="form-control" placeholder="Cédula" required></div>
         <div class="col-md-2">
           <div class="input-group">
-            <input id="usuario-password" type="password" class="form-control" placeholder="Contraseña">
+            <input id="usuario-password" type="password" class="form-control" placeholder="Contraseña" minlength="8" pattern="(?=.*[A-Z])(?=.*\d).{8,}" title="Debe tener al menos 8 caracteres, una mayúscula y un número" required autocomplete="new-password">
             <button class="btn btn-outline-secondary" type="button" id="toggle-usuario-password" aria-label="Mostrar contraseña">
               <i class="fas fa-eye"></i>
             </button>
           </div>
+          <small class="text-muted d-block mt-1">Mínimo 8 caracteres, una mayúscula y un número.</small>
+          <small id="usuario-password-error" class="text-danger d-block mt-1" aria-live="polite"></small>
         </div>
         <div class="col-md-2"><select id="usuario-rol" class="form-select"><option value="" selected>Seleccionar rol...</option><option value="ADMIN">Admin</option><option value="RECEPCION">Recepción</option><option value="CAJERO">Cajero</option></select></div>
         <div class="col-md-2">
