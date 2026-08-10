@@ -7,3 +7,41 @@
   --blanco: #ffffff;
   --color-terciario: #c0d8f9;
 }
+
+html[data-theme="dark"] {
+  --color-primario: #4d9bff;
+  --color-secundario: #202a38;
+  --color-acento: #4cc27a;
+  --color-texto: #edf3fb;
+  --color-error: #ff7870;
+  --blanco: #121924;
+  --color-terciario: #2e4058;
+}
+
+html[data-theme="dark"] body {
+  background-color: var(--blanco);
+  color: var(--color-texto);
+}
+
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] .input-group-text,
+html[data-theme="dark"] .table,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .modal-content {
+  background-color: #182231;
+  color: var(--color-texto);
+  border-color: #40516a;
+}
+
+html[data-theme="dark"] .table > :not(caption) > * > *,
+html[data-theme="dark"] .form-control::placeholder {
+  color: #c6d1df;
+}
+
+html[data-theme="dark"] .btn-light,
+html[data-theme="dark"] .btn-outline-light {
+  background-color: #263448;
+  color: var(--color-texto);
+  border-color: #52647d;
+}

@@ -61,6 +61,24 @@ document.getElementById('login-form').addEventListener('submit', async function 
 
 const contraseñaLogin = document.getElementById('contraseña');
 const toggleContraseñaLogin = document.getElementById('toggle-contraseña');
+const themeToggle = document.getElementById('theme-toggle');
+
+function actualizarBotonTema() {
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  themeToggle.innerHTML = isDark
+    ? '<i class="fas fa-sun"></i><span>Claro</span>'
+    : '<i class="fas fa-moon"></i><span>Oscuro</span>';
+  themeToggle.setAttribute('aria-label', isDark ? 'Activar tema claro' : 'Activar tema oscuro');
+}
+
+if (themeToggle) {
+  actualizarBotonTema();
+  themeToggle.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    window.applyZephyraTheme(nextTheme);
+    actualizarBotonTema();
+  });
+}
 
 if (contraseñaLogin && toggleContraseñaLogin) {
   toggleContraseñaLogin.addEventListener('click', () => {

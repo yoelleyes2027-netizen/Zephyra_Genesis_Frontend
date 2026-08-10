@@ -1,26 +1,96 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Tickets</title>
-    <link rel="stylesheet" href="../css/ticket.css">
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tickets - Genesis</title>
+    <script src="../js/theme.js"></script>
+    <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/all.min.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .ticket-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+        }
 
+        .ticket-tab {
+            min-height: 92px;
+            text-align: left;
+            border: 1px solid #c7d5e8;
+            background: #fff;
+            color: #203c60;
+        }
+
+        .ticket-tab.active {
+            border-color: #0d47a1;
+            background: #0d47a1;
+            color: #fff;
+        }
+
+        .ticket-tab i {
+            display: block;
+            margin-bottom: 0.45rem;
+            font-size: 1.2rem;
+        }
+
+        .ticket-frame {
+            width: 100%;
+            min-height: 760px;
+            border: 1px solid #d6dfeb;
+            background: #fff;
+        }
+
+        @media (max-width: 767px) {
+            .ticket-tabs {
+                grid-template-columns: 1fr;
+            }
+
+            .ticket-frame {
+                min-height: 820px;
+            }
+        }
+    </style>
+</head>
 <body>
-    <div class="contenedor">
-        <h1>Panel de Tickets</h1>
-        <div class="botones">
-            <button onclick="window.location.href='./venta-caja.html'">🛒 Venta de Caja</button>
-            <button onclick="window.location.href='./desactivar-ticket.html'">↩️ Devolver Ticket</button>
-            <button onclick="window.location.href='./devolucion.html'">♻️ Devolución</button>
-        </div>
-        <div style="text-align: center; margin-top: 24px;">
-            <button onclick="window.location.href='./adminUsuario.html'">← Ir para atrás</button>
+    <div class="dashboard-container container">
+        <div class="dashboard-header d-flex align-items-center justify-content-between">
+            <button class="logo border-0" type="button" aria-label="Volver al panel" onclick="window.location.href='./adminUsuario.html'">G</button>
+            <h1 class="mb-0"><i class="fas fa-receipt pe-2"></i>Gestión de Tickets</h1>
+    </div>
+
+        <section class="dashboard-section mb-4">
+            <h2 class="mb-2">Operaciones de caja</h2>
+            <p class="text-muted mb-4">Selecciona la operación que necesitas realizar.</p>
+            <div class="ticket-tabs" role="tablist" aria-label="Casos de uso de ticket">
+                <button class="ticket-tab btn active" type="button" role="tab" aria-selected="true" data-ticket-view="venta">
+                    <i class="fas fa-cart-shopping"></i>
+                    <strong>Venta de caja</strong><br>
+                    <small>Registrar una venta</small>
+                </button>
+                <button class="ticket-tab btn" type="button" role="tab" aria-selected="false" data-ticket-view="anulacion">
+                    <i class="fas fa-rotate-left"></i>
+                    <strong>Devolver ticket</strong><br>
+                    <small>Anular total o parcialmente</small>
+                </button>
+                <button class="ticket-tab btn" type="button" role="tab" aria-selected="false" data-ticket-view="devolucion">
+                    <i class="fas fa-arrow-right-arrow-left"></i>
+                    <strong>Devolución en caja</strong><br>
+                    <small>Registrar devolución directa</small>
+                </button>
+            </div>
+        </section>
+
+        <section class="dashboard-section mb-4">
+            <iframe id="ticket-frame" class="ticket-frame" title="Operación de ticket" src="./venta-caja.html"></iframe>
+        </section>
+
+        <div class="text-center mt-4 mb-4">
+            <button class="btn btn-secondary px-4 py-2" type="button" onclick="window.location.href='./adminUsuario.html'">← Ir para atrás</button>
         </div>
     </div>
 
     <script src="../js/ticket.js"></script>
 </body>
-
 </html>

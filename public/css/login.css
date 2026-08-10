@@ -12,6 +12,16 @@ body {
   padding: 0;
 }
 
+.theme-toggle {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .login-container {
   background-color: var(--color-secundario);
   color: var(--color-texto);
@@ -124,4 +134,11 @@ body {
 
 #icono {
   color: var(--color-primario);
+}
+
+@media (max-width: 575px) {
+  .theme-toggle {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
 }
