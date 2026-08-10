@@ -31,12 +31,12 @@
         <h1 id="login-title">Iniciar sesión</h1>
       </div>
 
-      <form class="login-form" id="login-form">
+      <form class="login-form" id="login-form" autocomplete="on">
         <div class="login-form__field">
           <label for="cedula">Cédula</label>
           <div class="login-form__control">
             <i class="far fa-id-card" aria-hidden="true"></i>
-            <input type="text" id="cedula" name="cedula" class="form-control" placeholder="Ingrese su cédula" autocomplete="username" required>
+            <input type="text" id="cedula" name="username" class="form-control" placeholder="Ingrese su cédula" autocomplete="username" spellcheck="false" autocapitalize="off" required>
           </div>
         </div>
 
@@ -44,7 +44,7 @@
           <label for="contraseña">Contraseña</label>
           <div class="login-form__control">
             <i class="fas fa-lock" aria-hidden="true"></i>
-            <input type="password" id="contraseña" name="contraseña" class="form-control" placeholder="Ingrese su contraseña" autocomplete="current-password" required>
+            <input type="password" id="contraseña" name="password" class="form-control" placeholder="Ingrese su contraseña" autocomplete="current-password" required>
             <button class="login-form__password-toggle" type="button" id="toggle-contraseña" aria-label="Mostrar contraseña">
               <i class="fas fa-eye" aria-hidden="true"></i>
             </button>
@@ -54,7 +54,7 @@
         <label class="login-form__remember" for="recordar-credenciales">
           <input type="checkbox" id="recordar-credenciales" name="recordar-credenciales">
           <span class="login-form__checkbox" aria-hidden="true"><i class="fas fa-check"></i></span>
-          <span>Recordar contraseña</span>
+          <span>Recordar credenciales</span>
         </label>
 
         <button id="ingresar" type="submit" class="btn login-form__submit">

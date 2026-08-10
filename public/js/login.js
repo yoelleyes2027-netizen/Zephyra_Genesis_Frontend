@@ -1,39 +1,41 @@
-const REMEMBER_LOGIN_KEY = 'zephyra-remember-login';
 const loginForm = document.getElementById('login-form');
 const cedulaLogin = document.getElementById('cedula');
 const contraseñaLogin = document.getElementById('contraseña');
 const recordarCredenciales = document.getElementById('recordar-credenciales');
 
-async function restaurarCredencialesRecordadas() {
-  const cedulaRecordada = localStorage.getItem(REMEMBER_LOGIN_KEY);
-  if (!cedulaRecordada) {
-    return;
-  }
-
-  recordarCredenciales.checked = true;
-  cedulaLogin.value = cedulaRecordada;
-
+async function restaurarCredencialesDelNavegador() {
   if (!navigator.credentials || !window.PasswordCredential) {
     return;
   }
 
   try {
     const credencial = await navigator.credentials.get({ password: true, mediation: 'optional' });
-    if (credencial?.id === cedulaRecordada) {
+    if (credencial?.id && cedulaLogin) {
+      cedulaLogin.value = credencial.id;
+    }
+    if (credencial?.password && contraseñaLogin) {
       contraseñaLogin.value = credencial.password;
     }
+    if (recordarCredenciales) {
+      recordarCredenciales.checked = Boolean(credencial?.id || credencial?.password);
+    }
   } catch (error) {
-    console.debug('El navegador no restauró las credenciales:', error);
+    console.debug('El navegador no restauró la contraseña guardada:', error);
   }
 }
 
-async function guardarPreferenciaDeCredenciales(cedula, contraseña) {
-  if (!recordarCredenciales.checked) {
-    localStorage.removeItem(REMEMBER_LOGIN_KEY);
+async function guardarCredencialesEnNavegador(cedula, contraseña) {
+  if (!recordarCredenciales?.checked) {
+    if (navigator.credentials?.preventSilentAccess) {
+      try {
+        await navigator.credentials.preventSilentAccess();
+      } catch (error) {
+        console.debug('El navegador no pudo desactivar el acceso silencioso:', error);
+      }
+    }
     return;
   }
 
-  localStorage.setItem(REMEMBER_LOGIN_KEY, cedula);
   if (!navigator.credentials || !window.PasswordCredential) {
     return;
   }
@@ -80,7 +82,7 @@ loginForm.addEventListener('submit', async function (e) {
       const rol = data.user.rol;
       const nombre = data.user.nombre;
 
-      await guardarPreferenciaDeCredenciales(cedula, contraseña);
+      await guardarCredencialesEnNavegador(cedula, contraseña);
 
       const loginContainer = document.querySelector('.login-container');
       const bienvenida = document.createElement('div');
@@ -135,7 +137,7 @@ loginForm.addEventListener('submit', async function (e) {
 const toggleContraseñaLogin = document.getElementById('toggle-contraseña');
 const themeToggle = document.getElementById('theme-toggle');
 
-restaurarCredencialesRecordadas();
+restaurarCredencialesDelNavegador();
 
 function actualizarBotonTema() {
   const isDark = document.documentElement.dataset.theme === 'dark';
