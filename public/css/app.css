@@ -202,6 +202,27 @@ select:focus {
   background: rgba(17, 100, 215, 0.06);
 }
 
+html[data-theme="dark"] .table-hover {
+  --bs-table-bg: #182231;
+  --bs-table-color: #eaf1f8;
+  --bs-table-hover-bg: #233a56;
+  --bs-table-hover-color: #ffffff;
+}
+
+html[data-theme="dark"] .table-hover tbody tr > * {
+  transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+html[data-theme="dark"] .table-hover tbody tr:hover > * {
+  color: #ffffff;
+  background: #233a56;
+  box-shadow: inset 0 1px 0 rgba(112, 180, 255, 0.52), inset 0 -1px 0 rgba(112, 180, 255, 0.52);
+}
+
+html[data-theme="dark"] .table-hover tbody tr:hover > *:first-child {
+  box-shadow: inset 4px 0 0 #5ca5ff, inset 0 1px 0 rgba(112, 180, 255, 0.52), inset 0 -1px 0 rgba(112, 180, 255, 0.52);
+}
+
 .card,
 .modal-content {
   border: 1px solid var(--borde);
