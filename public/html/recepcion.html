@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recepción - Genesis</title>
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-container container">
+    <div class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo">G</div>
+      <h1 class="mb-0">Genesis - Recepción</h1>
+    </div>
+
+    <div class="dashboard-section">
+      <h2 class="mb-4">Módulos de recepción</h2>
+      <div class="dashboard-menu d-flex flex-wrap gap-3">
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./producto.html?origen=recepcion'">
+          <i class="fas fa-box"></i> Productos
+        </button>
+        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./proveedores.html?origen=recepcion'">
+          <i class="fas fa-truck"></i> Proveedores
+        </button>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <button id="logout-btn" class="btn btn-danger px-4 py-2">⛔ Cerrar sesión</button>
+    </div>
+  </div>
+
+  <script src="../js/recepcion.js"></script>
+</body>
+</html>

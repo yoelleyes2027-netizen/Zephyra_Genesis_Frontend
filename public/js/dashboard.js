@@ -26,6 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
+        if (rol === "recepcion") {
+          window.location.href = "../html/recepcion.html";
+          return;
+        }
+
         console.log("✅ Token válido. Acceso permitido al dashboard.");
       }
     })

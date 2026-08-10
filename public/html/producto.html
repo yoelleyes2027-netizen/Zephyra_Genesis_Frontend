@@ -40,9 +40,16 @@
   </style>
 </head>
 <body>
+  <script>
+    function volverAlPanel() {
+      window.location.href = new URLSearchParams(window.location.search).get('origen') === 'recepcion'
+        ? './recepcion.html'
+        : './adminUsuario.html';
+    }
+  </script>
   <div class="dashboard-container container">
     <div class="dashboard-header d-flex align-items-center justify-content-between">
-      <div class="logo" onclick="window.location.href='./adminUsuario.html'">G</div>
+      <button class="logo border-0" type="button" aria-label="Volver al panel" onclick="volverAlPanel()">G</button>
       <h1 class="mb-0">Gestión de Productos</h1>
     </div>
 
@@ -188,7 +195,7 @@
     </div>
 
     <div class="text-center mt-4">
-      <button class="btn btn-secondary px-4 py-2" onclick="window.location.href='./adminUsuario.html'">← Ir para atrás</button>
+      <button class="btn btn-secondary px-4 py-2" onclick="volverAlPanel()">← Ir para atrás</button>
     </div>
   </div>
   <script src="../js/producto.js"></script>

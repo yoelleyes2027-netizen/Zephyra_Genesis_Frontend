@@ -38,8 +38,10 @@ document.getElementById('login-form').addEventListener('submit', async function 
       setTimeout(() => {
         if (rol === 'admin_sistema') {
           window.location.href = '../html/adminSistema.html';
-        } else if (rol === 'admin' || rol === 'recepcion') {
+        } else if (rol === 'admin') {
           window.location.href = '../html/adminUsuario.html';
+        } else if (rol === 'recepcion') {
+          window.location.href = '../html/recepcion.html';
         } else if (rol === 'cajero') {
           window.location.href = '../html/ticket.html';
         } else {
