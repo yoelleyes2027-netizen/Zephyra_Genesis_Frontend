@@ -19,8 +19,7 @@ body {
   font-size: 16px;
   line-height: 1.45;
   background-color: var(--blanco);
-  background-image: linear-gradient(90deg, rgba(23, 105, 209, 0.025) 1px, transparent 1px), linear-gradient(rgba(23, 105, 209, 0.025) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-image: linear-gradient(135deg, rgba(17, 100, 215, 0.045), transparent 42%), repeating-linear-gradient(0deg, rgba(17, 100, 215, 0.025) 0 1px, transparent 1px 32px);
 }
 
 button,
@@ -37,7 +36,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 a:focus-visible {
-  outline: 3px solid rgba(23, 105, 209, 0.34);
+  outline: 3px solid rgba(17, 100, 215, 0.34);
   outline-offset: 2px;
 }
 
@@ -54,8 +53,8 @@ a:focus-visible {
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--radio-panel);
   color: #fff;
-  background: #1769d1;
-  box-shadow: 0 10px 24px rgba(23, 105, 209, 0.2);
+  background: var(--color-primario);
+  box-shadow: 0 10px 24px rgba(17, 100, 215, 0.2);
 }
 
 .dashboard-header h1 {
@@ -73,7 +72,7 @@ a:focus-visible {
   margin-right: 0.75rem;
   border-radius: 8px;
   background: #fff;
-  color: #1769d1;
+  color: var(--color-primario);
   font-size: 1.8rem;
   font-weight: 800;
   line-height: 1;
@@ -118,7 +117,7 @@ select {
 .form-select:hover,
 input:hover,
 select:hover {
-  border-color: #8caed3;
+  border-color: #8aadd8;
 }
 
 .form-control:focus,
@@ -126,7 +125,7 @@ select:hover {
 input:focus,
 select:focus {
   border-color: var(--color-primario);
-  box-shadow: 0 0 0 3px rgba(23, 105, 209, 0.12);
+  box-shadow: 0 0 0 3px rgba(17, 100, 215, 0.12);
 }
 
 .btn {
@@ -143,7 +142,7 @@ select:focus {
 .btn-primary {
   border-color: var(--color-primario);
   background-color: var(--color-primario);
-  box-shadow: 0 4px 10px rgba(23, 105, 209, 0.18);
+  box-shadow: 0 4px 10px rgba(17, 100, 215, 0.18);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -162,7 +161,7 @@ select:focus {
 .btn-light:hover:not(:disabled),
 .btn-outline-secondary:hover:not(:disabled),
 .btn-outline-light:hover:not(:disabled) {
-  border-color: #8caed3;
+  border-color: #8aadd8;
   color: var(--color-primario-fuerte);
   background: var(--superficie-suave);
 }
@@ -200,7 +199,7 @@ select:focus {
 
 .table-hover tbody tr:hover > * {
   color: var(--color-texto);
-  background: rgba(23, 105, 209, 0.06);
+  background: rgba(17, 100, 215, 0.06);
 }
 
 .card,

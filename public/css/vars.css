@@ -1,18 +1,18 @@
 :root {
-  --color-primario: #1769d1;
-  --color-primario-fuerte: #0f4f9b;
-  --color-secundario: #eaf2fc;
+  --color-primario: #1164d7;
+  --color-primario-fuerte: #084ba9;
+  --color-secundario: #eaf3ff;
   --color-acento: #16803c;
   --color-texto: #1e2c3d;
   --color-error: #c43d3d;
-  --blanco: #f8fafc;
-  --color-terciario: #d7e7fb;
+  --blanco: #f3f7fe;
+  --color-terciario: #d5e6ff;
   --superficie: #ffffff;
-  --superficie-suave: #f3f7fc;
-  --borde: #c8d6e7;
-  --texto-suave: #5e7188;
-  --sombra-panel: 0 12px 28px rgba(25, 57, 96, 0.09);
-  --sombra-activa: 0 10px 20px rgba(23, 105, 209, 0.18);
+  --superficie-suave: #f0f6ff;
+  --borde: #c8d9ef;
+  --texto-suave: #5e7699;
+  --sombra-panel: 0 12px 28px rgba(26, 79, 152, 0.1);
+  --sombra-activa: 0 10px 20px rgba(17, 100, 215, 0.18);
   --radio-panel: 10px;
   --radio-control: 6px;
   --color1: var(--blanco);
