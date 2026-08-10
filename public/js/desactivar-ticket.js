@@ -100,7 +100,8 @@ async function buscarTicket() {
     <td>
       <input type="checkbox" 
        class="checkbox-articulo" 
-       value="${producto.id}" 
+        value="${producto.productoId}"
+        data-ticket-id="${producto.ticketId}"
        data-producto-id="${producto.productoId}">
     </td>
   `;
@@ -169,15 +170,18 @@ document.getElementById('btn-anular').addEventListener('click', async () => {
 //Eliminar artuculos de un tiket
 document.getElementById('btn-eliminar-seleccionados').addEventListener('click', async () => {
   const checkboxes = document.querySelectorAll('.checkbox-articulo:checked');
-  const detallesIdsSeleccionados = Array.from(checkboxes).map(cb => parseInt(cb.value));
+  const detallesSeleccionados = Array.from(checkboxes).map((checkbox) => ({
+    ticketId: Number(checkbox.dataset.ticketId),
+    productoId: Number(checkbox.dataset.productoId),
+  }));
 
-  if (detallesIdsSeleccionados.length === 0) {
+  if (detallesSeleccionados.length === 0) {
     alert("No seleccionaste ningún artículo.");
     return;
   }
 
   const payload = {
-    detalles_ids: detallesIdsSeleccionados
+    detalles: detallesSeleccionados
   };
 
   try {
@@ -274,13 +278,11 @@ async function crearTicketDevolucionDesdeSeleccionados() {
       const checkbox = fila.querySelector('.checkbox-articulo');
       if (!checkbox || !checkbox.checked) return null;
 
-      const detalle_id = parseInt(checkbox.value);
       const producto_id = parseInt(checkbox.dataset.productoId);
 
       const celdas = fila.querySelectorAll('td');
 
       return {
-        id: detalle_id,
         producto_id: producto_id,
         descripcion: celdas[0].textContent.trim(),
         cantidad: parseInt(celdas[1].textContent.trim()),

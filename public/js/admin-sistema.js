@@ -468,9 +468,11 @@ function obtenerClaveSoporte(tabla, item) {
       return String(item.codigoDeBarras ?? item.id ?? '');
     case 'tickets':
     case 'ticket':
+      return String(item.id ?? '');
     case 'detalle_ticket':
     case 'detalle-ticket':
     case 'detalleticket':
+      return `${item.ticketId ?? ''}:${item.productoId ?? ''}`;
     case 'caja_diaria':
     case 'caja-diaria':
     case 'cajadiaria':
@@ -697,8 +699,9 @@ async function desactivarTicket(item) {
 }
 
 async function eliminarArticulosDetalle(item) {
-  if (!window.confirm(`¿Eliminar el detalle ${item.id}?`)) return;
-  await eliminarRegistroSoporte(String(item.id));
+  const clave = `${item.ticketId}:${item.productoId}`;
+  if (!window.confirm(`¿Eliminar el detalle del ticket ${item.ticketId} para el producto ${item.productoId}?`)) return;
+  await eliminarRegistroSoporte(clave);
   mostrarMensaje('Detalle eliminado correctamente', 'success');
   await cargarSoporteTabla();
 }
