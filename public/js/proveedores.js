@@ -35,7 +35,7 @@ function formDataProveedor() {
 
 function limpiarFormularioProveedor() {
   proveedorForm.reset();
-  document.getElementById('proveedor-tipo-documento').value = 'RUC';
+  document.getElementById('proveedor-tipo-documento').value = 'RUT';
 }
 
 function abrirModalEdicionProveedor(proveedor) {
@@ -44,7 +44,7 @@ function abrirModalEdicionProveedor(proveedor) {
   proveedorEditEmail.value = proveedor.email ?? '';
   proveedorEditTelefono.value = proveedor.telefono ?? '';
   proveedorEditDocumento.value = proveedor.numeroDocumento ?? '';
-  proveedorEditTipoDocumento.value = proveedor.tipoDocumento ?? 'RUC';
+  proveedorEditTipoDocumento.value = proveedor.tipoDocumento ?? 'RUT';
   proveedorEditRazonSocial.value = proveedor.razonSocial ?? '';
   proveedorEditDireccion.value = proveedor.direccion ?? '';
   proveedorEditModal.classList.remove('d-none');

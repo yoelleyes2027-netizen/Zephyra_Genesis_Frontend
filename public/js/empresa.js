@@ -5,7 +5,7 @@ const empresaBuscar = document.getElementById('empresa-buscar');
 const empresaVerTodos = document.getElementById('empresa-ver-todos');
 const empresaBody = document.getElementById('empresa-body');
 const empresaBusqueda = document.getElementById('empresa-busqueda');
-const empresaPorRazon = document.getElementById('empresa-por-razon');
+const empresaBuscarPor = document.getElementById('empresa-buscar-por');
 const empresaEditModal = document.getElementById('empresa-edit-modal');
 const empresaEditForm = document.getElementById('empresa-edit-form');
 const empresaEditName = document.getElementById('empresa-edit-name');
@@ -34,7 +34,7 @@ function formDataEmpresa() {
 function limpiarFormularioEmpresa() {
   empresaForm.reset();
   empresaSubmit.textContent = 'Guardar empresa';
-  document.getElementById('empresa-tipo-documento').value = 'RUC';
+  document.getElementById('empresa-tipo-documento').value = 'RUT';
 }
 
 function abrirModalEdicionEmpresa(empresa) {
@@ -43,7 +43,7 @@ function abrirModalEdicionEmpresa(empresa) {
   empresaEditEmail.value = empresa.email ?? '';
   empresaEditTelefono.value = empresa.telefono ?? '';
   empresaEditDocumento.value = empresa.numeroDocumento ?? '';
-  empresaEditTipoDocumento.value = empresa.tipoDocumento ?? 'RUC';
+  empresaEditTipoDocumento.value = empresa.tipoDocumento ?? 'RUT';
   empresaEditRazonSocial.value = empresa.razonSocial ?? '';
   empresaEditDireccion.value = empresa.direccion ?? '';
   empresaEditModal.classList.remove('d-none');
@@ -117,7 +117,7 @@ async function buscarEmpresas() {
     await cargarEmpresas();
     return;
   }
-  const endpoint = empresaPorRazon.checked
+  const endpoint = empresaBuscarPor.value === 'razon'
     ? `/api/empresas/buscar/denominacion/${encodeURIComponent(valor)}`
     : `/api/empresas/buscar/${encodeURIComponent(valor)}`;
   const response = await fetch(endpoint, { credentials: 'include' });

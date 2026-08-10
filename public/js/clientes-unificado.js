@@ -5,7 +5,7 @@ const clienteBuscar = document.getElementById('cliente-buscar');
 const clienteVerTodos = document.getElementById('cliente-ver-todos');
 const clienteBody = document.getElementById('cliente-body');
 const clienteBusqueda = document.getElementById('cliente-busqueda');
-const clientePorNombre = document.getElementById('cliente-por-nombre');
+const clienteBuscarPor = document.getElementById('cliente-buscar-por');
 const clienteEditModal = document.getElementById('cliente-edit-modal');
 const clienteEditForm = document.getElementById('cliente-edit-form');
 const clienteEditName = document.getElementById('cliente-edit-name');
@@ -127,7 +127,7 @@ async function buscarClientes() {
     return;
   }
 
-  const endpoint = clientePorNombre.checked
+  const endpoint = clienteBuscarPor.value === 'nombre'
     ? `/api/clientes/buscar/denominacion/${encodeURIComponent(valor)}`
     : `/api/clientes/buscar/${encodeURIComponent(valor)}`;
 
