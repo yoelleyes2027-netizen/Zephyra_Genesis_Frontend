@@ -136,9 +136,47 @@ body {
   box-shadow: 0 4px 15px rgba(25, 75, 140, 0.06);
 }
 
-#logout-btn:hover {
-  border-color: var(--color-error);
-  background-color: var(--color-error);
+.dashboard-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 1.25rem;
+}
+
+.dashboard-logout {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  gap: 0.55rem;
+  padding: 0.6rem 0.95rem;
+  border: 1px solid #a8c9ef;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #0a5bbb;
+  box-shadow: 0 5px 13px rgba(21, 91, 181, 0.1);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.dashboard-logout i {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: #e5f0ff;
+  color: #0b64cf;
+  font-size: 0.8rem;
+}
+
+.dashboard-logout:hover:not(:disabled) {
+  border-color: #1974db;
+  background-color: #d9ecff;
+  color: #003d91;
+  box-shadow: 0 9px 18px rgba(17, 100, 215, 0.24);
+}
+
+.dashboard-logout:hover:not(:disabled) i {
+  background: #0750b8;
   color: #fff;
 }
 
@@ -169,6 +207,17 @@ html[data-theme="dark"] .dashboard-section .btn-light,
 html[data-theme="dark"] .dashboard-section .btn-outline-secondary {
   border-color: #405b7c;
   background: rgba(17, 30, 46, 0.9);
+}
+
+html[data-theme="dark"] .dashboard-logout {
+  border-color: #406184;
+  background: rgba(20, 38, 59, 0.9);
+  color: #a8d0ff;
+}
+
+html[data-theme="dark"] .dashboard-logout i {
+  background: #1d3b60;
+  color: #91c5ff;
 }
 
 .ticket-tabs {
