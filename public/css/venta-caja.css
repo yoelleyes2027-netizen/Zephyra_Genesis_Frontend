@@ -223,21 +223,17 @@ body.cash-register {
   font-weight: 750;
 }
 
-.cash-header-actions {
+.cash-footer-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 1rem;
-  margin-bottom: 1.25rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--borde);
 }
 
-.cash-header-actions h1 {
-  margin: 0;
-  padding: 0;
-  border-bottom: 0;
-}
-
-.cash-header-actions button {
+.cash-footer-actions button {
   min-height: 42px;
   padding: 0.65rem 1rem;
   border: 1px solid var(--borde);
@@ -247,7 +243,7 @@ body.cash-register {
   font-weight: 700;
 }
 
-.cash-header-actions button:hover {
+.cash-footer-actions button:hover {
   border-color: var(--color-primario);
   background: var(--color-primario);
   color: #fff;

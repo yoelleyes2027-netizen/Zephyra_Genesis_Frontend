@@ -1,8 +1,10 @@
 let ticketSeleccionado = null;
+let destinoVolver = './cajeroUsuario.html';
 
 const autorizacionPanel = document.getElementById('autorizacion-panel');
 const buscarTicketPanel = document.getElementById('buscar-ticket-panel');
 const ticketDetallePanel = document.getElementById('ticket-detalle-panel');
+const volverPanelButton = document.getElementById('volver-panel');
 
 function mostrarMensaje(elemento, mensaje = '', tipo = '') {
   elemento.textContent = mensaje;
@@ -19,6 +21,18 @@ async function leerRespuesta(response) {
 
 function formatearUyu(monto) {
   return `UYU $${Number(monto || 0).toFixed(2)}`;
+}
+
+async function inicializarDestinoVolver() {
+  try {
+    const response = await fetch('/api/auth/verificar-token', { credentials: 'include' });
+    if (!response.ok) return;
+    const payload = await response.json();
+    const rol = (payload.usuario?.rol || '').toLowerCase();
+    destinoVolver = rol === 'admin' ? './adminUsuario.html' : './cajeroUsuario.html';
+  } catch {
+    destinoVolver = './login.html';
+  }
 }
 
 document.getElementById('autorizacion-form').addEventListener('submit', async (event) => {
@@ -44,7 +58,7 @@ document.getElementById('autorizacion-form').addEventListener('submit', async (e
     console.error('Autorización de devolución denegada:', error);
     mostrarMensaje(mensaje, 'Autorización denegada. Volviendo al panel de cajero.', 'error');
     window.setTimeout(() => {
-      window.top.location.href = './cajeroUsuario.html';
+      window.top.location.href = destinoVolver;
     }, 1200);
   }
 });
@@ -130,3 +144,9 @@ document.getElementById('finalizar-devolucion').addEventListener('click', async 
     button.disabled = false;
   }
 });
+
+volverPanelButton.addEventListener('click', () => {
+  window.location.href = destinoVolver;
+});
+
+inicializarDestinoVolver();

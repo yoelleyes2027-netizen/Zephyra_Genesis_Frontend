@@ -11,10 +11,7 @@
 
 <body class="cash-register">
   <main class="container" aria-labelledby="venta-title">
-    <div class="cash-header-actions">
-      <h1 id="venta-title">Cortar ticket</h1>
-      <button id="volver-panel" type="button">Volver</button>
-    </div>
+    <h1 id="venta-title">Cortar ticket</h1>
 
     <form id="producto-form" novalidate>
       <div>
@@ -40,6 +37,7 @@
     <p class="total-display">Total: <span>UYU $<strong id="total">0.00</strong></span></p>
     <p id="venta-mensaje" class="cash-message" role="alert" aria-live="polite"></p>
     <button id="cerrar-ticket" type="button">Cerrar ticket</button>
+    <div class="cash-footer-actions"><button id="volver-panel" type="button">Volver</button></div>
   </main>
 
   <section id="modal-cliente" class="cash-modal" hidden aria-labelledby="cliente-title">
