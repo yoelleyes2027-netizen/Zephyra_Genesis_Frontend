@@ -102,6 +102,22 @@
       </div>
     </section>
 
+    <section class="dashboard-section mb-4">
+      <h2 class="mb-2">Consumidor final</h2>
+      <p class="text-muted mb-3">Prepara el cliente genérico obligatorio para las ventas sin empresa.</p>
+      <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+          <label class="form-label" for="consumidor-final-db">Base de datos</label>
+          <select id="consumidor-final-db" class="form-select">
+            <option value="">Seleccionar BDD...</option>
+          </select>
+        </div>
+        <div class="col-md-7">
+          <output id="consumidor-final-resultado" class="text-muted" aria-live="polite">Selecciona una BDD para consultar el consumidor final.</output>
+        </div>
+      </div>
+    </section>
+
     <div id="soporte-edit-modal" class="support-modal d-none" aria-hidden="true">
       <div class="support-modal__backdrop" data-soporte-close></div>
       <div class="support-modal__panel card shadow-lg">

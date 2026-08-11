@@ -115,7 +115,7 @@ loginForm.addEventListener('submit', async function (e) {
         } else if (rol === 'recepcion') {
           window.location.href = '../html/recepcion.html';
         } else if (rol === 'cajero') {
-          window.location.href = '../html/ticket.html';
+          window.location.href = '../html/cajeroUsuario.html';
         } else {
           window.location.href = '../html/adminUsuario.html';
         }

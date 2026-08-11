@@ -1,331 +1,132 @@
-let productosSeleccionados = [];
-let total = 0;
+let ticketSeleccionado = null;
 
-const form = document.getElementById('producto-form');
-const tablaBody = document.querySelector('#tabla-productos tbody');
-const totalSpan = document.getElementById('total');
+const autorizacionPanel = document.getElementById('autorizacion-panel');
+const buscarTicketPanel = document.getElementById('buscar-ticket-panel');
+const ticketDetallePanel = document.getElementById('ticket-detalle-panel');
 
-//Logica de buscador de productos
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const codigo = document.getElementById('codigo').value;
-  const cantidad = parseInt(document.getElementById('cantidad').value);
-
-  try {
-    const res = await fetch(`/api/productos/${codigo}`, {
-      credentials: 'include',
-    });
-
-    if (!res.ok) throw new Error('Producto no encontrado');
-
-    const producto = await res.json();
-    const subtotal = producto.precioVenta * cantidad;
-    total += subtotal;
-
-    const productoInfo = {
-      producto_id: producto.id,
-      cantidad,
-      precio_unitario: producto.precioVenta,
-      subtotal,
-    };
-
-    productosSeleccionados.push(productoInfo);
-
-    const fila = document.createElement('tr');
-    fila.innerHTML = `
-      <td>${producto.descripcion}</td>
-      <td>$${producto.precioVenta}</td>
-      <td>${cantidad}</td>
-      <td>$${subtotal.toFixed(2)}</td>
-      <td><button class="eliminar-producto" data-id="${producto.id}">🗑️</button></td>
-    `;
-
-    tablaBody.appendChild(fila);
-
-    // ✅ Asignar el evento al botón "eliminar" ya insertado en DOM
-    fila.querySelector('.eliminar-producto').addEventListener('click', (e) => {
-      const id = parseInt(e.target.dataset.id);
-
-      // Buscar el índice del producto con ese ID
-      const index = productosSeleccionados.findIndex(p => p.producto_id === id);
-      if (index !== -1) {
-        total -= productosSeleccionados[index].subtotal;
-        productosSeleccionados.splice(index, 1);
-        fila.remove();
-        totalSpan.textContent = total.toFixed(2);
-      }
-    });
-
-    totalSpan.textContent = total.toFixed(2);
-    form.reset();
-    document.getElementById('cantidad').value = 1;
-
-  } catch (err) {
-    alert(err.message);
-  }
-});
-
-let formaPagoSeleccionada = 'contado';
-let tipoComprobanteSeleccionado = '101';
-let monedaSeleccionada = 'UYU';
-let cliente_id = 1; // ahora lo vamos a actualizar dinámicamente
-let tipo_ticket = 'DEVOLUCION';
-
-function mapFormaPago(valor) {
-  const normalized = String(valor || '').trim().toLowerCase();
-  if (normalized === 'tarjeta') return 'TARJETA';
-  if (normalized === 'transferencia') return 'TRANSFERENCIA';
-  return 'EFECTIVO';
+function mostrarMensaje(elemento, mensaje = '', tipo = '') {
+  elemento.textContent = mensaje;
+  elemento.className = `cash-message ${tipo}`.trim();
 }
 
-function mapDetalleTickets(productos) {
-  return productos.map((item) => ({
-    productoId: item.productoId ?? item.producto_id,
-    cantidad: item.cantidad,
-    precioUnitario: item.precioUnitario ?? item.precio_unitario,
-  }));
+async function leerRespuesta(response) {
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.mensaje || payload.msg || 'No se pudo completar la operación.');
+  }
+  return payload;
 }
 
-function mapStockItems(productos) {
-  return productos.map((item) => ({
-    productoId: item.productoId ?? item.producto_id,
-    cantidad: item.cantidad,
-  }));
+function formatearUyu(monto) {
+  return `UYU $${Number(monto || 0).toFixed(2)}`;
 }
 
-// 1. Mostrar modal de tipo de pago
-document.getElementById('cerrar-ticket').addEventListener('click', () => {
-  // ⚠️ Validar si hay productos
-  if (productosSeleccionados.length === 0) {
-    alert("⚠️ No hay productos en el ticket.");
-    return;
-  }
-  // Mostrar el selector de tipo de pago (efectivo / tarjeta) y ocultar boton
-  document.getElementById('ticket-info').style.display = 'block';
-  document.getElementById('cerrar-ticket').style.display = 'none';
-  document.getElementById('producto-form').style.display = 'none';
-});
-
-// V1. Volver a agregar productos
-document.getElementById('volver-agregar-productos').addEventListener('click', () => {
-  document.getElementById('ticket-info').style.display = 'none';
-  document.getElementById('cerrar-ticket').style.display = 'block';
-  document.getElementById('producto-form').style.display = 'block';
-});
-
-// 2. Confirmar tipo de pago y mostrar siguiente modal
-document.getElementById('confirmar-tipo-pago').addEventListener('click', () => {
-  document.getElementById('ticket-info').style.display = 'none';
-  document.getElementById('modal-forma-pago').style.display = 'block';
-});
-
-// V2. Volver a tipo pago
-document.getElementById('volver-tipo-pago').addEventListener('click', () => {
-  document.getElementById('ticket-info').style.display = 'block';
-  document.getElementById('modal-forma-pago').style.display = 'none';
-});
-
-// 3. Confirmar forma de pago y mostrar siguiente modal
-document.getElementById('confirmar-forma-pago').addEventListener('click', () => {
-  formaPagoSeleccionada = document.getElementById('forma-pago').value;
-  document.getElementById('modal-forma-pago').style.display = 'none';
-  document.getElementById('modal-comprobante').style.display = 'block';
-});
-
-// V3. Volver a forma de pago
-document.getElementById('volver-forma-pago').addEventListener('click', () => {
-  formaPagoSeleccionada = document.getElementById('forma-pago').value;
-  document.getElementById('modal-forma-pago').style.display = 'block';
-  document.getElementById('modal-comprobante').style.display = 'none';
-});
-
-// 4. Confirmar tipo de comprobante y mostrar siguiente modal
-document.getElementById('confirmar-comprobante').addEventListener('click', () => {
-  tipoComprobanteSeleccionado = document.getElementById('tipo-comprobante').value;
-  document.getElementById('modal-comprobante').style.display = 'none';
-
-  // Si es factura con RUT, mostramos el modal para buscar cliente
-  if (tipoComprobanteSeleccionado === '111') {
-    document.getElementById('modal-cliente').style.display = 'block';
-  } else {
-    document.getElementById('modal-moneda').style.display = 'block';
-  }
-});
-
-// 4.1 confirmar cliente y contuniuar con moneda
-document.getElementById('confirmar-cliente').addEventListener('click', () => {
-  document.getElementById('modal-cliente').style.display = 'none';
-  document.getElementById('modal-moneda').style.display = 'block';
-});
-
-// V4.1 Volver a tipo de comprobante desde cliente con rut
-document.getElementById('volver-tipo-comprobante').addEventListener('click', () => {
-  document.getElementById('modal-comprobante').style.display = 'block';
-  document.getElementById('modal-cliente').style.display = 'none';
-});
-
-// V4.1 Volver a tipo de comprobante desde moneda
-document.getElementById('volver-tipo-comprobante-moneda').addEventListener('click', () => {
-  document.getElementById('modal-comprobante').style.display = 'block';
-  document.getElementById('modal-moneda').style.display = 'none';
-});
-
-// Llamada para encontrar el cliente por documento
-document.getElementById('buscar-cliente').addEventListener('click', async () => {
-  const documento = document.getElementById('documento-cliente').value.trim();
-  const mensaje = document.getElementById('mensaje-cliente');
-  const confirmBtn = document.getElementById('confirmar-cliente');
-  const infoCliente = document.getElementById('cliente-encontrado');
-  const denominacionSpan = document.getElementById('cliente-denominacion');
-
-  mensaje.style.display = 'none';
-  confirmBtn.style.display = 'none';
-  infoCliente.style.display = 'none';
-
-  if (!documento) {
-    mensaje.textContent = "⚠️ Ingresá un documento válido.";
-    mensaje.style.display = 'block';
-    return;
-  }
-
+document.getElementById('autorizacion-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const mensaje = document.getElementById('autorizacion-mensaje');
+  const cedula = Number(document.getElementById('autorizacion-cedula').value);
+  const contraseña = document.getElementById('autorizacion-password').value;
   try {
-    const res = await fetch(`/api/clientes/buscar/${documento}`, {
-      method: 'GET',
-      credentials: 'include'
-    });
-
-    if (!res.ok) throw new Error("Cliente no encontrado");
-
-    const cliente = await res.json();
-    cliente_id = cliente.id; // ✅ actualizar el id a enviar
-    denominacionSpan.textContent = cliente.name || cliente.email || 'N/A';
-    infoCliente.style.display = 'block';
-    confirmBtn.style.display = 'inline-block';
-    document.getElementById('buscar-cliente').style.display = 'none'
-  } catch (err) {
-    mensaje.textContent = "❌ Cliente no registrado.";
-    mensaje.style.display = 'block';
-  }
-});
-
-// 5. Confirmar moneda y enviar ticket al backend
-document.getElementById('confirmar-moneda').addEventListener('click', async () => {
-  monedaSeleccionada = document.getElementById('moneda').value;
-  const tipo_pago = document.getElementById('tipo-pago').value;
-
-  const body = {
-    clienteId: cliente_id,
-    formaDePago: mapFormaPago(formaPagoSeleccionada),
-    detalleTickets: mapDetalleTickets(productosSeleccionados)
-  };
-
-  try {
-    // 1) Guardar el ticket de devolución
-    const res = await fetch('/api/tickets', {
+    const response = await fetch('/api/tickets/devoluciones/autorizacion', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify(body)
+      body: JSON.stringify({ cedula, contraseña }),
     });
-
-    if (!res.ok) throw new Error('Error al guardar ticket');
-
-    // 2) Actualizar el stock sumando (operacion: 'devolucion')
-    const respStock = await fetch('/api/productos/actualizar-stock', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        operacion: 'devolucion',
-        productos: mapStockItems(productosSeleccionados)
-      })
-    });
-
-    if (!respStock.ok) throw new Error('Ticket creado pero falló la actualización de stock');
-
-    alert('✅ Devolución registrada y stock actualizado correctamente');
-    location.reload();
-
-  } catch (err) {
-    console.error(err);
-    alert('❌ ' + err.message);
+    await leerRespuesta(response);
+    mostrarMensaje(mensaje, 'Autorización aprobada.', 'success');
+    window.setTimeout(() => {
+      autorizacionPanel.hidden = true;
+      buscarTicketPanel.hidden = false;
+      document.getElementById('ticket-id').focus();
+    }, 500);
+  } catch (error) {
+    console.error('Autorización de devolución denegada:', error);
+    mostrarMensaje(mensaje, 'Autorización denegada. Volviendo al panel de cajero.', 'error');
+    window.setTimeout(() => {
+      window.top.location.href = './cajeroUsuario.html';
+    }, 1200);
   }
-
-  // Ocultar el último modal
-  document.getElementById('modal-moneda').style.display = 'none';
 });
 
-//Logica de teclado con los modales
-document.addEventListener('keydown', function (e) {
-  const currentModal = document.querySelector('.modal[style*="block"]');
-  if (!currentModal) return;
-
-  // 🔍 Caso especial: modal-cliente (no tiene opciones navegables)
-  if (currentModal.id === 'modal-cliente') {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-
-      // 🔍 Buscar botón visible (buscar-cliente o confirmar-cliente)
-      const buscarBtn = currentModal.querySelector('#buscar-cliente');
-      const confirmarBtn = currentModal.querySelector('#confirmar-cliente');
-
-      if (buscarBtn && buscarBtn.style.display !== 'none') {
-        buscarBtn.click();
-      } else if (confirmarBtn && confirmarBtn.style.display !== 'none') {
-        confirmarBtn.click();
-      }
-    }
-
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      const volverBtn = currentModal.querySelector('#volver-tipo-comprobante');
-      if (volverBtn) volverBtn.click();
-    }
-
-    return; // ⚠️ Salimos para no seguir con el resto de lógica
+document.getElementById('buscar-ticket-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const mensaje = document.getElementById('ticket-mensaje');
+  const ticketId = Number(document.getElementById('ticket-id').value);
+  if (!Number.isInteger(ticketId) || ticketId <= 0) {
+    mostrarMensaje(mensaje, 'Ingresa un ID de ticket válido.', 'error');
+    return;
   }
-
-  // 🔁 Modales con lista de opciones
-  const opcionesContainer = currentModal.querySelector('.opciones');
-  if (!opcionesContainer) return;
-
-  const opciones = Array.from(opcionesContainer.querySelectorAll('.opcion'));
-  let selectedIndex = opciones.findIndex(opt => opt.classList.contains('selected'));
-
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    if (selectedIndex < opciones.length - 1) {
-      opciones[selectedIndex].classList.remove('selected');
-      opciones[++selectedIndex].classList.add('selected');
+  try {
+    const response = await fetch(`/api/tickets/${ticketId}`, { credentials: 'include' });
+    const payload = await leerRespuesta(response);
+    ticketSeleccionado = payload.ticket;
+    if (ticketSeleccionado.devolucion) {
+      throw new Error('No se puede devolver un ticket que ya es una devolución.');
     }
+    renderizarTicket(ticketSeleccionado);
+    ticketDetallePanel.hidden = false;
+    mostrarMensaje(mensaje);
+  } catch (error) {
+    ticketSeleccionado = null;
+    ticketDetallePanel.hidden = true;
+    mostrarMensaje(mensaje, error.message, 'error');
   }
+});
 
-  if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    if (selectedIndex > 0) {
-      opciones[selectedIndex].classList.remove('selected');
-      opciones[--selectedIndex].classList.add('selected');
-    }
+function renderizarTicket(ticket) {
+  const datos = document.getElementById('ticket-datos');
+  const fecha = ticket.fechaCreacion ? new Date(ticket.fechaCreacion).toLocaleString('es-UY') : 'No disponible';
+  datos.innerHTML = `
+    <div><dt>ID</dt><dd>${ticket.id}</dd></div>
+    <div><dt>Fecha</dt><dd>${fecha}</dd></div>
+    <div><dt>Cliente</dt><dd>${ticket.clienteNombre || `ID ${ticket.clienteId}`}</dd></div>
+    <div><dt>Total</dt><dd>${formatearUyu(ticket.montoTotal)}</dd></div>
+    <div><dt>Pago original</dt><dd>${ticket.formaDePago || 'No disponible'}</dd></div>
+  `;
+  const body = document.querySelector('#ticket-detalle-tabla tbody');
+  body.replaceChildren();
+  (ticket.detalleTickets || []).forEach((detalle) => {
+    const fila = document.createElement('tr');
+    fila.innerHTML = `
+      <td>${detalle.productoDescripcion || `Producto #${detalle.productoId}`}</td>
+      <td>${formatearUyu(detalle.precioUnitario)}</td>
+      <td>${detalle.cantidad}</td>
+      <td>${formatearUyu(detalle.subtotal)}</td>
+    `;
+    body.append(fila);
+  });
+}
+
+document.getElementById('iniciar-devolucion').addEventListener('click', () => {
+  if (ticketSeleccionado) {
+    document.getElementById('modal-pago-devolucion').hidden = false;
   }
+});
 
-  if (e.key === 'Enter') {
-    e.preventDefault();
+document.getElementById('cancelar-devolucion').addEventListener('click', () => {
+  document.getElementById('modal-pago-devolucion').hidden = true;
+});
 
-    const selectedOption = opciones[selectedIndex];
-    const inputId = opcionesContainer.dataset.inputId;
-    if (inputId && selectedOption) {
-      const input = document.getElementById(inputId);
-      input.value = selectedOption.dataset.value;
-    }
-
-    const confirmarBtn = currentModal.querySelector('button[id^="confirmar-"]');
-    if (confirmarBtn) confirmarBtn.click();
-  }
-
-  if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    const volverBtn = currentModal.querySelector('button[id^="volver-"]');
-    if (volverBtn) volverBtn.click();
+document.getElementById('finalizar-devolucion').addEventListener('click', async (event) => {
+  if (!ticketSeleccionado) return;
+  const button = event.currentTarget;
+  const mensaje = document.getElementById('devolucion-mensaje');
+  const formaDePago = document.querySelector('input[name="forma-pago-devolucion"]:checked').value;
+  button.disabled = true;
+  mostrarMensaje(mensaje);
+  try {
+    const response = await fetch(`/api/tickets/${ticketSeleccionado.id}/devolucion`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ formaDePago }),
+    });
+    const payload = await leerRespuesta(response);
+    mostrarMensaje(mensaje, `Devolución finalizada. Ticket #${payload.ticket_id}.`, 'success');
+    window.setTimeout(() => window.location.reload(), 1100);
+  } catch (error) {
+    mostrarMensaje(mensaje, error.message, 'error');
+    button.disabled = false;
   }
 });

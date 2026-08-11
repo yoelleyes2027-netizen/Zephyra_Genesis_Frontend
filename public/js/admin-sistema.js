@@ -14,6 +14,8 @@ const soporteEditModal = document.getElementById('soporte-edit-modal');
 const soporteEditTitle = document.getElementById('soporte-edit-title');
 const soporteEditBody = document.getElementById('soporte-edit-body');
 const soporteEditForm = document.getElementById('soporte-edit-form');
+const consumidorFinalDbSelect = document.getElementById('consumidor-final-db');
+const consumidorFinalResultado = document.getElementById('consumidor-final-resultado');
 const passwordSeguraRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 function mostrarErrorContrasena(mensaje = '') {
@@ -405,6 +407,46 @@ async function cargarBasesSoporte() {
   }
 }
 
+async function cargarBasesConsumidorFinal() {
+  if (!consumidorFinalDbSelect) return;
+
+  try {
+    consumidorFinalDbSelect.innerHTML = '<option value="">Cargando BDD...</option>';
+    const bases = await obtenerBasesDeDatos();
+    poblarSelectBases(consumidorFinalDbSelect, bases, 'Seleccionar BDD...');
+  } catch (error) {
+    consumidorFinalDbSelect.innerHTML = '<option value="">Error al cargar BDD</option>';
+    if (consumidorFinalResultado) {
+      consumidorFinalResultado.textContent = error.message || 'No se pudieron cargar las BDD.';
+      consumidorFinalResultado.className = 'text-danger';
+    }
+  }
+}
+
+async function prepararConsumidorFinal() {
+  const baseDatos = consumidorFinalDbSelect?.value.trim();
+  if (!consumidorFinalResultado) return;
+  if (!baseDatos) {
+    consumidorFinalResultado.textContent = 'Selecciona una BDD para consultar el consumidor final.';
+    consumidorFinalResultado.className = 'text-muted';
+    return;
+  }
+
+  consumidorFinalResultado.textContent = 'Preparando consumidor final...';
+  consumidorFinalResultado.className = 'text-primary';
+  try {
+    const payload = await fetchApi(`/api/admin-sistema/consumidor-final?baseDatos=${encodeURIComponent(baseDatos)}`, {
+      method: 'POST',
+    });
+    const consumidor = payload.data;
+    consumidorFinalResultado.textContent = `ID ${consumidor.id}: ${consumidor.nombre} (${consumidor.email})`;
+    consumidorFinalResultado.className = 'text-success fw-semibold';
+  } catch (error) {
+    consumidorFinalResultado.textContent = error.message || 'No se pudo preparar el consumidor final.';
+    consumidorFinalResultado.className = 'text-danger';
+  }
+}
+
 async function cargarTablasSoporte() {
   const baseDatos = baseSoporteSelect.value.trim();
   baseSoporteActual = baseDatos;
@@ -773,8 +815,12 @@ cargarSoporte.addEventListener('click', cargarSoporteTabla);
 baseSoporteSelect.addEventListener('change', cargarTablasSoporte);
 tablaSoporte.addEventListener('change', cargarSoporteTabla);
 logoutBtn.addEventListener('click', cerrarSesion);
+if (consumidorFinalDbSelect) {
+  consumidorFinalDbSelect.addEventListener('change', prepararConsumidorFinal);
+}
 document.addEventListener('DOMContentLoaded', async () => {
   await verificarRolSistema();
   await cargarBasesDeDatos();
   await cargarBasesSoporte();
+  await cargarBasesConsumidorFinal();
 });

@@ -1,7 +1,6 @@
 const ticketFrame = document.getElementById('ticket-frame');
 const ticketViews = {
 	venta: './venta-caja.html',
-	anulacion: './desactivar-ticket.html',
 	devolucion: './devolucion.html',
 };
 

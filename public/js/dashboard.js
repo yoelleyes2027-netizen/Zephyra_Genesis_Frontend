@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (rol === "cajero") {
-          window.location.href = "../html/ticket.html";
+          window.location.href = "../html/cajeroUsuario.html";
           return;
         }
 

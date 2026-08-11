@@ -4,177 +4,108 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Venta de Ticket</title>
+  <title>Cortar ticket - Genesis</title>
   <script src="../js/theme.js"></script>
   <link rel="stylesheet" href="../css/venta-caja.css">
 </head>
 
 <body class="cash-register">
-  <div class="container">
-    <h1>Venta en Caja</h1>
+  <main class="container" aria-labelledby="venta-title">
+    <h1 id="venta-title">Cortar ticket</h1>
 
-    <form style="display: block;" id="producto-form">
-      <label class="visually-hidden" for="codigo">Código del producto</label>
-      <input type="text" id="codigo" placeholder="Código del producto" required>
-      <label class="visually-hidden" for="cantidad">Cantidad</label>
-      <input type="number" id="cantidad" placeholder="Cantidad" min="1" value="1" required>
-      <button type="submit">Agregar</button>
+    <form id="producto-form" novalidate>
+      <div>
+        <label for="codigo">Código de producto</label>
+        <input type="text" id="codigo" placeholder="Código de barras" inputmode="numeric" required>
+      </div>
+      <div>
+        <label for="cantidad">Cantidad</label>
+        <input type="number" id="cantidad" min="1" value="1" required>
+      </div>
+      <button type="submit">Agregar producto</button>
     </form>
 
-    <table id="tabla-productos">
-      <thead>
-        <tr>
-          <th>Descripción</th>
-          <th>Precio unitario</th>
-          <th>Cantidad</th>
-          <th>Subtotal</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <p>Total: $<span id="total">0.00</span></p>
-
-    <button style="display: block;" id="cerrar-ticket">Cerrar Ticket</button>
-
-    <!-- Modal: Tipo de Pago -->
-    <div id="ticket-info" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h3>Tipo de pago</h3>
-
-        <div class="opciones" id="tipo-pago-opciones" data-input-id="tipo-pago">
-          <div class="opcion selected" data-value="efectivo">Efectivo</div>
-          <div class="opcion" data-value="Tarjeta">Tarjeta</div>
-        </div>
-
-        <input type="hidden" id="tipo-pago" value="efectivo" />
-
-        <br>
-        <button id="confirmar-tipo-pago">Confirmar</button>
-        <button id="volver-tipo-comprobante-moneda">⬅</button>
-      </div>
+    <div class="table-scroll">
+      <table id="tabla-productos">
+        <thead>
+          <tr><th>Descripción</th><th>Precio unitario</th><th>Cantidad</th><th>Subtotal</th><th aria-label="Acciones"></th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
-    <!-- Modal para forma de pago -->
-    <div id="modal-forma-pago" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h3>Seleccioná forma de pago</h3>
+    <p class="total-display">Total: <span>UYU $<strong id="total">0.00</strong></span></p>
+    <p id="venta-mensaje" class="cash-message" role="alert" aria-live="polite"></p>
+    <button id="cerrar-ticket" type="button">Cerrar ticket</button>
+  </main>
 
-        <div class="opciones" id="forma-pago-opciones" data-input-id="forma-pago">
-          <div class="opcion selected" data-value="1">Contado</div>
-          <div class="opcion" data-value="2">Crédito</div>
-        </div>
-
-        <input type="hidden" id="forma-pago" value="1" /> <!-- Conservamos ID original -->
-
-        <br />
-        <button id="confirmar-forma-pago">Confirmar</button>
-        <button id="volver-agregar-productos">⬅</button>
+  <section id="modal-cliente" class="cash-modal" hidden aria-labelledby="cliente-title">
+    <div class="cash-modal__panel">
+      <h2 id="cliente-title">Factura</h2>
+      <p>Selecciona a quién se asociará la compra.</p>
+      <div class="cash-options" role="radiogroup" aria-label="Tipo de cliente">
+        <label><input type="radio" name="tipo-cliente" value="consumidor" checked> Consumidor final</label>
+        <label><input type="radio" name="tipo-cliente" value="empresa"> Factura con RUT</label>
       </div>
+      <div class="cash-actions"><button id="confirmar-cliente" type="button">Confirmar</button><button class="cash-back" data-volver="venta" type="button">Volver</button></div>
     </div>
+  </section>
 
-    <!-- Modal: Tipo de Comprobante -->
-    <div id="modal-comprobante" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h3>Factura con RUT</h3>
+  <section id="modal-rut" class="cash-modal" hidden aria-labelledby="rut-title">
+    <div class="cash-modal__panel">
+      <h2 id="rut-title">Factura con RUT</h2>
+      <label for="rut-empresa">RUT de la empresa</label>
+      <input id="rut-empresa" type="text" placeholder="Ingresa el RUT">
+      <p id="empresa-mensaje" class="cash-message" role="alert"></p>
+      <p id="empresa-encontrada" hidden></p>
+      <div class="cash-actions"><button id="buscar-empresa" type="button">Buscar empresa</button><button id="confirmar-empresa" type="button" hidden>Confirmar empresa</button><button class="cash-back" data-volver="cliente" type="button">Volver</button></div>
+    </div>
+  </section>
 
-        <div class="opciones" id="tipo-comprobante-opciones" data-input-id="tipo-comprobante">
-          <div class="opcion selected" data-value="101">Consumidor final</div>
-          <div class="opcion" data-value="111">Factura con RUT</div>
-        </div>
-
-        <input type="hidden" id="tipo-comprobante" value="101" />
-
-        <br>
-        <button id="confirmar-comprobante">Confirmar</button>
-        <button id="volver-forma-pago">⬅</button>
+  <section id="modal-pago" class="cash-modal" hidden aria-labelledby="pago-title">
+    <div class="cash-modal__panel">
+      <h2 id="pago-title">Forma de pago</h2>
+      <div class="cash-options" role="radiogroup" aria-label="Forma de pago">
+        <label><input type="radio" name="forma-pago" value="EFECTIVO" checked> Efectivo</label>
+        <label><input type="radio" name="forma-pago" value="TARJETA"> Tarjeta</label>
+        <label><input type="radio" name="forma-pago" value="TRANSFERENCIA"> Transferencia</label>
       </div>
+      <div class="cash-actions"><button id="confirmar-pago" type="button">Confirmar</button><button class="cash-back" data-volver="cliente" type="button">Volver</button></div>
     </div>
+  </section>
 
-    <!-- Modal: Cliente con RUT -->
-    <div id="modal-cliente" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h3>Buscar Cliente por Documento</h3>
-
-        <label class="visually-hidden" for="documento-cliente">RUT o documento del cliente</label>
-        <input type="text" id="documento-cliente" placeholder="Ingrese RUT o documento" />
-        <br><br>
-
-        <button id="buscar-cliente" style="display: block;">Buscar</button>
-
-        <p id="mensaje-cliente" style="color: red; display: none;"></p>
-        <p id="cliente-encontrado" style="display: none;">
-          Cliente: <span id="cliente-denominacion"></span>
-        </p>
-        <br>
-
-        <button id="confirmar-cliente" style="display: none;">Confirmar Cliente</button>
-        <button id="volver-tipo-comprobante">⬅</button>
+  <section id="modal-moneda" class="cash-modal" hidden aria-labelledby="moneda-title">
+    <div class="cash-modal__panel">
+      <h2 id="moneda-title">Seleccionar moneda</h2>
+      <div class="cash-options" role="radiogroup" aria-label="Moneda de efectivo">
+        <label><input type="radio" name="tipo-moneda" value="UYU" checked> Pesos uruguayos</label>
+        <label><input type="radio" name="tipo-moneda" value="USD"> Dólares</label>
       </div>
+      <div class="cash-actions"><button id="confirmar-moneda" type="button">Confirmar</button><button class="cash-back" data-volver="pago" type="button">Volver</button></div>
     </div>
+  </section>
 
-    <!-- Modal: Moneda -->
-    <div id="modal-moneda" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h3>Seleccionar moneda</h3>
-
-        <div class="opciones" id="moneda-opciones" data-input-id="moneda">
-          <div class="opcion selected" data-value="UYU">Pesos Uruguayos (UYU)</div>
-          <div class="opcion" data-value="USD">Dólares (USD)</div>
-        </div>
-
-        <input type="hidden" id="moneda" value="UYU" />
-
-        <br>
-        <button id="confirmar-moneda">Confirmar</button>
-        <button id="volver-tipo-pago">⬅</button>
-      </div>
+  <section id="modal-efectivo" class="cash-modal" hidden aria-labelledby="efectivo-title">
+    <div class="cash-modal__panel">
+      <h2 id="efectivo-title">Cobro en efectivo</h2>
+      <p id="efectivo-total"></p>
+      <label for="monto-pagado">El cliente paga con</label>
+      <input id="monto-pagado" type="number" min="0" step="0.01" inputmode="decimal">
+      <p class="cash-change">Cambio a entregar en pesos uruguayos: <strong id="monto-cambio">UYU $0.00</strong></p>
+      <p id="efectivo-mensaje" class="cash-message" role="alert"></p>
+      <div class="cash-actions"><button id="finalizar-compra" type="button">Finalizar compra</button><button class="cash-back" data-volver="moneda" type="button">Volver</button></div>
     </div>
-  </div>
+  </section>
 
-  <div id="modal-pago-efectivo-container" class="modal" style="display: none">
-    <label for="monto-pagado"><strong>💵 El cliente paga con:</strong></label>
-    <input type="number" id="monto-pagado" min="0" step="0.01" placeholder="Ej: 1000"
-      style="width: 150px; margin-left: 8px;" />
-    <p style="margin-top: 5px;">
-      <strong>Cambio a entregar:</strong> $<span id="monto-cambio">0.00</span>
-    </p>
-    <br>
-    <button id="finalizar">Finalizar</button>
-  </div>
-
-  <!-- Modal: Pago en efectivo (USD) -->
-<div id="modal-pago-efectivo-usd-container" class="modal" style="display: none">
-  <label for="monto-pagado-usd"><strong>💵 El cliente paga con (USD):</strong></label>
-  <input
-    type="number"
-    id="monto-pagado-usd"
-    min="0"
-    step="0.01"
-    placeholder="Ej: 50"
-    style="width: 150px; margin-left: 8px;"
-  />
-
-  <p style="margin-top: 5px;">
-    <small>Tasa usada: $<span id="tasa-usd">0.00</span> UYU por 1 USD</small>
-  </p>
-
-  <p style="margin-top: 5px;">
-    <strong>Total en USD:</strong> US$<span id="total-usd">0.00</span>
-  </p>
-
-  <p style="margin-top: 5px;">
-    <strong>Cambio a entregar (USD):</strong> US$<span id="monto-cambio-usd">0.00</span>
-  </p>
-
-  <p style="margin-top: 5px;">
-    <strong>Cambio en pesos uruguayos (UYU):</strong> $<span id="monto-cambio-uyu-usd">0.00</span>
-  </p>
-
-  <br />
-  <button id="finalizar-usd">Finalizar</button>
-</div>
-
+  <section id="modal-finalizar" class="cash-modal" hidden aria-labelledby="finalizar-title">
+    <div class="cash-modal__panel">
+      <h2 id="finalizar-title">Confirmar compra</h2>
+      <p id="resumen-pago"></p>
+      <p class="cash-change">Total: <strong id="finalizar-total"></strong></p>
+      <p id="finalizar-mensaje" class="cash-message" role="alert"></p>
+      <div class="cash-actions"><button id="finalizar-compra-sin-efectivo" type="button">Finalizar compra</button><button class="cash-back" data-volver="pago" type="button">Volver</button></div>
+    </div>
+  </section>
 
   <script src="../js/venta-caja.js"></script>
 </body>

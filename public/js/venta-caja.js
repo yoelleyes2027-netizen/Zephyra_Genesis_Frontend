@@ -1,479 +1,254 @@
-let productosSeleccionados = [];
-let total = 0;
+const productosSeleccionados = [];
+let clienteId = 1;
+let empresaSeleccionada = null;
+let formaDePago = 'EFECTIVO';
+let tipoMoneda = 'UYU';
+let tasaUsdUyu = null;
 
-const form = document.getElementById('producto-form');
-const tablaBody = document.querySelector('#tabla-productos tbody');
-const totalSpan = document.getElementById('total');
+const productoForm = document.getElementById('producto-form');
+const productosBody = document.querySelector('#tabla-productos tbody');
+const totalElement = document.getElementById('total');
+const ventaMensaje = document.getElementById('venta-mensaje');
 
-//Logica de buscador de productos
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const codigo = document.getElementById('codigo').value;
-  const cantidad = parseInt(document.getElementById('cantidad').value);
-
-  try {
-    const res = await fetch(`/api/productos/${codigo}`, {
-      credentials: 'include',
-    });
-
-    if (!res.ok) throw new Error('Producto no encontrado');
-
-    const producto = await res.json();
-    const subtotal = producto.precioVenta * cantidad;
-    total += subtotal;
-
-    const productoInfo = {
-      producto_id: producto.id,
-      cantidad,
-      precio_unitario: producto.precioVenta,
-      subtotal,
-    };
-
-    productosSeleccionados.push(productoInfo);
-
-    const fila = document.createElement('tr');
-    fila.innerHTML = `
-      <td>${producto.descripcion}</td>
-      <td>$${producto.precioVenta}</td>
-      <td>${cantidad}</td>
-      <td>$${subtotal.toFixed(2)}</td>
-      <td><button class="eliminar-producto" data-id="${producto.id}">🗑️</button></td>
-    `;
-
-    tablaBody.appendChild(fila);
-
-    // ✅ Asignar el evento al botón "eliminar" ya insertado en DOM
-    fila.querySelector('.eliminar-producto').addEventListener('click', (e) => {
-      const id = parseInt(e.target.dataset.id);
-
-      // Buscar el índice del producto con ese ID
-      const index = productosSeleccionados.findIndex(p => p.producto_id === id);
-      if (index !== -1) {
-        total -= productosSeleccionados[index].subtotal;
-        productosSeleccionados.splice(index, 1);
-        fila.remove();
-        totalSpan.textContent = total.toFixed(2);
-      }
-    });
-
-    totalSpan.textContent = total.toFixed(2);
-    form.reset();
-    document.getElementById('cantidad').value = 1;
-
-  } catch (err) {
-    alert(err.message);
-  }
-});
-
-let formaPagoSeleccionada = 'contado';
-let tipoComprobanteSeleccionado = '101';
-let monedaSeleccionada = 'UYU';
-let cliente_id = 1; // ahora lo vamos a actualizar dinámicamente
-let tipo_ticket = 'VENTA';
-
-function mapFormaPago(valor) {
-  const normalized = String(valor || '').trim().toLowerCase();
-  if (normalized === 'tarjeta') return 'TARJETA';
-  if (normalized === 'transferencia') return 'TRANSFERENCIA';
-  return 'EFECTIVO';
+function totalVenta() {
+  return productosSeleccionados.reduce((total, producto) => total + producto.precioUnitario * producto.cantidad, 0);
 }
 
-function mapDetalleTickets(productos) {
-  return productos.map((item) => ({
-    productoId: item.productoId ?? item.producto_id,
-    cantidad: item.cantidad,
-    precioUnitario: item.precioUnitario ?? item.precio_unitario,
-  }));
+function formatearUyu(monto) {
+  return `UYU $${Number(monto || 0).toFixed(2)}`;
 }
 
-function mapStockItems(productos) {
-  return productos.map((item) => ({
-    productoId: item.productoId ?? item.producto_id,
-    cantidad: item.cantidad,
-  }));
+function mostrarMensaje(elemento, mensaje = '', tipo = '') {
+  elemento.textContent = mensaje;
+  elemento.className = `cash-message ${tipo}`.trim();
 }
 
-// 1. Mostrar modal de forma de pago
-document.getElementById('cerrar-ticket').addEventListener('click', () => {
-  // ⚠️ Validar si hay productos
-  if (productosSeleccionados.length === 0) {
-    alert("⚠️ No hay productos en el ticket.");
-    return;
-  }
-  // Mostrar el selector de forma de pago y ocultar boton
-  document.getElementById('modal-forma-pago').style.display = 'block';
-  document.getElementById('cerrar-ticket').style.display = 'none';
-  document.getElementById('producto-form').style.display = 'none';
-});
-
-// V1. Volver a agregar productos
-document.getElementById('volver-agregar-productos').addEventListener('click', () => {
-  document.getElementById('modal-forma-pago').style.display = 'none';
-  document.getElementById('cerrar-ticket').style.display = 'block';
-  document.getElementById('producto-form').style.display = 'block';
-});
-
-// 2. Confirmar forma de pago y mostrar siguiente modal
-document.getElementById('confirmar-forma-pago').addEventListener('click', () => {
-  formaPagoSeleccionada = document.getElementById('forma-pago').value;
-  document.getElementById('modal-forma-pago').style.display = 'none';
-  document.getElementById('modal-comprobante').style.display = 'block';
-});
-
-// V2. Volver a forma de pago
-document.getElementById('volver-forma-pago').addEventListener('click', () => {
-  document.getElementById('modal-forma-pago').style.display = 'block';
-  document.getElementById('modal-comprobante').style.display = 'none';
-});
-
-// 3. Confirmar tipo de comprobante y mostrar siguiente modal
-document.getElementById('confirmar-comprobante').addEventListener('click', () => {
-  tipoComprobanteSeleccionado = document.getElementById('tipo-comprobante').value;
-  document.getElementById('modal-comprobante').style.display = 'none';
-
-  // Si es factura con RUT, mostramos el modal para buscar cliente
-  if (tipoComprobanteSeleccionado === '111') {
-    document.getElementById('modal-cliente').style.display = 'block';
-  } else {
-    document.getElementById('ticket-info').style.display = 'block';
-  }
-});
-
-// 3.1 confirmar cliente y contuniuar con tipo de pago
-document.getElementById('confirmar-cliente').addEventListener('click', () => {
-  document.getElementById('modal-cliente').style.display = 'none';
-  document.getElementById('ticket-info').style.display = 'block';
-});
-
-// V3.1 Volver a tipo de comprobante desde cliente con rut
-document.getElementById('volver-tipo-comprobante').addEventListener('click', () => {
-  document.getElementById('modal-comprobante').style.display = 'block';
-  document.getElementById('modal-cliente').style.display = 'none';
-});
-
-// V3.1 Volver a tipo de comprobante desde moneda
-document.getElementById('volver-tipo-comprobante-moneda').addEventListener('click', () => {
-  document.getElementById('modal-comprobante').style.display = 'block';
-  document.getElementById('ticket-info').style.display = 'none';
-});
-
-// 4. confirmar tipo de pago
-document.getElementById('confirmar-tipo-pago').addEventListener('click', () => {
-  document.getElementById('modal-moneda').style.display = 'block';
-  document.getElementById('ticket-info').style.display = 'none';
-});
-
-// V4. Volver a tipo de pago
-document.getElementById('volver-tipo-pago').addEventListener('click', () => {
-  document.getElementById('ticket-info').style.display = 'block';
-  document.getElementById('modal-moneda').style.display = 'none';
-});
-
-
-// Llamada para encontrar el cliente por documento
-document.getElementById('buscar-cliente').addEventListener('click', async () => {
-  const documento = document.getElementById('documento-cliente').value.trim();
-  const mensaje = document.getElementById('mensaje-cliente');
-  const confirmBtn = document.getElementById('confirmar-cliente');
-  const infoCliente = document.getElementById('cliente-encontrado');
-  const denominacionSpan = document.getElementById('cliente-denominacion');
-
-  mensaje.style.display = 'none';
-  confirmBtn.style.display = 'none';
-  infoCliente.style.display = 'none';
-
-  if (!documento) {
-    mensaje.textContent = "⚠️ Ingresá un documento válido.";
-    mensaje.style.display = 'block';
-    return;
-  }
-
-  try {
-    const res = await fetch(`/api/clientes/buscar/${documento}`, {
-      method: 'GET',
-      credentials: 'include'
-    });
-
-    if (!res.ok) throw new Error("Cliente no encontrado");
-
-    const cliente = await res.json();
-    cliente_id = cliente.id; // ✅ actualizar el id a enviar
-    denominacionSpan.textContent = cliente.name || cliente.email || 'N/A';
-    infoCliente.style.display = 'block';
-    confirmBtn.style.display = 'inline-block';
-    document.getElementById('buscar-cliente').style.display = 'none'
-  } catch (err) {
-    mensaje.textContent = "❌ Cliente no registrado.";
-    mensaje.style.display = 'block';
-  }
-});
-
-// Detectar si corresponde mostrar campo de pago en efectivo
-const tipoPagoInput = document.getElementById('tipo-pago');
-const monedaInput = document.getElementById('moneda');
-const pagoEfectivoContainer = document.getElementById('pago-efectivo-container');
-const montoPagadoInput = document.getElementById('monto-pagado');
-const montoCambioSpan = document.getElementById('monto-cambio');
-
-// --- USD helpers / elementos ---
-let tasaUSD = null;         // $UYU por 1 USD (desde backend)
-let totalUSD = 0;           // total del ticket expresado en USD
-
-const modalPagoUsd = document.getElementById('modal-pago-efectivo-usd-container');
-const montoPagadoUsdInput = document.getElementById('monto-pagado-usd');
-const tasaUsdSpan = document.getElementById('tasa-usd');
-const totalUsdSpan = document.getElementById('total-usd');
-const cambioUsdSpan = document.getElementById('monto-cambio-usd');
-
-// Calcular cambio automáticamente
-montoPagadoInput.addEventListener('input', () => {
-  const montoPagado = parseFloat(montoPagadoInput.value) || 0;
-  const cambio = montoPagado - total;
-  montoCambioSpan.textContent = cambio > 0 ? cambio.toFixed(2) : '0.00';
-});
-
-if (montoPagadoUsdInput) {
-  montoPagadoUsdInput.addEventListener('input', () => {
-    const monto = parseFloat(montoPagadoUsdInput.value) || 0;
-    const cambioUSD = monto - totalUSD;
-    const cambioUSDPositivo = cambioUSD > 0 ? cambioUSD : 0;
-
-    // 🔹 Mostrar cambio en dólares (como antes)
-    cambioUsdSpan.textContent = cambioUSDPositivo.toFixed(2);
-
-    // 🔹 Nuevo: calcular cambio en pesos uruguayos
-    const cambioUYU = cambioUSDPositivo * tasaUSD;
-    const cambioUYUSpan = document.getElementById('monto-cambio-uyu-usd');
-    cambioUYUSpan.textContent = cambioUYU.toFixed(2);
+function mostrarModal(id) {
+  document.querySelectorAll('.cash-modal').forEach((modal) => {
+    modal.hidden = modal.id !== id;
   });
 }
 
-// Llamada para saber el dolar hoy
-async function obtenerTasaUSD() {
-  // Cacheamos en memoria para no llamar dos veces
-  if (tasaUSD) return tasaUSD;
-
-  const res = await fetch('/api/monedas/USD', { credentials: 'include' });
-  if (!res.ok) throw new Error('No se pudo obtener la tasa USD.');
-  const data = await res.json();
-
-  // El backend devuelve { ok, codigo, nombre, valor_en_pesos, ... }
-  tasaUSD = Number(data.valor_en_pesos);
-  return tasaUSD;
+function cerrarModales() {
+  document.querySelectorAll('.cash-modal').forEach((modal) => {
+    modal.hidden = true;
+  });
 }
 
-// 5. Confirmar moneda y enviar ticket al backend
+function renderizarProductos() {
+  productosBody.replaceChildren();
+  productosSeleccionados.forEach((producto) => {
+    const fila = document.createElement('tr');
+    fila.innerHTML = `
+      <td>${producto.descripcion}</td>
+      <td>${formatearUyu(producto.precioUnitario)}</td>
+      <td>${producto.cantidad}</td>
+      <td>${formatearUyu(producto.precioUnitario * producto.cantidad)}</td>
+      <td><button class="cash-icon-button" type="button" data-producto-id="${producto.productoId}" aria-label="Quitar ${producto.descripcion}">Quitar</button></td>
+    `;
+    productosBody.append(fila);
+  });
+  totalElement.textContent = totalVenta().toFixed(2);
+}
+
+async function leerRespuesta(response) {
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.mensaje || payload.msg || 'No se pudo completar la operación.');
+  }
+  return payload;
+}
+
+productoForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const codigo = document.getElementById('codigo').value.trim();
+  const cantidad = Number(document.getElementById('cantidad').value);
+  mostrarMensaje(ventaMensaje);
+
+  if (!codigo || !Number.isInteger(cantidad) || cantidad <= 0) {
+    mostrarMensaje(ventaMensaje, 'Ingresa un código y una cantidad válida.', 'error');
+    return;
+  }
+  if (productosSeleccionados.some((producto) => String(producto.codigoDeBarras) === codigo)) {
+    mostrarMensaje(ventaMensaje, 'El producto ya está en el ticket. Quita la línea y vuelve a agregarlo con la cantidad correcta.', 'error');
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/productos/${encodeURIComponent(codigo)}`, { credentials: 'include' });
+    const producto = await leerRespuesta(response);
+    if (producto.activo === false) {
+      throw new Error('El producto está inactivo.');
+    }
+    if (cantidad > producto.stock) {
+      throw new Error(`Stock disponible: ${producto.stock}.`);
+    }
+    productosSeleccionados.push({
+      productoId: producto.id,
+      codigoDeBarras: producto.codigoDeBarras,
+      descripcion: producto.descripcion,
+      cantidad,
+      precioUnitario: Number(producto.precioVenta),
+    });
+    renderizarProductos();
+    productoForm.reset();
+    document.getElementById('cantidad').value = '1';
+    document.getElementById('codigo').focus();
+  } catch (error) {
+    mostrarMensaje(ventaMensaje, error.message, 'error');
+  }
+});
+
+productosBody.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-producto-id]');
+  if (!button) return;
+  const productoId = Number(button.dataset.productoId);
+  const index = productosSeleccionados.findIndex((producto) => producto.productoId === productoId);
+  if (index >= 0) {
+    productosSeleccionados.splice(index, 1);
+    renderizarProductos();
+  }
+});
+
+document.getElementById('cerrar-ticket').addEventListener('click', () => {
+  if (!productosSeleccionados.length) {
+    mostrarMensaje(ventaMensaje, 'Agrega al menos un producto antes de cerrar el ticket.', 'error');
+    return;
+  }
+  clienteId = 1;
+  empresaSeleccionada = null;
+  mostrarModal('modal-cliente');
+});
+
+document.getElementById('confirmar-cliente').addEventListener('click', () => {
+  const tipoCliente = document.querySelector('input[name="tipo-cliente"]:checked').value;
+  if (tipoCliente === 'empresa') {
+    document.getElementById('rut-empresa').value = '';
+    document.getElementById('empresa-encontrada').hidden = true;
+    document.getElementById('confirmar-empresa').hidden = true;
+    mostrarMensaje(document.getElementById('empresa-mensaje'));
+    mostrarModal('modal-rut');
+    return;
+  }
+  clienteId = 1;
+  empresaSeleccionada = null;
+  mostrarModal('modal-pago');
+});
+
+document.getElementById('buscar-empresa').addEventListener('click', async () => {
+  const rut = document.getElementById('rut-empresa').value.trim();
+  const mensaje = document.getElementById('empresa-mensaje');
+  if (!rut) {
+    mostrarMensaje(mensaje, 'Ingresa el RUT de la empresa.', 'error');
+    return;
+  }
+  try {
+    const response = await fetch(`/api/empresas/buscar/${encodeURIComponent(rut)}`, { credentials: 'include' });
+    const payload = await leerRespuesta(response);
+    empresaSeleccionada = payload.data;
+    clienteId = empresaSeleccionada.id;
+    const encontrada = document.getElementById('empresa-encontrada');
+    encontrada.textContent = `Empresa: ${empresaSeleccionada.razonSocial || empresaSeleccionada.name}`;
+    encontrada.hidden = false;
+    document.getElementById('confirmar-empresa').hidden = false;
+    mostrarMensaje(mensaje);
+  } catch (error) {
+    empresaSeleccionada = null;
+    clienteId = 1;
+    document.getElementById('empresa-encontrada').hidden = true;
+    document.getElementById('confirmar-empresa').hidden = true;
+    mostrarMensaje(mensaje, error.message, 'error');
+  }
+});
+
+document.getElementById('confirmar-empresa').addEventListener('click', () => {
+  if (!empresaSeleccionada) return;
+  mostrarModal('modal-pago');
+});
+
+document.getElementById('confirmar-pago').addEventListener('click', () => {
+  formaDePago = document.querySelector('input[name="forma-pago"]:checked').value;
+  if (formaDePago === 'EFECTIVO') {
+    mostrarModal('modal-moneda');
+    return;
+  }
+  document.getElementById('resumen-pago').textContent = `Pago por ${formaDePago.toLowerCase()}.`;
+  document.getElementById('finalizar-total').textContent = formatearUyu(totalVenta());
+  mostrarMensaje(document.getElementById('finalizar-mensaje'));
+  mostrarModal('modal-finalizar');
+});
+
 document.getElementById('confirmar-moneda').addEventListener('click', async () => {
-  monedaSeleccionada = document.getElementById('moneda').value;
-  const tipo_pago = document.getElementById('tipo-pago').value;
-
-  // si paga con efectivo mostrar calculadora de cambio (UYU)
-  if (tipo_pago === 'efectivo' && monedaSeleccionada === 'UYU') {
-    document.getElementById('modal-pago-efectivo-container').style.display = 'block';
-    document.getElementById('modal-moneda').style.display = 'none';
-
-  // 🔹 NUEVO: efectivo + USD
-  } else if (tipo_pago === 'efectivo' && monedaSeleccionada === 'USD') {
-    try {
-      const tasa = await obtenerTasaUSD(); // p.ej. 39.8267 UYU por 1 USD
-      tasaUsdSpan.textContent = tasa.toFixed(2);
-
-      // El total que llevás está en UYU => lo convertimos a USD solo para mostrar/cobrar
-      totalUSD = total / tasa;
-      totalUsdSpan.textContent = totalUSD.toFixed(2);
-      cambioUsdSpan.textContent = '0.00';
-      montoPagadoUsdInput.value = '';
-
-      modalPagoUsd.style.display = 'block';
-      document.getElementById('modal-moneda').style.display = 'none';
-    } catch (err) {
-      alert('❌ ' + err.message);
+  tipoMoneda = document.querySelector('input[name="tipo-moneda"]:checked').value;
+  const total = totalVenta();
+  try {
+    if (tipoMoneda === 'USD') {
+      const response = await fetch('/api/monedas/USD', { credentials: 'include' });
+      const moneda = await leerRespuesta(response);
+      tasaUsdUyu = Number(moneda.valor_en_pesos);
+      document.getElementById('efectivo-total').textContent = `Total a cobrar: USD ${(total / tasaUsdUyu).toFixed(2)}. El cambio se entrega en pesos uruguayos.`;
+    } else {
+      tasaUsdUyu = null;
+      document.getElementById('efectivo-total').textContent = `Total a cobrar: ${formatearUyu(total)}.`;
     }
-
-  } else {
-    // ⚙️ Flujo normal (tarjeta / crédito / etc.) -> crear ticket y actualizar stock
-    const body = {
-      clienteId: cliente_id,
-      formaDePago: mapFormaPago(formaPagoSeleccionada),
-      detalleTickets: mapDetalleTickets(productosSeleccionados)
-    };
-
-    try {
-      const res = await fetch('/api/tickets', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(body)
-      });
-      if (!res.ok) throw new Error('Error al guardar ticket');
-
-      const actualizarStock = await fetch('/api/productos/actualizar-stock', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ productos: mapStockItems(productosSeleccionados) })
-      });
-      if (!actualizarStock.ok) throw new Error('Error al actualizar stock');
-
-      alert('✅ Ticket generado y stock actualizado correctamente');
-      location.reload();
-    } catch (err) {
-      console.error(err);
-      alert('❌ ' + err.message);
-    }
+    document.getElementById('monto-pagado').value = '';
+    document.getElementById('monto-cambio').textContent = formatearUyu(0);
+    mostrarMensaje(document.getElementById('efectivo-mensaje'));
+    mostrarModal('modal-efectivo');
+  } catch (error) {
+    mostrarMensaje(document.getElementById('efectivo-mensaje'), error.message, 'error');
   }
 });
 
-// 6.1 Ocultar el último modal con UYU
-document.getElementById('finalizar').addEventListener('click', async () => {
-  monedaSeleccionada = document.getElementById('moneda').value;
-
-  const tipo_pago = document.getElementById('tipo-pago').value;
-
-  const body = {
-    clienteId: cliente_id,
-    formaDePago: mapFormaPago(formaPagoSeleccionada),
-    detalleTickets: mapDetalleTickets(productosSeleccionados)
-  };
-
-  try {
-
-    if (!(await fetch('/api/tickets', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify(body)
-    })).ok) throw new Error('Error al guardar ticket');
-
-    // Si el ticket se generó correctamente, actualizar el stock
-    const actualizarStock = await fetch('/api/productos/actualizar-stock', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify({ productos: mapStockItems(productosSeleccionados) })
-    });
-
-    if (!actualizarStock.ok) throw new Error('Error al actualizar stock');
-
-    // Mensaje final
-    alert('✅ Ticket generado y stock actualizado correctamente');
-    location.reload();
-
-  } catch (err) {
-    console.error(err);
-    alert('❌ ' + err.message);
-  }
+document.getElementById('monto-pagado').addEventListener('input', () => {
+  const montoPagado = Number(document.getElementById('monto-pagado').value) || 0;
+  const totalEnMoneda = tipoMoneda === 'USD' ? totalVenta() / tasaUsdUyu : totalVenta();
+  const cambioUyu = Math.max(0, montoPagado - totalEnMoneda) * (tipoMoneda === 'USD' ? tasaUsdUyu : 1);
+  document.getElementById('monto-cambio').textContent = formatearUyu(cambioUyu);
 });
 
-// 6.2 Ocultar el ultimo modal con USD
-document.getElementById('finalizar-usd').addEventListener('click', async () => {
-  const tipo_pago = document.getElementById('tipo-pago').value; // 'efectivo'
-  const body = {
-    clienteId: cliente_id,
-    formaDePago: mapFormaPago(formaPagoSeleccionada),
-    detalleTickets: mapDetalleTickets(productosSeleccionados)
-  };
-
+async function finalizarCompra(montoPagado, mensajeElement, button) {
+  if (button) button.disabled = true;
+  mostrarMensaje(mensajeElement);
   try {
-    const res = await fetch('/api/tickets', {
+    const response = await fetch('/api/tickets', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        clienteId,
+        formaDePago,
+        detalleTickets: productosSeleccionados.map(({ productoId, cantidad, precioUnitario }) => ({ productoId, cantidad, precioUnitario })),
+        tipoMoneda: formaDePago === 'EFECTIVO' ? tipoMoneda : null,
+        montoPagado: formaDePago === 'EFECTIVO' ? montoPagado : null,
+      }),
     });
-    if (!res.ok) throw new Error('Error al guardar ticket');
-
-    const actualizarStock = await fetch('/api/productos/actualizar-stock', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ productos: mapStockItems(productosSeleccionados) })
-    });
-    if (!actualizarStock.ok) throw new Error('Error al actualizar stock');
-
-    alert('✅ Ticket generado y stock actualizado correctamente');
-    location.reload();
-  } catch (err) {
-    console.error(err);
-    alert('❌ ' + err.message);
+    const payload = await leerRespuesta(response);
+    mostrarMensaje(mensajeElement, `Compra finalizada. Ticket #${payload.ticket_id}.`, 'success');
+    window.setTimeout(() => window.location.reload(), 1100);
+  } catch (error) {
+    mostrarMensaje(mensajeElement, error.message, 'error');
+    if (button) button.disabled = false;
   }
+}
+
+document.getElementById('finalizar-compra').addEventListener('click', (event) => {
+  const montoPagado = Number(document.getElementById('monto-pagado').value);
+  if (!Number.isFinite(montoPagado) || montoPagado < 0) {
+    mostrarMensaje(document.getElementById('efectivo-mensaje'), 'Ingresa el monto entregado por el cliente.', 'error');
+    return;
+  }
+  finalizarCompra(montoPagado, document.getElementById('efectivo-mensaje'), event.currentTarget);
 });
 
-//Logica de teclado con los modales
-document.addEventListener('keydown', function (e) {
-  const currentModal = document.querySelector('.modal[style*="block"]');
-  if (!currentModal) return;
+document.getElementById('finalizar-compra-sin-efectivo').addEventListener('click', (event) => {
+  finalizarCompra(null, document.getElementById('finalizar-mensaje'), event.currentTarget);
+});
 
-  // 🔍 Caso especial: modal-cliente (no tiene opciones navegables)
-  if (currentModal.id === 'modal-cliente') {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-
-      // 🔍 Buscar botón visible (buscar-cliente o confirmar-cliente)
-      const buscarBtn = currentModal.querySelector('#buscar-cliente');
-      const confirmarBtn = currentModal.querySelector('#confirmar-cliente');
-
-      if (buscarBtn && buscarBtn.style.display !== 'none') {
-        buscarBtn.click();
-      } else if (confirmarBtn && confirmarBtn.style.display !== 'none') {
-        confirmarBtn.click();
-      }
-    }
-
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      const volverBtn = currentModal.querySelector('#volver-tipo-comprobante');
-      if (volverBtn) volverBtn.click();
-    }
-
-    return; // ⚠️ Salimos para no seguir con el resto de lógica
-  }
-
-  // 🔁 Modales con lista de opciones
-  const opcionesContainer = currentModal.querySelector('.opciones');
-  if (!opcionesContainer) return;
-
-  const opciones = Array.from(opcionesContainer.querySelectorAll('.opcion'));
-  let selectedIndex = opciones.findIndex(opt => opt.classList.contains('selected'));
-
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    if (selectedIndex < opciones.length - 1) {
-      opciones[selectedIndex].classList.remove('selected');
-      opciones[++selectedIndex].classList.add('selected');
-    }
-  }
-
-  if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    if (selectedIndex > 0) {
-      opciones[selectedIndex].classList.remove('selected');
-      opciones[--selectedIndex].classList.add('selected');
-    }
-  }
-
-  if (e.key === 'Enter') {
-    e.preventDefault();
-
-    const selectedOption = opciones[selectedIndex];
-    const inputId = opcionesContainer.dataset.inputId;
-    if (inputId && selectedOption) {
-      const input = document.getElementById(inputId);
-      input.value = selectedOption.dataset.value;
-    }
-
-    const confirmarBtn = currentModal.querySelector('button[id^="confirmar-"]');
-    if (confirmarBtn) confirmarBtn.click();
-  }
-
-  if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    const volverBtn = currentModal.querySelector('button[id^="volver-"]');
-    if (volverBtn) volverBtn.click();
-  }
+document.querySelectorAll('.cash-back').forEach((button) => {
+  button.addEventListener('click', () => {
+    const destino = button.dataset.volver;
+    if (destino === 'venta') cerrarModales();
+    else mostrarModal(`modal-${destino}`);
+  });
 });
