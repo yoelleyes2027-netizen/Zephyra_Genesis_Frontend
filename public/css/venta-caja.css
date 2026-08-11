@@ -223,6 +223,36 @@ body.cash-register {
   font-weight: 750;
 }
 
+.cash-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.cash-header-actions h1 {
+  margin: 0;
+  padding: 0;
+  border-bottom: 0;
+}
+
+.cash-header-actions button {
+  min-height: 42px;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-control);
+  background: var(--superficie-elevada);
+  color: var(--color-texto);
+  font-weight: 700;
+}
+
+.cash-header-actions button:hover {
+  border-color: var(--color-primario);
+  background: var(--color-primario);
+  color: #fff;
+}
+
 .cash-register #producto-form {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) 130px auto;

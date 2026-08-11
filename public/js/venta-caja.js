@@ -4,11 +4,13 @@ let empresaSeleccionada = null;
 let formaDePago = 'EFECTIVO';
 let tipoMoneda = 'UYU';
 let tasaUsdUyu = null;
+let destinoVolver = './cajeroUsuario.html';
 
 const productoForm = document.getElementById('producto-form');
 const productosBody = document.querySelector('#tabla-productos tbody');
 const totalElement = document.getElementById('total');
 const ventaMensaje = document.getElementById('venta-mensaje');
+const volverPanelButton = document.getElementById('volver-panel');
 
 function totalVenta() {
   return productosSeleccionados.reduce((total, producto) => total + producto.precioUnitario * producto.cantidad, 0);
@@ -16,6 +18,18 @@ function totalVenta() {
 
 function formatearUyu(monto) {
   return `UYU $${Number(monto || 0).toFixed(2)}`;
+}
+
+async function inicializarDestinoVolver() {
+  try {
+    const response = await fetch('/api/auth/verificar-token', { credentials: 'include' });
+    if (!response.ok) return;
+    const payload = await response.json();
+    const rol = (payload.usuario?.rol || '').toLowerCase();
+    destinoVolver = rol === 'admin' ? './adminUsuario.html' : './cajeroUsuario.html';
+  } catch {
+    destinoVolver = './login.html';
+  }
 }
 
 function mostrarMensaje(elemento, mensaje = '', tipo = '') {
@@ -252,3 +266,9 @@ document.querySelectorAll('.cash-back').forEach((button) => {
     else mostrarModal(`modal-${destino}`);
   });
 });
+
+volverPanelButton.addEventListener('click', () => {
+  window.location.href = destinoVolver;
+});
+
+inicializarDestinoVolver();
