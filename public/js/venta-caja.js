@@ -94,9 +94,6 @@ productoForm.addEventListener('submit', async (event) => {
     if (producto.activo === false) {
       throw new Error('El producto está inactivo.');
     }
-    if (cantidad > producto.stock) {
-      throw new Error(`Stock disponible: ${producto.stock}.`);
-    }
     productosSeleccionados.push({
       productoId: producto.id,
       codigoDeBarras: producto.codigoDeBarras,
