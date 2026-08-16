@@ -33,17 +33,11 @@
         <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./clientes-unificado.html'">
           <i class="fas fa-users"></i> Clientes
         </button>
-        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./venta-caja.html'">
-          <i class="fas fa-cart-shopping"></i> Cortar ticket
-        </button>
-        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./devolucion.html'">
-          <i class="fas fa-rotate-left"></i> Devolver ticket
+        <button id="btn-cajas" class="btn btn-light shadow-sm flex-fill" type="button">
+          <i class="fas fa-cash-register"></i> Cajas
         </button>
         <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./iniciar-dia.html'">
           <i class="fas fa-sun"></i> Iniciar día
-        </button>
-        <button class="btn btn-light shadow-sm flex-fill" onclick="window.location.href='./cerrar-caja.html'">
-          <i class="fas fa-cash-register"></i> Cerrar caja
         </button>
       </div>
     </div>
@@ -54,6 +48,10 @@
   </div>
 
   <script src="../js/dashboard.js"></script>
+      <script src="../js/cajas-acceso.js"></script>
+      <script>
+        document.getElementById('btn-cajas')?.addEventListener('click', validarAccesoYRedirigirCajas);
+      </script>
 </body>
 
 </html>

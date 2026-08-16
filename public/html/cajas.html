@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cajas - Genesis</title>
+  <script src="../js/theme.js"></script>
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+  <main class="dashboard-container container">
+    <header class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo" aria-hidden="true">G</div>
+      <h1 class="mb-0">Cajas</h1>
+    </header>
+
+    <section class="dashboard-section">
+      <h2 class="mb-2">Operaciones de caja</h2>
+      <p class="text-muted mb-4">Selecciona la operación que necesitas realizar.</p>
+      <div class="dashboard-menu d-flex flex-wrap gap-3">
+        <button class="btn btn-light shadow-sm flex-fill" type="button" onclick="window.location.href='./venta-caja.html'">
+          <i class="fas fa-cart-shopping" aria-hidden="true"></i> Cortar ticket
+        </button>
+        <button class="btn btn-light shadow-sm flex-fill" type="button" onclick="window.location.href='./devolucion.html'">
+          <i class="fas fa-rotate-left" aria-hidden="true"></i> Devolver ticket
+        </button>
+        <button class="btn btn-light shadow-sm flex-fill" type="button" onclick="window.location.href='./cerrar-caja.html'">
+          <i class="fas fa-cash-register" aria-hidden="true"></i> Cerrar caja
+        </button>
+      </div>
+    </section>
+
+    <footer class="dashboard-footer">
+      <button id="btn-volver" class="btn dashboard-logout" type="button"><i class="fas fa-arrow-left" aria-hidden="true"></i> Volver</button>
+    </footer>
+  </main>
+
+  <script src="../js/cajas.js"></script>
+</body>
+
+</html>
