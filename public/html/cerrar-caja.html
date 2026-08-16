@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cerrar Caja</title>
+  <script src="../js/theme.js"></script>
+  <link rel="stylesheet" href="../css/cerrar-caja.css" />
+</head>
+<body>
+  <main class="contenedor">
+    <h1>Cerrar Caja</h1>
+
+    <form id="cerrar-caja-form" class="formulario">
+      <label for="pos-declarado">POS declarado</label>
+      <input id="pos-declarado" type="number" min="0" step="0.01" required>
+
+      <label for="efectivo-declarado">Efectivo declarado</label>
+      <input id="efectivo-declarado" type="number" min="0" step="1" required>
+
+      <label for="cedula-admin">Cédula administrador (autorización)</label>
+      <input id="cedula-admin" type="number" min="1" required>
+
+      <label for="password-admin">Contraseña administrador</label>
+      <input id="password-admin" type="password" autocomplete="current-password" required>
+
+      <div class="acciones">
+        <button id="btn-cerrar-caja" type="submit">Cerrar caja</button>
+        <button id="btn-volver" type="button">Volver</button>
+      </div>
+    </form>
+
+    <div id="mensaje" class="mensaje oculto"></div>
+  </main>
+
+  <script src="../js/cerrar-caja.js"></script>
+</body>
+</html>

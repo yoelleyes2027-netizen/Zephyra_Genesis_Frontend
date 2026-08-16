@@ -48,11 +48,16 @@ document.getElementById("logout-btn").addEventListener("click", () => {
     method: "POST",
     credentials: "include",
   })
-    .then(() => {
+    .then(async response => {
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.msg || payload.mensaje || "No se pudo cerrar sesión.");
+      }
       console.log("🔁 Sesión cerrada. Redirigiendo al login...");
       window.location.href = '../html/login.html';
     })
     .catch(error => {
       console.error("❌ Error al cerrar sesión:", error);
+      alert(error.message || "No se pudo cerrar sesión.");
     });
 });

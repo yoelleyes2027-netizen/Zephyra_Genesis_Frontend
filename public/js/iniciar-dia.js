@@ -1,26 +1,41 @@
-document.getElementById('btn-iniciar-dia').addEventListener('click', async () => {
-    const mensaje = document.getElementById('mensaje');
-    mensaje.classList.add('oculto');
-    mensaje.classList.remove('exito', 'error');
-  
-    try {
-      const response = await fetch('/api/monedas/actualizar-dolar', {
-        method: 'POST'
-      });
-  
-      const data = await response.json();
-  
-      if (data.ok) {
-        mensaje.textContent = `✅ Dólar actualizado correctamente: $${data.valorUSD}`;
-        mensaje.classList.add('exito');
-      } else {
-        mensaje.textContent = `❌ ${data.msg}`;
-        mensaje.classList.add('error');
-      }
-    } catch (error) {
-      mensaje.textContent = '❌ Error de conexión con el servidor.';
-      mensaje.classList.add('error');
+const mensaje = document.getElementById('mensaje');
+
+function mostrarMensaje(texto, tipo) {
+  mensaje.textContent = texto;
+  mensaje.className = `mensaje ${tipo}`;
+}
+
+async function validarAccesoAdmin() {
+  try {
+    const response = await fetch('/api/auth/verificar-token', { credentials: 'include' });
+    if (!response.ok) throw new Error('Sesión no válida');
+    const payload = await response.json();
+    const rol = (payload.usuario?.rol || '').toLowerCase();
+    if (rol !== 'admin') {
+      window.location.href = './login.html';
     }
-  
-    mensaje.classList.remove('oculto');
-  });
+  } catch {
+    window.location.href = './login.html';
+  }
+}
+
+document.getElementById('btn-iniciar-dia').addEventListener('click', async () => {
+  mostrarMensaje('Procesando inicio del día...', '');
+
+  try {
+    const response = await fetch('/api/caja/iniciar-dia', {
+      method: 'POST',
+      credentials: 'include',
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || !payload.ok) {
+      throw new Error(payload.msg || payload.mensaje || 'Hubo un error en el sistema');
+    }
+
+    mostrarMensaje('Dia iniciado correctamente', 'exito');
+  } catch {
+    mostrarMensaje('Hubo un error en el sistema', 'error');
+  }
+});
+
+validarAccesoAdmin();

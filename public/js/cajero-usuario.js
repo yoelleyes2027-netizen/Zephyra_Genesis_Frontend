@@ -13,8 +13,16 @@ async function verificarAccesoCajero() {
 }
 
 document.getElementById('logout-btn').addEventListener('click', async () => {
-  await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-  window.location.href = './login.html';
+  try {
+    const response = await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(payload.msg || payload.mensaje || 'No se pudo cerrar sesión.');
+    }
+    window.location.href = './login.html';
+  } catch (error) {
+    alert(error.message || 'No se pudo cerrar sesión.');
+  }
 });
 
 verificarAccesoCajero();

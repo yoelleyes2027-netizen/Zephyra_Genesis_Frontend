@@ -78,6 +78,9 @@ document.getElementById('buscar-ticket-form').addEventListener('submit', async (
     if (ticketSeleccionado.devolucion) {
       throw new Error('No se puede devolver un ticket que ya es una devolución.');
     }
+    if (ticketSeleccionado.devolucionRealizada) {
+      throw new Error('Este ticket ya tiene una devolución realizada.');
+    }
     renderizarTicket(ticketSeleccionado);
     ticketDetallePanel.hidden = false;
     mostrarMensaje(mensaje);
