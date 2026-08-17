@@ -47,6 +47,7 @@ form.addEventListener('submit', async (event) => {
     const payload = {
       posDeclarado: Number(document.getElementById('pos-declarado').value),
       efectivoDeclarado: Number(document.getElementById('efectivo-declarado').value),
+      dolaresDeclarados: Number(document.getElementById('dolares-declarados').value),
       cedulaAdmin: Number(document.getElementById('cedula-admin').value),
       contrasenaAdmin: document.getElementById('password-admin').value,
     };
