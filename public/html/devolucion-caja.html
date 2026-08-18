@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devolución por caja - Genesis</title>
+  <script src="../js/theme.js"></script>
+  <link rel="stylesheet" href="../css/venta-caja.css">
+</head>
+
+<body class="cash-register">
+  <main class="container" aria-labelledby="devolucion-caja-title">
+    <h1 id="devolucion-caja-title">Devolución por caja</h1>
+
+    <section id="autorizacion-panel" class="cash-panel" aria-labelledby="autorizacion-title">
+      <h2 id="autorizacion-title">Autorización requerida</h2>
+      <p>Un administrador de esta BDD debe aprobar la devolución por caja antes de continuar.</p>
+      <form id="autorizacion-form" class="cash-inline-form">
+        <div><label for="autorizacion-cedula">Cédula de administrador</label><input id="autorizacion-cedula" type="number" inputmode="numeric" required></div>
+        <div><label for="autorizacion-password">Contraseña</label><input id="autorizacion-password" type="password" autocomplete="current-password" required></div>
+        <button type="submit">Solicitar autorización</button>
+      </form>
+      <p id="autorizacion-mensaje" class="cash-message" role="alert" aria-live="polite"></p>
+    </section>
+
+    <section id="devolucion-panel" hidden>
+      <form id="producto-form" novalidate>
+        <div>
+          <label for="codigo">Código de producto</label>
+          <input type="text" id="codigo" placeholder="Código de barras" inputmode="numeric" required>
+        </div>
+        <div>
+          <label for="cantidad">Cantidad</label>
+          <input type="number" id="cantidad" min="1" value="1" required>
+        </div>
+        <button type="submit">Agregar producto</button>
+      </form>
+
+      <div class="table-scroll">
+        <table id="tabla-productos">
+          <thead>
+            <tr><th>Descripción</th><th>Precio unitario</th><th>Cantidad</th><th>Subtotal</th><th aria-label="Acciones"></th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <p class="total-display">Total: <span>UYU $<strong id="total">0.00</strong></span></p>
+      <p id="venta-mensaje" class="cash-message" role="alert" aria-live="polite"></p>
+      <button id="cerrar-ticket" type="button">Cerrar ticket</button>
+    </section>
+
+    <div class="cash-footer-actions"><button id="volver-panel" type="button">Volver</button></div>
+  </main>
+
+  <section id="modal-cliente" class="cash-modal" hidden aria-labelledby="cliente-title">
+    <div class="cash-modal__panel">
+      <h2 id="cliente-title">Factura</h2>
+      <p>Selecciona a quién se asociará la devolución.</p>
+      <div class="cash-options" role="radiogroup" aria-label="Tipo de cliente">
+        <label><input type="radio" name="tipo-cliente" value="consumidor" checked> Consumidor final</label>
+        <label><input type="radio" name="tipo-cliente" value="empresa"> Factura con RUT</label>
+      </div>
+      <div class="cash-actions"><button id="confirmar-cliente" type="button">Confirmar</button><button class="cash-back" data-volver="devolucion" type="button">Volver</button></div>
+    </div>
+  </section>
+
+  <section id="modal-rut" class="cash-modal" hidden aria-labelledby="rut-title">
+    <div class="cash-modal__panel">
+      <h2 id="rut-title">Factura con RUT</h2>
+      <label for="rut-empresa">RUT de la empresa</label>
+      <input id="rut-empresa" type="text" placeholder="Ingresa el RUT">
+      <p id="empresa-mensaje" class="cash-message" role="alert"></p>
+      <p id="empresa-encontrada" hidden></p>
+      <div class="cash-actions"><button id="buscar-empresa" type="button">Buscar empresa</button><button id="confirmar-empresa" type="button" hidden>Confirmar empresa</button><button class="cash-back" data-volver="cliente" type="button">Volver</button></div>
+    </div>
+  </section>
+
+  <section id="modal-pago" class="cash-modal" hidden aria-labelledby="pago-title">
+    <div class="cash-modal__panel">
+      <h2 id="pago-title">Forma de devolución</h2>
+      <div class="cash-options" role="radiogroup" aria-label="Forma de devolución">
+        <label><input type="radio" name="forma-pago" value="EFECTIVO" checked> Efectivo</label>
+        <label><input type="radio" name="forma-pago" value="TARJETA"> Tarjeta</label>
+        <label><input type="radio" name="forma-pago" value="TRANSFERENCIA"> Transferencia</label>
+      </div>
+      <div class="cash-actions"><button id="confirmar-pago" type="button">Confirmar</button><button class="cash-back" data-volver="cliente" type="button">Volver</button></div>
+    </div>
+  </section>
+
+  <section id="modal-finalizar" class="cash-modal" hidden aria-labelledby="finalizar-title">
+    <div class="cash-modal__panel">
+      <h2 id="finalizar-title">Confirmar devolución por caja</h2>
+      <p id="resumen-pago"></p>
+      <p class="cash-change">Total: <strong id="finalizar-total"></strong></p>
+      <p id="finalizar-mensaje" class="cash-message" role="alert"></p>
+      <div class="cash-actions"><button id="finalizar-devolucion-caja" type="button">Finalizar devolución</button><button class="cash-back" data-volver="pago" type="button">Volver</button></div>
+    </div>
+  </section>
+
+  <script src="../js/devolucion-caja.js"></script>
+</body>
+
+</html>
