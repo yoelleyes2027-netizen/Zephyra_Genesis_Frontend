@@ -2,6 +2,7 @@ const OPERACIONES = [
   { id: 'btn-cortar-ticket', url: './venta-caja.html' },
   { id: 'btn-devolver-ticket', url: './devolucion.html' },
   { id: 'btn-devolucion-caja', url: './devolucion-caja.html' },
+  { id: 'btn-egreso', url: './egreso.html' },
   { id: 'btn-cerrar-caja', url: './cerrar-caja.html' },
 ];
 

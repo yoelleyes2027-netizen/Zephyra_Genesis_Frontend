@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Egreso - Genesis</title>
+  <script src="../js/theme.js"></script>
+  <link rel="stylesheet" href="../css/venta-caja.css">
+</head>
+
+<body class="cash-register">
+  <main class="container" aria-labelledby="egreso-title">
+    <h1 id="egreso-title">Egreso</h1>
+
+    <section id="autorizacion-panel" class="cash-panel" aria-labelledby="autorizacion-title">
+      <h2 id="autorizacion-title">Autorización requerida</h2>
+      <p>Un administrador de esta BDD debe aprobar el egreso antes de continuar.</p>
+      <form id="autorizacion-form" class="cash-inline-form">
+        <div>
+          <label for="autorizacion-cedula">Cédula de administrador</label>
+          <input id="autorizacion-cedula" type="number" inputmode="numeric" required>
+        </div>
+        <div>
+          <label for="autorizacion-password">Contraseña</label>
+          <input id="autorizacion-password" type="password" autocomplete="current-password" required>
+        </div>
+        <button type="submit">Solicitar autorización</button>
+      </form>
+      <p id="autorizacion-mensaje" class="cash-message" role="alert" aria-live="polite"></p>
+    </section>
+
+    <section id="egreso-panel" class="cash-panel" hidden aria-labelledby="egreso-form-title">
+      <h2 id="egreso-form-title">Registrar egreso</h2>
+      <form id="egreso-form" class="cash-inline-form" novalidate>
+        <div>
+          <label for="tipo-egreso">Tipo de egreso</label>
+          <select id="tipo-egreso" required>
+            <option value="Papeleria">Papelería</option>
+            <option value="Otros">Otros</option>
+          </select>
+        </div>
+        <div>
+          <label for="monto-egreso">Monto (UYU)</label>
+          <input id="monto-egreso" type="number" min="0.01" step="0.01" required>
+        </div>
+        <button id="btn-generar-egreso" type="submit">Generar egreso</button>
+      </form>
+      <p>Forma de pago: <strong>Efectivo</strong>. Moneda: <strong>UYU</strong>.</p>
+      <p id="egreso-mensaje" class="cash-message" role="alert" aria-live="polite"></p>
+    </section>
+
+    <div class="cash-footer-actions">
+      <button id="btn-volver-cajas" type="button">Volver</button>
+    </div>
+  </main>
+
+  <script src="../js/egreso.js"></script>
+</body>
+
+</html>

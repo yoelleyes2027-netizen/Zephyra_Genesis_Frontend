@@ -32,6 +32,11 @@ document.getElementById('btn-iniciar-dia').addEventListener('click', async () =>
       throw new Error(payload.msg || payload.mensaje || 'Hubo un error en el sistema');
     }
 
+    const cotizacion = Number(payload.cotizacion_usd_uyu);
+    if (Number.isFinite(cotizacion) && cotizacion > 0) {
+      mostrarMensaje(`Dia iniciado correctamente. USD 1 = UYU ${cotizacion.toFixed(2)}.`, 'exito');
+      return;
+    }
     mostrarMensaje('Dia iniciado correctamente', 'exito');
   } catch {
     mostrarMensaje('Hubo un error en el sistema', 'error');
