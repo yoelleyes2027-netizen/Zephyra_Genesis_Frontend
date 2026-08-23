@@ -20,6 +20,12 @@ body {
     width: 90%;
     max-width: 400px;
   }
+
+  .acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
   
   button {
     padding: 12px 20px;
@@ -34,6 +40,16 @@ body {
   
   button:hover {
     background-color: var(--color-primario-fuerte);
+  }
+
+  .btn-secundario {
+    background-color: transparent;
+    border: 1px solid var(--borde);
+    color: var(--color-texto);
+  }
+
+  .btn-secundario:hover {
+    background-color: var(--superficie-2);
   }
   
   .mensaje {

@@ -1,4 +1,5 @@
 const mensaje = document.getElementById('mensaje');
+const btnVolver = document.getElementById('btn-volver');
 
 function mostrarMensaje(texto, tipo) {
   mensaje.textContent = texto;
@@ -20,6 +21,7 @@ async function validarAccesoAdmin() {
 }
 
 document.getElementById('btn-iniciar-dia').addEventListener('click', async () => {
+  btnVolver.classList.add('oculto');
   mostrarMensaje('Procesando inicio del día...', '');
 
   try {
@@ -35,12 +37,18 @@ document.getElementById('btn-iniciar-dia').addEventListener('click', async () =>
     const cotizacion = Number(payload.cotizacion_usd_uyu);
     if (Number.isFinite(cotizacion) && cotizacion > 0) {
       mostrarMensaje(`Dia iniciado correctamente. USD 1 = UYU ${cotizacion.toFixed(2)}.`, 'exito');
+      btnVolver.classList.remove('oculto');
       return;
     }
     mostrarMensaje('Dia iniciado correctamente', 'exito');
+    btnVolver.classList.remove('oculto');
   } catch {
     mostrarMensaje('Hubo un error en el sistema', 'error');
   }
+});
+
+btnVolver.addEventListener('click', () => {
+  window.location.href = './adminUsuario.html';
 });
 
 validarAccesoAdmin();
