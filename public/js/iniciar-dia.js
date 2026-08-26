@@ -42,8 +42,8 @@ document.getElementById('btn-iniciar-dia').addEventListener('click', async () =>
     }
     mostrarMensaje('Dia iniciado correctamente', 'exito');
     btnVolver.classList.remove('oculto');
-  } catch {
-    mostrarMensaje('Hubo un error en el sistema', 'error');
+  } catch (error) {
+    mostrarMensaje(error.message || 'Hubo un error en el sistema', 'error');
   }
 });
 
