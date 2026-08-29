@@ -10,6 +10,30 @@
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/dashboard.css">
   <style>
+    .factura-serie-check {
+      min-height: 42px;
+      margin-bottom: 0;
+      padding-left: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .factura-serie-check .form-check-input {
+      float: none;
+      margin: 0;
+    }
+
+    .factura-serie-check .form-check-label {
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    #serie-field .form-control {
+      min-height: 42px;
+      border-radius: var(--radio-control);
+    }
+
     #editar-dialog,
     #cantidad-dialog {
       width: min(460px, calc(100% - 1.5rem));
@@ -66,7 +90,7 @@
 
     <section class="dashboard-section mb-4" aria-label="Datos de factura">
       <h2 class="mb-3">Datos de factura</h2>
-      <div class="row g-3 align-items-end">
+      <div class="row g-3">
         <div class="col-md-5">
           <label for="proveedor" class="form-label">Proveedor</label>
           <select id="proveedor" class="form-select" required>
@@ -80,8 +104,8 @@
             <option value="USD">USD</option>
           </select>
         </div>
-        <div class="col-md-2">
-          <div class="form-check mb-2">
+        <div class="col-md-2 d-flex align-items-end">
+          <div class="form-check factura-serie-check">
             <input id="tiene-serie" class="form-check-input" type="checkbox">
             <label class="form-check-label" for="tiene-serie">Tiene numero de serie</label>
           </div>
