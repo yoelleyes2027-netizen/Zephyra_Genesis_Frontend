@@ -284,8 +284,17 @@ btnCargar.addEventListener('click', async () => {
   }
 });
 
-document.getElementById('btn-volver').addEventListener('click', () => {
+function volverAFacturas() {
   window.location.href = './facturas.html';
+}
+
+document.getElementById('btn-volver').addEventListener('click', volverAFacturas);
+document.getElementById('btn-volver-atras').addEventListener('click', () => {
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+  volverAFacturas();
 });
 
 validarRol();
