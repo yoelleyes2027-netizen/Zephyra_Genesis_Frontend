@@ -66,13 +66,13 @@ document.getElementById('autorizacion-form').addEventListener('submit', async (e
 document.getElementById('buscar-ticket-form').addEventListener('submit', async (event) => {
   event.preventDefault();
   const mensaje = document.getElementById('ticket-mensaje');
-  const ticketId = Number(document.getElementById('ticket-id').value);
-  if (!Number.isInteger(ticketId) || ticketId <= 0) {
-    mostrarMensaje(mensaje, 'Ingresa un ID de ticket válido.', 'error');
+  const nroTicket = Number(document.getElementById('ticket-id').value);
+  if (!Number.isInteger(nroTicket) || nroTicket <= 0) {
+    mostrarMensaje(mensaje, 'Ingresa un nro de ticket válido.', 'error');
     return;
   }
   try {
-    const response = await fetch(`/api/tickets/${ticketId}`, { credentials: 'include' });
+    const response = await fetch(`/api/tickets/nro/${nroTicket}`, { credentials: 'include' });
     const payload = await leerRespuesta(response);
     ticketSeleccionado = payload.ticket;
     if (ticketSeleccionado.devolucion) {
@@ -94,8 +94,10 @@ document.getElementById('buscar-ticket-form').addEventListener('submit', async (
 function renderizarTicket(ticket) {
   const datos = document.getElementById('ticket-datos');
   const fecha = ticket.fechaCreacion ? new Date(ticket.fechaCreacion).toLocaleString('es-UY') : 'No disponible';
+  const nroBuscado = Number(document.getElementById('ticket-id').value);
   datos.innerHTML = `
-    <div><dt>ID</dt><dd>${ticket.id}</dd></div>
+    <div><dt>Nro ticket</dt><dd>${Number.isInteger(nroBuscado) && nroBuscado > 0 ? nroBuscado : '-'}</dd></div>
+    <div><dt>ID documento</dt><dd>${ticket.id}</dd></div>
     <div><dt>Fecha</dt><dd>${fecha}</dd></div>
     <div><dt>Cliente</dt><dd>${ticket.clienteNombre || `ID ${ticket.clienteId}`}</dd></div>
     <div><dt>Total</dt><dd>${formatearUyu(ticket.montoTotal)}</dd></div>
