@@ -18,11 +18,18 @@ const cantidadForm = document.getElementById('cantidad-form');
 const cantidadProducto = document.getElementById('cantidad-producto');
 const cantidadInput = document.getElementById('cantidad-input');
 const cantidadError = document.getElementById('cantidad-error');
+const btnNuevoProducto = document.getElementById('btn-nuevo-producto');
+const nuevoProductoPanel = document.getElementById('nuevo-producto-panel');
+const nuevoProductoForm = document.getElementById('nuevo-producto-form');
+const nuevoProveedorInput = document.getElementById('nuevo-proveedor');
+const nuevoCancelar = document.getElementById('nuevo-cancelar');
+const nuevoGuardar = document.getElementById('nuevo-guardar');
 
 let productosSeleccionados = [];
 let productoEnEdicionId = null;
 let productoPendienteAgregar = null;
 let busquedaPendiente;
+let proveedoresCache = [];
 
 function formatoMoneda(valor) {
   return `${monedaSelect.value} ${Number(valor).toFixed(2)}`;
@@ -60,14 +67,106 @@ async function cargarProveedores() {
   try {
     const response = await fetch('/api/proveedores', { credentials: 'include' });
     const payload = await leerRespuesta(response);
+    proveedoresCache = payload.data || [];
     for (const proveedor of payload.data || []) {
       const option = document.createElement('option');
       option.value = proveedor.id;
       option.textContent = proveedor.razonSocial;
       proveedorSelect.append(option);
     }
+    actualizarProveedorEnAlta();
   } catch (error) {
     mostrarMensaje(error.message, 'error');
+  }
+}
+
+function obtenerProveedorSeleccionado() {
+  const proveedorId = Number(proveedorSelect.value);
+  if (!Number.isFinite(proveedorId)) {
+    return null;
+  }
+  return proveedoresCache.find((proveedor) => Number(proveedor.id) === proveedorId) || null;
+}
+
+function actualizarProveedorEnAlta() {
+  const proveedor = obtenerProveedorSeleccionado();
+  nuevoProveedorInput.value = proveedor
+    ? `${proveedor.numeroDocumento} - ${proveedor.razonSocial}`
+    : '';
+}
+
+function limpiarNuevoProductoForm() {
+  nuevoProductoForm.reset();
+  document.getElementById('nuevo-unidad').value = 'UNIDAD';
+  actualizarProveedorEnAlta();
+}
+
+function abrirAltaProducto() {
+  const proveedor = obtenerProveedorSeleccionado();
+  if (!proveedor) {
+    mostrarMensaje('Primero selecciona un proveedor para crear el producto.', 'error');
+    proveedorSelect.focus();
+    return;
+  }
+  limpiarNuevoProductoForm();
+  nuevoProductoPanel.classList.remove('d-none');
+  document.getElementById('nuevo-codigo').focus();
+}
+
+function cerrarAltaProducto() {
+  limpiarNuevoProductoForm();
+  nuevoProductoPanel.classList.add('d-none');
+}
+
+async function crearProductoDesdeFactura(event) {
+  event.preventDefault();
+  const proveedor = obtenerProveedorSeleccionado();
+  if (!proveedor) {
+    mostrarMensaje('Primero selecciona un proveedor para crear el producto.', 'error');
+    proveedorSelect.focus();
+    return;
+  }
+
+  const body = {
+    codigoDeBarras: Number(document.getElementById('nuevo-codigo').value),
+    descripcion: document.getElementById('nuevo-descripcion').value.trim(),
+    precioVenta: Number(document.getElementById('nuevo-precio-venta').value),
+    precioCompra: Number(document.getElementById('nuevo-precio-compra').value),
+    stock: Number(document.getElementById('nuevo-stock').value),
+    unidadDeMedida: document.getElementById('nuevo-unidad').value.trim().toUpperCase(),
+    etiqueta: document.getElementById('nuevo-etiqueta').value.trim(),
+    proveedorNumeroDocumento: String(proveedor.numeroDocumento || '').trim(),
+  };
+
+  if (!Number.isInteger(body.codigoDeBarras) || body.codigoDeBarras <= 0
+      || !body.descripcion || !Number.isFinite(body.precioVenta) || body.precioVenta < 0
+      || !Number.isFinite(body.precioCompra) || body.precioCompra < 0
+      || !Number.isInteger(body.stock) || body.stock < 0
+      || !body.unidadDeMedida || !body.etiqueta || !body.proveedorNumeroDocumento) {
+    mostrarMensaje('Completa todos los datos validos para crear el producto.', 'error');
+    return;
+  }
+
+  nuevoGuardar.disabled = true;
+  try {
+    const response = await fetch('/api/productos', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(payload.msg || payload.mensaje || 'No se pudo guardar el producto.');
+    }
+
+    mostrarMensaje('Producto creado correctamente para el proveedor seleccionado.', 'success');
+    cerrarAltaProducto();
+    await buscarProductos();
+  } catch (error) {
+    mostrarMensaje(error.message, 'error');
+  } finally {
+    nuevoGuardar.disabled = false;
   }
 }
 
@@ -233,6 +332,8 @@ tieneSerie.addEventListener('change', () => {
 proveedorSelect.addEventListener('change', () => {
   busquedaInput.disabled = !proveedorSelect.value;
   document.getElementById('busqueda-ayuda').hidden = Boolean(proveedorSelect.value);
+  actualizarProveedorEnAlta();
+  cerrarAltaProducto();
   productosSeleccionados = [];
   renderizarDetalle();
   buscarProductos();
@@ -296,6 +397,10 @@ document.getElementById('btn-volver-atras').addEventListener('click', () => {
   }
   volverAFacturas();
 });
+
+btnNuevoProducto.addEventListener('click', abrirAltaProducto);
+nuevoCancelar.addEventListener('click', cerrarAltaProducto);
+nuevoProductoForm.addEventListener('submit', crearProductoDesdeFactura);
 
 validarRol();
 cargarProveedores();

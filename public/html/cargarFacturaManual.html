@@ -133,6 +133,61 @@
       </div>
       <p id="busqueda-ayuda" class="text-muted small mt-2 mb-0">Selecciona un proveedor para buscar productos.</p>
       <div id="resultados" class="list-group mt-3" aria-live="polite"></div>
+
+      <div class="d-flex justify-content-end mt-3">
+        <button id="btn-nuevo-producto" class="btn btn-outline-primary" type="button">
+          <i class="fas fa-plus" aria-hidden="true"></i> Nuevo producto
+        </button>
+      </div>
+
+      <div id="nuevo-producto-panel" class="card mt-3 d-none">
+        <div class="card-body">
+          <h3 class="h5 mb-1">Alta de producto</h3>
+          <p class="text-muted small mb-3">El producto se crea para el proveedor seleccionado en Datos de factura.</p>
+          <form id="nuevo-producto-form" class="row g-3" novalidate>
+            <div class="col-md-3">
+              <label for="nuevo-codigo" class="form-label">Codigo de barras</label>
+              <input id="nuevo-codigo" type="number" class="form-control" min="1" required>
+            </div>
+            <div class="col-md-5">
+              <label for="nuevo-descripcion" class="form-label">Descripcion</label>
+              <input id="nuevo-descripcion" class="form-control" required>
+            </div>
+            <div class="col-md-2">
+              <label for="nuevo-stock" class="form-label">Stock</label>
+              <input id="nuevo-stock" type="number" class="form-control" min="0" required>
+            </div>
+            <div class="col-md-2">
+              <label for="nuevo-unidad" class="form-label">Unidad</label>
+              <select id="nuevo-unidad" class="form-select" required>
+                <option value="KILOGRAMO">KILOGRAMO</option>
+                <option value="LITRO">LITRO</option>
+                <option value="UNIDAD" selected>UNIDAD</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="nuevo-precio-venta" class="form-label">Precio venta</label>
+              <input id="nuevo-precio-venta" type="number" step="0.01" min="0" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+              <label for="nuevo-precio-compra" class="form-label">Precio compra</label>
+              <input id="nuevo-precio-compra" type="number" step="0.01" min="0" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+              <label for="nuevo-etiqueta" class="form-label">Etiqueta</label>
+              <input id="nuevo-etiqueta" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+              <label for="nuevo-proveedor" class="form-label">Proveedor seleccionado</label>
+              <input id="nuevo-proveedor" class="form-control" readonly>
+            </div>
+            <div class="col-12 d-flex justify-content-end gap-2">
+              <button id="nuevo-cancelar" class="btn btn-light" type="button">Cancelar</button>
+              <button id="nuevo-guardar" class="btn btn-primary" type="submit">Guardar producto</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </section>
 
     <section class="dashboard-section mb-4" aria-labelledby="detalle-title">
