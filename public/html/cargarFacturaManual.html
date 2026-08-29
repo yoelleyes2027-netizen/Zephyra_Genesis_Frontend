@@ -8,70 +8,68 @@
   <script src="../js/theme.js"></script>
   <link rel="stylesheet" href="../css/css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/all.min.css">
-  <link rel="stylesheet" href="../css/factura.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
 </head>
 
 <body>
-  <main class="factura-page">
-    <header class="factura-header">
-      <div>
-        <p class="factura-kicker">Facturas</p>
-        <h1>Cargar factura</h1>
-      </div>
-      <button id="btn-volver" class="btn-icon-text" type="button"><i class="fas fa-arrow-left" aria-hidden="true"></i> Volver</button>
+  <main class="dashboard-container container">
+    <header class="dashboard-header d-flex align-items-center justify-content-between">
+      <button id="btn-volver" class="logo border-0" type="button" aria-label="Volver a Facturas">G</button>
+      <h1 class="mb-0">Cargar factura</h1>
     </header>
 
-    <section class="factura-panel factura-config" aria-label="Datos de factura">
-      <div class="form-field">
-        <label for="proveedor">Proveedor</label>
-        <select id="proveedor" required>
-          <option value="">Selecciona un proveedor</option>
-        </select>
-      </div>
-      <div class="form-field">
-        <label for="moneda">Moneda</label>
-        <select id="moneda" required>
-          <option value="UYU">UYU</option>
-          <option value="USD">USD</option>
-        </select>
-      </div>
-      <label class="series-toggle" for="tiene-serie">
-        <input id="tiene-serie" type="checkbox">
-        <span>Tiene numero de serie</span>
-      </label>
-      <div id="serie-field" class="form-field" hidden>
-        <label for="nro-serie">Numero de serie</label>
-        <input id="nro-serie" type="text" maxlength="255">
+    <section class="dashboard-section mb-4" aria-label="Datos de factura">
+      <h2 class="mb-3">Datos de factura</h2>
+      <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+          <label for="proveedor" class="form-label">Proveedor</label>
+          <select id="proveedor" class="form-select" required>
+            <option value="">Selecciona un proveedor</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label for="moneda" class="form-label">Moneda</label>
+          <select id="moneda" class="form-select" required>
+            <option value="UYU">UYU</option>
+            <option value="USD">USD</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <div class="form-check mb-2">
+            <input id="tiene-serie" class="form-check-input" type="checkbox">
+            <label class="form-check-label" for="tiene-serie">Tiene numero de serie</label>
+          </div>
+        </div>
+        <div id="serie-field" class="col-md-3" hidden>
+          <label for="nro-serie" class="form-label">Numero de serie</label>
+          <input id="nro-serie" class="form-control" type="text" maxlength="255">
+        </div>
       </div>
     </section>
 
-    <section class="factura-panel" aria-labelledby="buscar-title">
-      <div class="section-heading">
-        <div>
-          <h2 id="buscar-title">Productos del proveedor</h2>
-          <p>Busca por codigo, descripcion o etiqueta.</p>
+    <section class="dashboard-section mb-4" aria-labelledby="buscar-title">
+      <h2 id="buscar-title" class="mb-1">Productos del proveedor</h2>
+      <p class="text-muted mb-3">Busca por codigo, descripcion o etiqueta.</p>
+      <div class="row g-2">
+        <div class="col-md-7">
+          <label for="busqueda" class="form-label">Buscar producto</label>
+          <input id="busqueda" class="form-control" type="search" placeholder="Codigo, descripcion o etiqueta" disabled>
         </div>
       </div>
-      <div class="search-row">
-        <div class="search-field">
-          <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-          <input id="busqueda" type="search" placeholder="Buscar producto" disabled>
-        </div>
-      </div>
-      <p id="busqueda-ayuda" class="form-help">Selecciona un proveedor para buscar productos.</p>
-      <div id="resultados" class="resultados" aria-live="polite"></div>
+      <p id="busqueda-ayuda" class="text-muted small mt-2 mb-0">Selecciona un proveedor para buscar productos.</p>
+      <div id="resultados" class="list-group mt-3" aria-live="polite"></div>
     </section>
 
-    <section class="factura-panel" aria-labelledby="detalle-title">
-      <div class="section-heading">
+    <section class="dashboard-section mb-4" aria-labelledby="detalle-title">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
         <div>
-          <h2 id="detalle-title">Detalle de factura</h2>
-          <p id="detalle-vacio">Aun no agregaste productos.</p>
+          <h2 id="detalle-title" class="mb-1">Detalle de factura</h2>
+          <p id="detalle-vacio" class="text-muted mb-0">Aun no agregaste productos.</p>
         </div>
-        <strong id="total" class="total">UYU 0.00</strong>
+        <strong id="total" class="text-primary fs-5">UYU 0.00</strong>
       </div>
-      <div class="table-scroll">
-        <table>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
           <thead>
             <tr>
               <th>Producto</th>
@@ -86,30 +84,30 @@
       </div>
     </section>
 
-    <p id="mensaje" class="mensaje" role="alert" aria-live="polite"></p>
-    <footer class="factura-actions">
-      <button id="btn-cargar" class="btn-primary" type="button" disabled><i class="fas fa-floppy-disk" aria-hidden="true"></i> Cargar factura</button>
+    <p id="mensaje" class="mb-3" role="alert" aria-live="polite"></p>
+    <footer class="dashboard-footer">
+      <button id="btn-cargar" class="btn btn-primary" type="button" disabled><i class="fas fa-floppy-disk" aria-hidden="true"></i> Cargar factura</button>
     </footer>
   </main>
 
   <dialog id="editar-dialog">
     <form id="editar-form" method="dialog">
-      <div class="dialog-heading">
-        <h2>Editar producto</h2>
-        <button id="btn-cerrar-edicion" class="icon-button" type="button" aria-label="Cerrar"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="h5 mb-0">Editar producto</h2>
+        <button id="btn-cerrar-edicion" class="btn-close" type="button" aria-label="Cerrar"></button>
       </div>
-      <p id="editar-producto" class="dialog-producto"></p>
-      <div class="form-field">
-        <label for="editar-cantidad">Cantidad</label>
-        <input id="editar-cantidad" type="number" min="1" step="1" required>
+      <p id="editar-producto" class="text-muted"></p>
+      <div class="mb-3">
+        <label for="editar-cantidad" class="form-label">Cantidad</label>
+        <input id="editar-cantidad" class="form-control" type="number" min="1" step="1" required>
       </div>
-      <div class="form-field">
-        <label for="editar-precio">Precio de compra</label>
-        <input id="editar-precio" type="number" min="0" step="0.01" required>
+      <div class="mb-3">
+        <label for="editar-precio" class="form-label">Precio de compra</label>
+        <input id="editar-precio" class="form-control" type="number" min="0" step="0.01" required>
       </div>
-      <div class="dialog-actions">
-        <button id="btn-cancelar-edicion" class="btn-secondary" type="button">Cancelar</button>
-        <button class="btn-primary" type="submit">Guardar cambios</button>
+      <div class="d-flex justify-content-end gap-2">
+        <button id="btn-cancelar-edicion" class="btn btn-light" type="button">Cancelar</button>
+        <button class="btn btn-primary" type="submit">Guardar cambios</button>
       </div>
     </form>
   </dialog>

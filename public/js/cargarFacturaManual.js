@@ -24,7 +24,12 @@ function formatoMoneda(valor) {
 
 function mostrarMensaje(texto = '', tipo = '') {
   mensaje.textContent = texto;
-  mensaje.className = `mensaje ${tipo}`.trim();
+  mensaje.className = 'mb-3';
+  if (tipo === 'error') {
+    mensaje.classList.add('text-danger', 'fw-semibold');
+  } else if (tipo === 'success') {
+    mensaje.classList.add('text-success', 'fw-semibold');
+  }
 }
 
 async function leerRespuesta(response) {
@@ -78,18 +83,18 @@ function renderizarResultados(productos) {
   resultados.replaceChildren();
   if (!productos.length) {
     resultados.textContent = 'No hay productos que coincidan con la busqueda.';
-    resultados.className = 'resultados empty';
+    resultados.className = 'list-group mt-3 text-muted';
     return;
   }
-  resultados.className = 'resultados';
+  resultados.className = 'list-group mt-3';
   for (const producto of productos) {
     const article = document.createElement('article');
-    article.className = 'resultado';
+    article.className = 'list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2';
     const datos = document.createElement('div');
-    datos.innerHTML = `<strong>${producto.descripcion}</strong><span>Codigo: ${producto.codigoDeBarras} | Etiqueta: ${producto.etiqueta}</span>`;
+    datos.innerHTML = `<strong class="d-block">${producto.descripcion}</strong><small class="text-muted">Codigo: ${producto.codigoDeBarras} | Etiqueta: ${producto.etiqueta}</small>`;
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'add-button';
+    button.className = 'btn btn-primary btn-sm';
     button.innerHTML = '<i class="fas fa-plus" aria-hidden="true"></i><span>Agregar</span>';
     button.disabled = productosSeleccionados.some((item) => item.id === producto.id);
     button.addEventListener('click', () => agregarProducto(producto));
@@ -116,7 +121,7 @@ function renderizarDetalle() {
     const subtotal = producto.cantidad * producto.precioCompra;
     row.innerHTML = `<td>${producto.descripcion}</td><td>${formatoMoneda(producto.precioCompra)}</td><td>${producto.cantidad}</td><td>${formatoMoneda(subtotal)}</td>`;
     const acciones = document.createElement('td');
-    acciones.className = 'row-actions';
+    acciones.className = 'text-end text-nowrap';
     const editar = crearBotonAccion('fa-pen', 'Editar producto', () => abrirEdicion(producto.id));
     const quitar = crearBotonAccion('fa-trash', 'Quitar producto', () => quitarProducto(producto.id), 'danger');
     acciones.append(editar, quitar);
@@ -132,7 +137,7 @@ function renderizarDetalle() {
 function crearBotonAccion(icono, etiqueta, onClick, clase = '') {
   const button = document.createElement('button');
   button.type = 'button';
-  button.className = `icon-button ${clase}`.trim();
+  button.className = `btn btn-sm ${clase === 'danger' ? 'btn-outline-danger' : 'btn-outline-secondary'} ms-1`;
   button.title = etiqueta;
   button.setAttribute('aria-label', etiqueta);
   button.innerHTML = `<i class="fas ${icono}" aria-hidden="true"></i>`;
