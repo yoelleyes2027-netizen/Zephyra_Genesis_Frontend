@@ -13,9 +13,15 @@ const editarDialog = document.getElementById('editar-dialog');
 const editarForm = document.getElementById('editar-form');
 const editarCantidad = document.getElementById('editar-cantidad');
 const editarPrecio = document.getElementById('editar-precio');
+const cantidadDialog = document.getElementById('cantidad-dialog');
+const cantidadForm = document.getElementById('cantidad-form');
+const cantidadProducto = document.getElementById('cantidad-producto');
+const cantidadInput = document.getElementById('cantidad-input');
+const cantidadError = document.getElementById('cantidad-error');
 
 let productosSeleccionados = [];
 let productoEnEdicionId = null;
+let productoPendienteAgregar = null;
 let busquedaPendiente;
 
 function formatoMoneda(valor) {
@@ -104,12 +110,36 @@ function renderizarResultados(productos) {
 }
 
 function agregarProducto(producto) {
+  abrirDialogoCantidad(producto);
+}
+
+function abrirDialogoCantidad(producto) {
+  productoPendienteAgregar = producto;
+  cantidadProducto.textContent = producto.descripcion;
+  cantidadInput.value = '1';
+  cantidadError.textContent = '';
+  cantidadDialog.showModal();
+  cantidadInput.focus();
+}
+
+function cerrarDialogoCantidad() {
+  cantidadDialog.close();
+  productoPendienteAgregar = null;
+  cantidadError.textContent = '';
+}
+
+function agregarProductoConfirmado(cantidad) {
+  if (!productoPendienteAgregar) {
+    return;
+  }
+
   productosSeleccionados.push({
-    id: producto.id,
-    descripcion: producto.descripcion,
-    cantidad: 1,
-    precioCompra: Number(producto.precioCompra),
+    id: productoPendienteAgregar.id,
+    descripcion: productoPendienteAgregar.descripcion,
+    cantidad,
+    precioCompra: Number(productoPendienteAgregar.precioCompra),
   });
+  cerrarDialogoCantidad();
   renderizarDetalle();
   buscarProductos();
 }
@@ -176,8 +206,24 @@ editarForm.addEventListener('submit', (event) => {
   renderizarDetalle();
 });
 
+cantidadForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const cantidad = Number(cantidadInput.value);
+  if (!Number.isInteger(cantidad) || cantidad <= 0) {
+    cantidadError.textContent = 'La cantidad debe ser un numero entero mayor a 0.';
+    return;
+  }
+  agregarProductoConfirmado(cantidad);
+});
+
 document.getElementById('btn-cerrar-edicion').addEventListener('click', () => editarDialog.close());
 document.getElementById('btn-cancelar-edicion').addEventListener('click', () => editarDialog.close());
+document.getElementById('btn-cerrar-cantidad').addEventListener('click', cerrarDialogoCantidad);
+document.getElementById('btn-cancelar-cantidad').addEventListener('click', cerrarDialogoCantidad);
+cantidadDialog.addEventListener('cancel', () => {
+  productoPendienteAgregar = null;
+  cantidadError.textContent = '';
+});
 
 tieneSerie.addEventListener('change', () => {
   serieField.hidden = !tieneSerie.checked;
