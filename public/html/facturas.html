@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facturas - Genesis</title>
+  <script src="../js/theme.js"></script>
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+  <main class="dashboard-container container">
+    <header class="dashboard-header d-flex align-items-center justify-content-between">
+      <div class="logo" aria-hidden="true">G</div>
+      <h1 class="mb-0">Facturas</h1>
+    </header>
+
+    <section class="dashboard-section">
+      <h2 class="mb-4">Operaciones</h2>
+      <div class="dashboard-menu d-flex flex-wrap gap-3">
+        <button class="btn btn-light shadow-sm flex-fill" type="button" onclick="window.location.href='./cargarFacturaManual.html'">
+          <i class="fas fa-file-circle-plus" aria-hidden="true"></i> Cargar factura
+        </button>
+        <button class="btn btn-light shadow-sm flex-fill" type="button" disabled title="Próximamente">
+          <i class="fas fa-truck-ramp-box" aria-hidden="true"></i> Emitir remito
+        </button>
+      </div>
+    </section>
+
+    <footer class="dashboard-footer">
+      <button id="btn-volver" class="btn dashboard-logout" type="button"><i class="fas fa-arrow-left" aria-hidden="true"></i> Volver</button>
+    </footer>
+  </main>
+
+  <script src="../js/facturas.js"></script>
+</body>
+
+</html>

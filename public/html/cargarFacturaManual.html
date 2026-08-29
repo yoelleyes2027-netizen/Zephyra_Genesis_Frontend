@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cargar factura - Genesis</title>
+  <script src="../js/theme.js"></script>
+  <link rel="stylesheet" href="../css/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/factura.css">
+</head>
+
+<body>
+  <main class="factura-page">
+    <header class="factura-header">
+      <div>
+        <p class="factura-kicker">Facturas</p>
+        <h1>Cargar factura</h1>
+      </div>
+      <button id="btn-volver" class="btn-icon-text" type="button"><i class="fas fa-arrow-left" aria-hidden="true"></i> Volver</button>
+    </header>
+
+    <section class="factura-panel factura-config" aria-label="Datos de factura">
+      <div class="form-field">
+        <label for="proveedor">Proveedor</label>
+        <select id="proveedor" required>
+          <option value="">Selecciona un proveedor</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="moneda">Moneda</label>
+        <select id="moneda" required>
+          <option value="UYU">UYU</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+      <label class="series-toggle" for="tiene-serie">
+        <input id="tiene-serie" type="checkbox">
+        <span>Tiene numero de serie</span>
+      </label>
+      <div id="serie-field" class="form-field" hidden>
+        <label for="nro-serie">Numero de serie</label>
+        <input id="nro-serie" type="text" maxlength="255">
+      </div>
+    </section>
+
+    <section class="factura-panel" aria-labelledby="buscar-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="buscar-title">Productos del proveedor</h2>
+          <p>Busca por codigo, descripcion o etiqueta.</p>
+        </div>
+      </div>
+      <div class="search-row">
+        <div class="search-field">
+          <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+          <input id="busqueda" type="search" placeholder="Buscar producto" disabled>
+        </div>
+      </div>
+      <p id="busqueda-ayuda" class="form-help">Selecciona un proveedor para buscar productos.</p>
+      <div id="resultados" class="resultados" aria-live="polite"></div>
+    </section>
+
+    <section class="factura-panel" aria-labelledby="detalle-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="detalle-title">Detalle de factura</h2>
+          <p id="detalle-vacio">Aun no agregaste productos.</p>
+        </div>
+        <strong id="total" class="total">UYU 0.00</strong>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Precio compra</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+              <th aria-label="Acciones"></th>
+            </tr>
+          </thead>
+          <tbody id="detalle-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p id="mensaje" class="mensaje" role="alert" aria-live="polite"></p>
+    <footer class="factura-actions">
+      <button id="btn-cargar" class="btn-primary" type="button" disabled><i class="fas fa-floppy-disk" aria-hidden="true"></i> Cargar factura</button>
+    </footer>
+  </main>
+
+  <dialog id="editar-dialog">
+    <form id="editar-form" method="dialog">
+      <div class="dialog-heading">
+        <h2>Editar producto</h2>
+        <button id="btn-cerrar-edicion" class="icon-button" type="button" aria-label="Cerrar"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+      </div>
+      <p id="editar-producto" class="dialog-producto"></p>
+      <div class="form-field">
+        <label for="editar-cantidad">Cantidad</label>
+        <input id="editar-cantidad" type="number" min="1" step="1" required>
+      </div>
+      <div class="form-field">
+        <label for="editar-precio">Precio de compra</label>
+        <input id="editar-precio" type="number" min="0" step="0.01" required>
+      </div>
+      <div class="dialog-actions">
+        <button id="btn-cancelar-edicion" class="btn-secondary" type="button">Cancelar</button>
+        <button class="btn-primary" type="submit">Guardar cambios</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="../js/cargarFacturaManual.js"></script>
+</body>
+
+</html>
