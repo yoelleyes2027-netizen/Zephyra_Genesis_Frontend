@@ -1,0 +1,57 @@
+@import url('./app.css');
+
+.remito-page .dashboard-section h2 {
+  font-size: 1.15rem;
+}
+
+.remito-check {
+  min-height: 42px;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.remito-check .form-check-input {
+  float: none;
+  margin: 0;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 0.2rem;
+}
+
+.remito-lista .list-group-item {
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-panel);
+  margin-bottom: 0.5rem;
+}
+
+.remito-lista .list-group-item.active {
+  background: rgba(13, 110, 253, 0.08);
+  border-color: rgba(13, 110, 253, 0.45);
+  color: inherit;
+}
+
+.factura-fila {
+  cursor: pointer;
+}
+
+.factura-fila .meta {
+  color: var(--texto-suave);
+  font-size: 0.88rem;
+}
+
+#mensaje.text-danger,
+#mensaje.text-success {
+  font-weight: 600;
+}
+
+.cantidad-remito {
+  max-width: 110px;
+}
+
+@media (max-width: 768px) {
+  .cantidad-remito {
+    max-width: 100%;
+  }
+}
