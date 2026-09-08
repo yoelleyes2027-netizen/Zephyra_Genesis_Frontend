@@ -19,6 +19,15 @@ const empresaEditDireccion = document.getElementById('empresa-edit-direccion');
 let empresasCache = [];
 let documentoEdicionEmpresa = null;
 
+function escapeHtml(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function formDataEmpresa() {
   return {
     name: document.getElementById('empresa-name').value.trim(),
@@ -73,15 +82,15 @@ function renderEmpresas(items) {
   empresasCache = items || [];
   empresaBody.innerHTML = empresasCache.map((empresa) => `
     <tr>
-      <td>${empresa.name ?? ''}</td>
-      <td>${empresa.numeroDocumento ?? ''}</td>
-      <td>${empresa.razonSocial ?? ''}</td>
-      <td>${empresa.telefono ?? ''}</td>
-      <td>${empresa.email ?? ''}</td>
-      <td>${empresa.direccion ?? ''}</td>
+      <td>${escapeHtml(empresa.name ?? '')}</td>
+      <td>${escapeHtml(empresa.numeroDocumento ?? '')}</td>
+      <td>${escapeHtml(empresa.razonSocial ?? '')}</td>
+      <td>${escapeHtml(empresa.telefono ?? '')}</td>
+      <td>${escapeHtml(empresa.email ?? '')}</td>
+      <td>${escapeHtml(empresa.direccion ?? '')}</td>
       <td>
-        <button class="btn btn-sm btn-outline-primary me-2" data-editar-empresa="${empresa.numeroDocumento}">Editar</button>
-        <button class="btn btn-sm btn-outline-danger" data-eliminar-empresa="${empresa.numeroDocumento}">Eliminar</button>
+        <button class="btn btn-sm btn-outline-primary me-2" data-editar-empresa="${escapeHtml(empresa.numeroDocumento)}">Editar</button>
+        <button class="btn btn-sm btn-outline-danger" data-eliminar-empresa="${escapeHtml(empresa.numeroDocumento)}">Eliminar</button>
       </td>
     </tr>
   `).join('');

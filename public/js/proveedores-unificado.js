@@ -1,3 +1,12 @@
+function escapeHtml(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // ====== BÚSQUEDA puntual (respeta tu flujo/IDs originales) ======
 async function buscarProveedor() {
     const input = document.getElementById("documento-input").value.trim();
@@ -33,12 +42,12 @@ async function buscarProveedor() {
   
       const fila = document.createElement("tr");
       fila.innerHTML = `
-        <td>${proveedor.name || ""}</td>
-        <td>${proveedor.razonSocial || ""}</td>
-        <td>${proveedor.numeroDocumento || ""}</td>
-        <td>${proveedor.telefono || ""}</td>
-        <td>${proveedor.email || ""}</td>
-        <td>${proveedor.direccion || ""}</td>
+        <td>${escapeHtml(proveedor.name || "")}</td>
+        <td>${escapeHtml(proveedor.razonSocial || "")}</td>
+        <td>${escapeHtml(proveedor.numeroDocumento || "")}</td>
+        <td>${escapeHtml(proveedor.telefono || "")}</td>
+        <td>${escapeHtml(proveedor.email || "")}</td>
+        <td>${escapeHtml(proveedor.direccion || "")}</td>
       `;
       tbody.appendChild(fila);
       tabla.style.display = "table";
@@ -72,12 +81,12 @@ async function buscarProveedor() {
       proveedores.forEach((proveedor) => {
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${proveedor.name || ""}</td>
-          <td>${proveedor.numeroDocumento || ""}</td>
-          <td>${proveedor.direccion || ""}</td>
-          <td>${proveedor.telefono || ""}</td>
-          <td>${proveedor.email || ""}</td>
-          <td>${proveedor.razonSocial || ""}</td>
+          <td>${escapeHtml(proveedor.name || "")}</td>
+          <td>${escapeHtml(proveedor.numeroDocumento || "")}</td>
+          <td>${escapeHtml(proveedor.direccion || "")}</td>
+          <td>${escapeHtml(proveedor.telefono || "")}</td>
+          <td>${escapeHtml(proveedor.email || "")}</td>
+          <td>${escapeHtml(proveedor.razonSocial || "")}</td>
         `;
         tbody.appendChild(row);
       });

@@ -15,6 +15,15 @@ const clienteEditTelefono = document.getElementById('cliente-edit-telefono');
 let clientesCache = [];
 let emailEdicionCliente = null;
 
+function escapeHtml(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function formDataCliente() {
   return {
     name: document.getElementById('cliente-name').value.trim(),
@@ -59,13 +68,13 @@ function renderClientes(items) {
   clientesCache = items || [];
   clienteBody.innerHTML = clientesCache.map((cliente) => `
     <tr>
-      <td>${cliente.name ?? ''}</td>
-      <td>${cliente.email ?? ''}</td>
-      <td>${cliente.telefono ?? ''}</td>
-      <td>${cliente.fechaCreacion ?? ''}</td>
+      <td>${escapeHtml(cliente.name ?? '')}</td>
+      <td>${escapeHtml(cliente.email ?? '')}</td>
+      <td>${escapeHtml(cliente.telefono ?? '')}</td>
+      <td>${escapeHtml(cliente.fechaCreacion ?? '')}</td>
       <td>
-        <button class="btn btn-sm btn-outline-primary me-2" data-editar-cliente="${cliente.email}">Editar</button>
-        <button class="btn btn-sm btn-outline-danger" data-eliminar-cliente="${cliente.email}">Eliminar</button>
+        <button class="btn btn-sm btn-outline-primary me-2" data-editar-cliente="${escapeHtml(cliente.email)}">Editar</button>
+        <button class="btn btn-sm btn-outline-danger" data-eliminar-cliente="${escapeHtml(cliente.email)}">Eliminar</button>
       </td>
     </tr>
   `).join('');

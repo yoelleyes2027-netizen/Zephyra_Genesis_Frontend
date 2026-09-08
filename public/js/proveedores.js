@@ -61,6 +61,15 @@ function cerrarModalEdicionProveedor() {
   document.body.classList.remove('modal-open');
 }
 
+function escapeHtml(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function attachProveedorActions() {
   document.querySelectorAll('[data-editar-proveedor]').forEach((button) => {
     button.addEventListener('click', () => editarProveedor(button.dataset.editarProveedor));
@@ -74,15 +83,15 @@ function renderProveedores(items) {
   proveedoresCache = items || [];
   proveedorBody.innerHTML = proveedoresCache.map((proveedor) => `
     <tr>
-      <td>${proveedor.name ?? ''}</td>
-      <td>${proveedor.numeroDocumento ?? ''}</td>
-      <td>${proveedor.razonSocial ?? ''}</td>
-      <td>${proveedor.telefono ?? ''}</td>
-      <td>${proveedor.email ?? ''}</td>
-      <td>${proveedor.direccion ?? ''}</td>
+      <td>${escapeHtml(proveedor.name ?? '')}</td>
+      <td>${escapeHtml(proveedor.numeroDocumento ?? '')}</td>
+      <td>${escapeHtml(proveedor.razonSocial ?? '')}</td>
+      <td>${escapeHtml(proveedor.telefono ?? '')}</td>
+      <td>${escapeHtml(proveedor.email ?? '')}</td>
+      <td>${escapeHtml(proveedor.direccion ?? '')}</td>
       <td>
-        <button class="btn btn-sm btn-outline-primary me-2" data-editar-proveedor="${proveedor.numeroDocumento}">Editar</button>
-        <button class="btn btn-sm btn-outline-danger" data-eliminar-proveedor="${proveedor.numeroDocumento}">Eliminar</button>
+        <button class="btn btn-sm btn-outline-primary me-2" data-editar-proveedor="${escapeHtml(proveedor.numeroDocumento)}">Editar</button>
+        <button class="btn btn-sm btn-outline-danger" data-eliminar-proveedor="${escapeHtml(proveedor.numeroDocumento)}">Eliminar</button>
       </td>
     </tr>
   `).join('');

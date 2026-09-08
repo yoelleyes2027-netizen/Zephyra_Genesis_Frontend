@@ -31,6 +31,15 @@ let productoPendienteAgregar = null;
 let busquedaPendiente;
 let proveedoresCache = [];
 
+function escapeHtml(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function formatoMoneda(valor) {
   return `${monedaSelect.value} ${Number(valor).toFixed(2)}`;
 }
@@ -196,7 +205,7 @@ function renderizarResultados(productos) {
     const article = document.createElement('article');
     article.className = 'list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2';
     const datos = document.createElement('div');
-    datos.innerHTML = `<strong class="d-block">${producto.descripcion}</strong><small class="text-muted">Codigo: ${producto.codigoDeBarras} | Etiqueta: ${producto.etiqueta}</small>`;
+    datos.innerHTML = `<strong class="d-block">${escapeHtml(producto.descripcion)}</strong><small class="text-muted">Codigo: ${escapeHtml(producto.codigoDeBarras)} | Etiqueta: ${escapeHtml(producto.etiqueta)}</small>`;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'btn btn-primary btn-sm';
@@ -248,7 +257,7 @@ function renderizarDetalle() {
   for (const producto of productosSeleccionados) {
     const row = document.createElement('tr');
     const subtotal = producto.cantidad * producto.precioCompra;
-    row.innerHTML = `<td>${producto.descripcion}</td><td>${formatoMoneda(producto.precioCompra)}</td><td>${producto.cantidad}</td><td>${formatoMoneda(subtotal)}</td>`;
+    row.innerHTML = `<td>${escapeHtml(producto.descripcion)}</td><td>${escapeHtml(formatoMoneda(producto.precioCompra))}</td><td>${escapeHtml(producto.cantidad)}</td><td>${escapeHtml(formatoMoneda(subtotal))}</td>`;
     const acciones = document.createElement('td');
     acciones.className = 'text-end text-nowrap';
     const editar = crearBotonAccion('fa-pen', 'Editar producto', () => abrirEdicion(producto.id));
@@ -371,7 +380,12 @@ btnCargar.addEventListener('click', async () => {
       }),
     });
     const payload = await leerRespuesta(response);
-    mostrarMensaje(`Factura #${payload.factura.nroFactura} cargada correctamente.`, 'success');
+    const nroFactura = payload?.factura?.nroFactura;
+    if (nroFactura !== null && nroFactura !== undefined) {
+      mostrarMensaje(`Factura #${nroFactura} cargada correctamente.`, 'success');
+    } else {
+      mostrarMensaje('Factura cargada correctamente.', 'success');
+    }
     productosSeleccionados = [];
     renderizarDetalle();
     resultados.replaceChildren();

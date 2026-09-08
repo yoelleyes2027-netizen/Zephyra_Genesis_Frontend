@@ -7,6 +7,15 @@ let clienteIdBuscado = null;
 let tipoPagoBuscado = null;
 let tipoComprobanteBuscado = null;
 
+function escapeHtml(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function mapFormaPago(valor) {
   const normalized = String(valor || '').trim().toLowerCase();
   if (normalized === 'tarjeta') return 'TARJETA';
@@ -94,15 +103,15 @@ async function buscarTicket() {
     data.ticket.detalleTickets.forEach(producto => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-    <td>${producto.productoDescripcion}</td>
-    <td>${producto.cantidad}</td>
-    <td>$${producto.precioUnitario}</td>
+    <td>${escapeHtml(producto.productoDescripcion)}</td>
+    <td>${escapeHtml(producto.cantidad)}</td>
+    <td>$${escapeHtml(producto.precioUnitario)}</td>
     <td>
       <input type="checkbox" 
        class="checkbox-articulo" 
-        value="${producto.productoId}"
-        data-ticket-id="${producto.ticketId}"
-       data-producto-id="${producto.productoId}">
+        value="${escapeHtml(producto.productoId)}"
+        data-ticket-id="${escapeHtml(producto.ticketId)}"
+       data-producto-id="${escapeHtml(producto.productoId)}">
     </td>
   `;
       tablaBody.appendChild(tr);

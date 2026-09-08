@@ -91,27 +91,36 @@ document.getElementById('buscar-ticket-form').addEventListener('submit', async (
   }
 });
 
+function escapeHtml(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function renderizarTicket(ticket) {
   const datos = document.getElementById('ticket-datos');
   const fecha = ticket.fechaCreacion ? new Date(ticket.fechaCreacion).toLocaleString('es-UY') : 'No disponible';
   const nroBuscado = Number(document.getElementById('ticket-id').value);
   datos.innerHTML = `
     <div><dt>Nro ticket</dt><dd>${Number.isInteger(nroBuscado) && nroBuscado > 0 ? nroBuscado : '-'}</dd></div>
-    <div><dt>ID documento</dt><dd>${ticket.id}</dd></div>
-    <div><dt>Fecha</dt><dd>${fecha}</dd></div>
-    <div><dt>Cliente</dt><dd>${ticket.clienteNombre || `ID ${ticket.clienteId}`}</dd></div>
-    <div><dt>Total</dt><dd>${formatearUyu(ticket.montoTotal)}</dd></div>
-    <div><dt>Pago original</dt><dd>${ticket.formaDePago || 'No disponible'}</dd></div>
+    <div><dt>ID documento</dt><dd>${escapeHtml(ticket.id)}</dd></div>
+    <div><dt>Fecha</dt><dd>${escapeHtml(fecha)}</dd></div>
+    <div><dt>Cliente</dt><dd>${escapeHtml(ticket.clienteNombre || `ID ${ticket.clienteId}`)}</dd></div>
+    <div><dt>Total</dt><dd>${escapeHtml(formatearUyu(ticket.montoTotal))}</dd></div>
+    <div><dt>Pago original</dt><dd>${escapeHtml(ticket.formaDePago || 'No disponible')}</dd></div>
   `;
   const body = document.querySelector('#ticket-detalle-tabla tbody');
   body.replaceChildren();
   (ticket.detalleTickets || []).forEach((detalle) => {
     const fila = document.createElement('tr');
     fila.innerHTML = `
-      <td>${detalle.productoDescripcion || `Producto #${detalle.productoId}`}</td>
-      <td>${formatearUyu(detalle.precioUnitario)}</td>
-      <td>${detalle.cantidad}</td>
-      <td>${formatearUyu(detalle.subtotal)}</td>
+      <td>${escapeHtml(detalle.productoDescripcion || `Producto #${detalle.productoId}`)}</td>
+      <td>${escapeHtml(formatearUyu(detalle.precioUnitario))}</td>
+      <td>${escapeHtml(detalle.cantidad)}</td>
+      <td>${escapeHtml(formatearUyu(detalle.subtotal))}</td>
     `;
     body.append(fila);
   });

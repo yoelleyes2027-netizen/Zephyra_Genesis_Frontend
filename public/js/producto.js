@@ -21,6 +21,15 @@ const productoEditProveedor = document.getElementById('producto-edit-proveedor')
 let productosCache = [];
 let codigoEdicionProducto = null;
 
+function escapeHtml(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function formDataProducto() {
   return {
     codigoDeBarras: Number(document.getElementById('producto-codigo').value),
@@ -101,17 +110,17 @@ function renderProductos(items) {
   productosCache = items || [];
   productoBody.innerHTML = productosCache.map((producto) => `
     <tr>
-      <td>${producto.codigoDeBarras ?? ''}</td>
-      <td>${producto.descripcion ?? ''}</td>
-      <td>$${producto.precioVenta ?? ''}</td>
-      <td>$${producto.precioCompra ?? ''}</td>
-      <td>${producto.stock ?? ''}</td>
-      <td>${producto.unidadDeMedida ?? ''}</td>
-      <td>${producto.etiqueta ?? ''}</td>
-      <td>${producto.proveedorNombre ?? ''}</td>
+      <td>${escapeHtml(producto.codigoDeBarras ?? '')}</td>
+      <td>${escapeHtml(producto.descripcion ?? '')}</td>
+      <td>$${escapeHtml(producto.precioVenta ?? '')}</td>
+      <td>$${escapeHtml(producto.precioCompra ?? '')}</td>
+      <td>${escapeHtml(producto.stock ?? '')}</td>
+      <td>${escapeHtml(producto.unidadDeMedida ?? '')}</td>
+      <td>${escapeHtml(producto.etiqueta ?? '')}</td>
+      <td>${escapeHtml(producto.proveedorNombre ?? '')}</td>
       <td>
-        <button class="btn btn-sm btn-outline-primary me-2" data-editar-producto="${producto.codigoDeBarras}">Editar</button>
-        <button class="btn btn-sm btn-outline-danger" data-eliminar-producto="${producto.codigoDeBarras}">Eliminar</button>
+        <button class="btn btn-sm btn-outline-primary me-2" data-editar-producto="${escapeHtml(producto.codigoDeBarras)}">Editar</button>
+        <button class="btn btn-sm btn-outline-danger" data-eliminar-producto="${escapeHtml(producto.codigoDeBarras)}">Eliminar</button>
       </td>
     </tr>
   `).join('');
@@ -131,7 +140,7 @@ async function cargarProveedores() {
   const payload = await response.json().catch(() => ({}));
   const proveedores = Array.isArray(payload?.data) ? payload.data : [];
   productoProveedor.innerHTML = '<option value="" selected disabled>Seleccione proveedor</option>' + proveedores
-    .map((proveedor) => `<option value="${proveedor.numeroDocumento ?? ''}">${proveedor.numeroDocumento ?? ''} - ${proveedor.razonSocial ?? proveedor.name ?? ''}</option>`)
+    .map((proveedor) => `<option value="${escapeHtml(proveedor.numeroDocumento ?? '')}">${escapeHtml(proveedor.numeroDocumento ?? '')} - ${escapeHtml(proveedor.razonSocial ?? proveedor.name ?? '')}</option>`)
     .join('');
   productoEditProveedor.innerHTML = productoProveedor.innerHTML;
 }

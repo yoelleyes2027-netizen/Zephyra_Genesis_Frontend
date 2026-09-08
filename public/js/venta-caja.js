@@ -49,16 +49,25 @@ function cerrarModales() {
   });
 }
 
+function escapeHtml(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function renderizarProductos() {
   productosBody.replaceChildren();
   productosSeleccionados.forEach((producto) => {
     const fila = document.createElement('tr');
     fila.innerHTML = `
-      <td>${producto.descripcion}</td>
-      <td>${formatearUyu(producto.precioUnitario)}</td>
-      <td>${producto.cantidad}</td>
-      <td>${formatearUyu(producto.precioUnitario * producto.cantidad)}</td>
-      <td><button class="cash-icon-button" type="button" data-producto-id="${producto.productoId}" aria-label="Quitar ${producto.descripcion}">Quitar</button></td>
+      <td>${escapeHtml(producto.descripcion)}</td>
+      <td>${escapeHtml(formatearUyu(producto.precioUnitario))}</td>
+      <td>${escapeHtml(producto.cantidad)}</td>
+      <td>${escapeHtml(formatearUyu(producto.precioUnitario * producto.cantidad))}</td>
+      <td><button class="cash-icon-button" type="button" data-producto-id="${escapeHtml(producto.productoId)}" aria-label="Quitar ${escapeHtml(producto.descripcion)}">Quitar</button></td>
     `;
     productosBody.append(fila);
   });

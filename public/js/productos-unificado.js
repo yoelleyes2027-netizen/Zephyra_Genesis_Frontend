@@ -10,6 +10,15 @@ const tbodyResultado = document.getElementById('tbody-resultado');
 
 const tbodyProductos = document.getElementById('tbody-productos');
 
+function escapeHtml(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // ====== Carga del listado completo (equivale a productos.js) ======
 document.addEventListener('DOMContentLoaded', () => {
   fetch('/api/productos', {
@@ -28,12 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
       data.forEach((producto) => {
         const fila = document.createElement('tr');
         fila.innerHTML = `
-          <td>${producto.codigoDeBarras}</td>
-          <td>${producto.descripcion}</td>
-          <td>$${producto.precioVenta}</td>
-          <td>$${producto.precioCompra}</td>
-          <td>${producto.stock}</td>
-          <td>${producto.unidadDeMedida}</td>
+          <td>${escapeHtml(producto.codigoDeBarras)}</td>
+          <td>${escapeHtml(producto.descripcion)}</td>
+          <td>$${escapeHtml(producto.precioVenta)}</td>
+          <td>$${escapeHtml(producto.precioCompra)}</td>
+          <td>${escapeHtml(producto.stock)}</td>
+          <td>${escapeHtml(producto.unidadDeMedida)}</td>
         `;
         tbodyProductos.appendChild(fila);
       });
@@ -55,14 +64,14 @@ function limpiarResultado() {
 function renderFilaResultado(p) {
   const fila = document.createElement('tr');
   fila.innerHTML = `
-    <td>${p.codigoDeBarras ?? ''}</td>
-    <td>${p.descripcion ?? ''}</td>
-    <td>$${p.precioVenta ?? ''}</td>
-    <td>$${p.precioCompra ?? ''}</td>
-    <td>${p.stock ?? ''}</td>
-    <td>${p.unidadDeMedida ?? ''}</td>
-    <td>${p.etiqueta ?? ''}</td>
-    <td>${p.proveedorNombre ?? ''}</td>
+    <td>${escapeHtml(p.codigoDeBarras ?? '')}</td>
+    <td>${escapeHtml(p.descripcion ?? '')}</td>
+    <td>$${escapeHtml(p.precioVenta ?? '')}</td>
+    <td>$${escapeHtml(p.precioCompra ?? '')}</td>
+    <td>${escapeHtml(p.stock ?? '')}</td>
+    <td>${escapeHtml(p.unidadDeMedida ?? '')}</td>
+    <td>${escapeHtml(p.etiqueta ?? '')}</td>
+    <td>${escapeHtml(p.proveedorNombre ?? '')}</td>
   `;
   tbodyResultado.appendChild(fila);
   tablaResultado.style.display = 'table';

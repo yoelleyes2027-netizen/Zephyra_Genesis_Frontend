@@ -583,9 +583,9 @@ function renderSoporteTabla(items) {
   }
 
   const columns = Object.keys(soporteItemsCache[0]);
-  soporteHead.innerHTML = `<tr>${columns.map((column) => `<th>${column}</th>`).join('')}<th>Acciones</th></tr>`;
+  soporteHead.innerHTML = `<tr>${columns.map((column) => `<th>${escapeHtml(column)}</th>`).join('')}<th>Acciones</th></tr>`;
   soporteBody.innerHTML = soporteItemsCache.map((item) => {
-    const celdas = columns.map((column) => `<td>${Array.isArray(item[column]) ? item[column].join(', ') : (item[column] ?? '')}</td>`).join('');
+    const celdas = columns.map((column) => `<td>${escapeHtml(Array.isArray(item[column]) ? item[column].join(', ') : (item[column] ?? ''))}</td>`).join('');
     return `<tr>${celdas}<td>${accionesSoporteHtml(tablaSoporteActual, item)}</td></tr>`;
   }).join('');
 }
@@ -613,7 +613,7 @@ async function cargarSoporteTabla() {
     renderSoporteTabla(items);
   } catch (error) {
     soporteHead.innerHTML = '<tr><th>Error</th></tr>';
-    soporteBody.innerHTML = `<tr><td>${error.message || 'No se pudo cargar el soporte'}</td></tr>`;
+    soporteBody.innerHTML = `<tr><td>${escapeHtml(error.message || 'No se pudo cargar el soporte')}</td></tr>`;
   }
 }
 
