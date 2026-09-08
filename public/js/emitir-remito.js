@@ -126,29 +126,12 @@ function construirQueryFacturas() {
 }
 
 async function obtenerFacturas(query) {
-  const endpoints = [
-    `/api/facturas/remito/buscar?${query}`,
-    `/api/facturas/buscar-remito?${query}`,
-    `/api/facturas?${query}`,
-  ];
-
-  let ultimoError = null;
-  for (const endpoint of endpoints) {
-    const response = await fetch(endpoint, { credentials: 'include' });
-    if (response.status === 404) {
-      continue;
-    }
-    if (!response.ok) {
-      const payload = await response.json().catch(() => ({}));
-      ultimoError = new Error(payload.msg || payload.mensaje || 'No se pudieron consultar las facturas.');
-      break;
-    }
-    const payload = await response.json().catch(() => ({}));
-    return payload.data || payload.facturas || payload.factura || [];
+  const response = await fetch(`/api/facturas/buscar-remito?${query}`, { credentials: 'include' });
+  if (response.status === 404) {
+    throw new Error('La búsqueda de remitos no está disponible todavía en backend.');
   }
-
-  if (ultimoError) throw ultimoError;
-  throw new Error('No existe endpoint de búsqueda de facturas para remito en el backend.');
+  const payload = await leerPayload(response);
+  return payload.data || [];
 }
 
 function renderizarFacturas() {
