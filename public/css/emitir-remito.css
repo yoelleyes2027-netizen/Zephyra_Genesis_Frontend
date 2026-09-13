@@ -1,7 +1,26 @@
 @import url('./app.css');
 
+.remito-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .remito-page .dashboard-section h2 {
-  font-size: 1.15rem;
+  margin-bottom: 0.25rem;
+  font-size: 1.08rem;
+}
+
+.remito-page .dashboard-section p {
+  margin-bottom: 0;
+}
+
+.remito-page .dashboard-section .table-responsive {
+  margin-top: 0.25rem;
+}
+
+.remito-page .dashboard-footer {
+  padding-top: 0.5rem;
 }
 
 .remito-check {
@@ -24,6 +43,9 @@
   border: 1px solid var(--borde);
   border-radius: var(--radio-panel);
   margin-bottom: 0.5rem;
+  padding: 0.9rem 1rem;
+  background: var(--superficie);
+  box-shadow: 0 3px 10px rgba(25, 75, 140, 0.05);
 }
 
 .remito-lista .list-group-item.active {
@@ -34,6 +56,12 @@
 
 .factura-fila {
   cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.factura-fila:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(25, 75, 140, 0.08);
 }
 
 .factura-fila .meta {
@@ -50,8 +78,31 @@
   max-width: 110px;
 }
 
+#filtro-serie .form-control,
+#filtro-serie .btn,
+#seccion-proveedor .form-control,
+#seccion-proveedor .form-select,
+#seccion-fecha .form-control,
+#seccion-fecha .btn {
+  min-height: 42px;
+}
+
+#seccion-productos .table,
+#seccion-remito .table {
+  margin-bottom: 0;
+}
+
 @media (max-width: 768px) {
   .cantidad-remito {
     max-width: 100%;
+  }
+
+  .remito-page .dashboard-footer {
+    justify-content: stretch;
+  }
+
+  .remito-page .dashboard-footer .dashboard-logout {
+    width: 100%;
+    justify-content: center;
   }
 }

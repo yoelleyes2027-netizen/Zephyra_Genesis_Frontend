@@ -15,7 +15,7 @@
 <body>
   <main class="dashboard-container container remito-page">
     <header class="dashboard-header d-flex align-items-center justify-content-between">
-      <button id="btn-volver" class="logo border-0" type="button" aria-label="Volver">G</button>
+      <div class="logo" aria-hidden="true">G</div>
       <h1 class="mb-0">Emitir remito</h1>
     </header>
 
@@ -111,6 +111,12 @@
     </section>
 
     <p id="mensaje" class="mt-3 mb-0" role="alert" aria-live="polite"></p>
+
+    <footer class="dashboard-footer">
+      <button id="btn-volver" class="btn dashboard-logout" type="button">
+        <i class="fas fa-arrow-left" aria-hidden="true"></i> Volver
+      </button>
+    </footer>
   </main>
 
   <script src="../js/emitir-remito.js"></script>
