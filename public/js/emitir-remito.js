@@ -335,7 +335,10 @@ btnEmitirRemito.addEventListener('click', async () => {
     renderizarDetalleFactura();
     renderizarRemito();
   } catch (error) {
-    mostrarMensaje(error.message, 'error');
+    const detalle = error?.message && error.message.trim()
+      ? error.message
+      : 'No se pudo emitir el remito.';
+    mostrarMensaje(detalle, 'error');
   }
 });
 
