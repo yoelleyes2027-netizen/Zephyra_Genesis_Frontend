@@ -41,13 +41,33 @@ function actualizarBotonesSiNo(siBtn, noBtn, valor) {
   noBtn.classList.toggle('active', valor === false);
 }
 
-function formatearFechaLatamDesdeIso(fechaIso) {
+function formatearFechaDesdeIso(fechaIso) {
   const match = String(fechaIso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!match) {
     return '';
   }
   const [, anio, mes, dia] = match;
-  return `${dia}/${mes}/${anio}`;
+  return `${anio}/${mes}/${dia}`;
+}
+
+function formatearFechaDesdeSlash(fechaSlash) {
+  const match = String(fechaSlash || '').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (!match) {
+    return '';
+  }
+
+  const a = Number(match[1]);
+  const b = Number(match[2]);
+  const anio = match[3];
+  if (!Number.isFinite(a) || !Number.isFinite(b)) {
+    return '';
+  }
+
+  // Si viene en MM/DD/YYYY (caso reportado), lo normalizamos a YYYY/MM/DD.
+  // Si el primer bloque supera 12, asumimos DD/MM/YYYY.
+  const mes = a > 12 ? String(b).padStart(2, '0') : String(a).padStart(2, '0');
+  const dia = a > 12 ? String(a).padStart(2, '0') : String(b).padStart(2, '0');
+  return `${anio}/${mes}/${dia}`;
 }
 
 function extraerPartesFechaEnUruguay(date) {
@@ -72,7 +92,7 @@ function extraerPartesFechaEnUruguay(date) {
   }
 
   return {
-    fecha: `${dia}/${mes}/${anio}`,
+    fecha: `${anio}/${mes}/${dia}`,
     hora: `${hora}:${minuto}`,
   };
 }
@@ -110,7 +130,7 @@ function normalizarFecha(valor) {
 
     const matchFecha = texto.match(/^(\d{4}-\d{2}-\d{2})(?:[T\s](\d{2}):(\d{2})(?::\d{2}(?:\.\d{1,3})?)?)?/);
     if (matchFecha) {
-      const fecha = formatearFechaLatamDesdeIso(matchFecha[1]);
+      const fecha = formatearFechaDesdeIso(matchFecha[1]);
       const horas = matchFecha[2];
       const minutos = matchFecha[3];
       const tieneZonaHoraria = /(Z|[+-]\d{2}:?\d{2})$/i.test(texto);
@@ -121,6 +141,17 @@ function normalizarFecha(valor) {
         }
         return horas && minutos ? `${fecha} ${horas}:${minutos}` : fecha;
       }
+    }
+
+    const matchSlash = texto.match(/^(\d{1,2}\/\d{1,2}\/\d{4})(?:[T\s](\d{2}):(\d{2})(?::\d{2}(?:\.\d{1,3})?)?)?/);
+    if (matchSlash) {
+      const fecha = formatearFechaDesdeSlash(matchSlash[1]);
+      const horas = matchSlash[2];
+      const minutos = matchSlash[3];
+      if (!fecha) {
+        return '';
+      }
+      return horas && minutos ? `${fecha} ${horas}:${minutos}` : fecha;
     }
 
     const candidatoIso = texto.includes(' ') ? texto.replace(' ', 'T') : texto;
