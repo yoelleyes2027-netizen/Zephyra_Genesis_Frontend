@@ -16,6 +16,8 @@ const fechaEmisionField = document.getElementById('fecha-emision-field');
 const fechaEmisionInput = document.getElementById('fecha-emision');
 const avisoDialog = document.getElementById('aviso-dialog');
 const avisoDetalle = document.getElementById('aviso-detalle');
+const exitoDialog = document.getElementById('exito-dialog');
+const exitoDetalle = document.getElementById('exito-detalle');
 const editarDialog = document.getElementById('editar-dialog');
 const editarForm = document.getElementById('editar-form');
 const editarCantidad = document.getElementById('editar-cantidad');
@@ -139,6 +141,28 @@ function cerrarAvisoCamposFaltantes() {
     campoPendienteDeFoco.focus();
     campoPendienteDeFoco = null;
   }
+}
+
+function mostrarExitoCargaFactura(nroFactura) {
+  exitoDetalle.textContent = Number.isFinite(Number(nroFactura))
+    ? `Factura #${nroFactura} cargada correctamente.`
+    : 'Factura cargada correctamente.';
+
+  if (typeof exitoDialog.showModal === 'function') {
+    if (!exitoDialog.open) {
+      exitoDialog.showModal();
+    }
+    return;
+  }
+
+  window.location.reload();
+}
+
+function cerrarExitoYCargarNueva() {
+  if (exitoDialog.open) {
+    exitoDialog.close();
+  }
+  window.location.reload();
 }
 
 async function leerRespuesta(response) {
@@ -480,11 +504,7 @@ btnCargar.addEventListener('click', async () => {
     });
     const payload = await leerRespuesta(response);
     const nroFactura = payload?.factura?.nroFactura;
-    if (nroFactura !== null && nroFactura !== undefined) {
-      mostrarMensaje(`Factura #${nroFactura} cargada correctamente.`, 'success');
-    } else {
-      mostrarMensaje('Factura cargada correctamente.', 'success');
-    }
+    mostrarExitoCargaFactura(nroFactura);
     productosSeleccionados = [];
     renderizarDetalle();
     resultados.replaceChildren();
@@ -518,6 +538,12 @@ document.getElementById('btn-aceptar-aviso').addEventListener('click', cerrarAvi
 avisoDialog.addEventListener('cancel', (event) => {
   event.preventDefault();
   cerrarAvisoCamposFaltantes();
+});
+document.getElementById('btn-cerrar-exito').addEventListener('click', cerrarExitoYCargarNueva);
+document.getElementById('btn-aceptar-exito').addEventListener('click', cerrarExitoYCargarNueva);
+exitoDialog.addEventListener('cancel', (event) => {
+  event.preventDefault();
+  cerrarExitoYCargarNueva();
 });
 
 validarRol();
