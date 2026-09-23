@@ -128,6 +128,15 @@
       padding-left: 1rem;
     }
 
+    #exito-form {
+      text-align: center;
+    }
+
+    #exito-form h2 {
+      width: 100%;
+      margin-bottom: 0;
+    }
+
     @media (max-width: 992px) {
       .factura-toggle-col {
         align-items: stretch;
@@ -406,12 +415,10 @@
 
   <dialog id="exito-dialog">
     <form id="exito-form" method="dialog">
-      <div class="d-flex align-items-center justify-content-between mb-3">
+      <div class="d-flex align-items-center justify-content-center mb-3">
         <h2 class="h5 mb-0">Factura cargada correctamente</h2>
-        <button id="btn-cerrar-exito" class="btn-close" type="button" aria-label="Cerrar"></button>
       </div>
-      <p id="exito-detalle" class="text-success fw-semibold mb-3"></p>
-      <div class="d-flex justify-content-end">
+      <div class="d-flex justify-content-center">
         <button id="btn-aceptar-exito" class="btn btn-primary" type="button">Aceptar</button>
       </div>
     </form>

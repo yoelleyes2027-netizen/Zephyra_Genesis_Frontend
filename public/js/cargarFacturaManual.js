@@ -17,7 +17,6 @@ const fechaEmisionInput = document.getElementById('fecha-emision');
 const avisoDialog = document.getElementById('aviso-dialog');
 const avisoDetalle = document.getElementById('aviso-detalle');
 const exitoDialog = document.getElementById('exito-dialog');
-const exitoDetalle = document.getElementById('exito-detalle');
 const editarDialog = document.getElementById('editar-dialog');
 const editarForm = document.getElementById('editar-form');
 const editarCantidad = document.getElementById('editar-cantidad');
@@ -143,10 +142,7 @@ function cerrarAvisoCamposFaltantes() {
   }
 }
 
-function mostrarExitoCargaFactura(nroFactura) {
-  exitoDetalle.textContent = Number.isFinite(Number(nroFactura))
-    ? `Factura #${nroFactura} cargada correctamente.`
-    : 'Factura cargada correctamente.';
+function mostrarExitoCargaFactura() {
 
   if (typeof exitoDialog.showModal === 'function') {
     if (!exitoDialog.open) {
@@ -503,8 +499,7 @@ btnCargar.addEventListener('click', async () => {
       }),
     });
     const payload = await leerRespuesta(response);
-    const nroFactura = payload?.factura?.nroFactura;
-    mostrarExitoCargaFactura(nroFactura);
+    mostrarExitoCargaFactura();
     productosSeleccionados = [];
     renderizarDetalle();
     resultados.replaceChildren();
@@ -539,7 +534,6 @@ avisoDialog.addEventListener('cancel', (event) => {
   event.preventDefault();
   cerrarAvisoCamposFaltantes();
 });
-document.getElementById('btn-cerrar-exito').addEventListener('click', cerrarExitoYCargarNueva);
 document.getElementById('btn-aceptar-exito').addEventListener('click', cerrarExitoYCargarNueva);
 exitoDialog.addEventListener('cancel', (event) => {
   event.preventDefault();
