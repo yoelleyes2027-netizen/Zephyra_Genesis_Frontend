@@ -53,6 +53,7 @@ function normalizarFacturas(items) {
     const fechaEmision = normalizarFecha(factura.fechaEmision || factura.fecha_emision);
     const fechaCreacion = normalizarFecha(factura.fechaCreacion || factura.fecha_creacion);
     const fechaReferencia = fechaEmision || fechaCreacion;
+    const etiquetaFecha = fechaEmision ? 'Fecha Emision' : 'Fecha de Carga';
 
     const detallesRaw = factura.detallesFactura || factura.detalles || factura.detalleFactura || [];
     const detalles = detallesRaw.map((detalle) => ({
@@ -68,6 +69,7 @@ function normalizarFacturas(items) {
       proveedorId: Number(factura.proveedorId || factura.proveedor?.id),
       proveedorNombre: factura.proveedorRazonSocial || factura.proveedor?.razonSocial || 'Proveedor sin nombre',
       fechaReferencia,
+      etiquetaFecha,
       detalles,
     };
   }).filter((factura) => Number.isFinite(factura.id));
@@ -154,8 +156,8 @@ function renderizarFacturas() {
     item.type = 'button';
     item.className = `list-group-item factura-fila${facturaSeleccionada?.id === factura.id ? ' active' : ''}`;
     item.innerHTML = `
-      <strong>Factura #${escapeHtml(factura.nroFactura)}</strong>
-      <div class="meta">Proveedor: ${escapeHtml(factura.proveedorNombre)} | Serie: ${escapeHtml(factura.nroSerie || 'Sin serie')} | Fecha: ${escapeHtml(factura.fechaReferencia || '-')}</div>
+      <strong>Factura</strong>
+      <div class="meta">Proveedor: ${escapeHtml(factura.proveedorNombre)} | Nro de Serie: ${escapeHtml(factura.nroSerie || 'Sin serie')} | ${escapeHtml(factura.etiquetaFecha)}: ${escapeHtml(factura.fechaReferencia || '-')}</div>
     `;
     item.addEventListener('click', () => seleccionarFactura(factura.id));
     facturasListado.append(item);

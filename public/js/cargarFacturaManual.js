@@ -517,13 +517,6 @@ function volverAFacturas() {
 }
 
 document.getElementById('btn-volver').addEventListener('click', volverAFacturas);
-document.getElementById('btn-volver-atras').addEventListener('click', () => {
-  if (window.history.length > 1) {
-    window.history.back();
-    return;
-  }
-  volverAFacturas();
-});
 
 btnNuevoProducto.addEventListener('click', abrirAltaProducto);
 nuevoCancelar.addEventListener('click', cerrarAltaProducto);
