@@ -323,7 +323,6 @@ function renderizarDetalleFactura() {
     row.innerHTML = `
       <td>${escapeHtml(detalle.productoDescripcion)}</td>
       <td>${escapeHtml(detalle.cantidad)}</td>
-      <td>${escapeHtml(disponible)}</td>
       <td>
         <input class="form-control form-control-sm cantidad-remito" type="number" min="1" max="${escapeHtml(disponible)}" value="1" ${disponible <= 0 ? 'disabled' : ''}>
       </td>
