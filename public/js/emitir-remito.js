@@ -41,19 +41,125 @@ function actualizarBotonesSiNo(siBtn, noBtn, valor) {
   noBtn.classList.toggle('active', valor === false);
 }
 
+function formatearFechaLatamDesdeIso(fechaIso) {
+  const match = String(fechaIso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return '';
+  }
+  const [, anio, mes, dia] = match;
+  return `${dia}/${mes}/${anio}`;
+}
+
+function extraerPartesFechaEnUruguay(date) {
+  const partes = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'America/Montevideo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).formatToParts(date);
+
+  const dia = partes.find((parte) => parte.type === 'day')?.value;
+  const mes = partes.find((parte) => parte.type === 'month')?.value;
+  const anio = partes.find((parte) => parte.type === 'year')?.value;
+  const hora = partes.find((parte) => parte.type === 'hour')?.value;
+  const minuto = partes.find((parte) => parte.type === 'minute')?.value;
+
+  if (!dia || !mes || !anio || !hora || !minuto) {
+    return null;
+  }
+
+  return {
+    fecha: `${dia}/${mes}/${anio}`,
+    hora: `${hora}:${minuto}`,
+  };
+}
+
+function formatearDateEnUruguay(date, incluirHora = true) {
+  const partes = extraerPartesFechaEnUruguay(date);
+  if (!partes) {
+    return '';
+  }
+  if (!incluirHora) {
+    return partes.fecha;
+  }
+  return `${partes.fecha} ${partes.hora}`;
+}
+
 function normalizarFecha(valor) {
-  if (!valor) return '';
-  const fecha = new Date(valor);
-  if (Number.isNaN(fecha.getTime())) return '';
-  return fecha.toISOString().slice(0, 10);
+  if (valor === null || valor === undefined || valor === '') {
+    return '';
+  }
+
+  if (valor instanceof Date) {
+    return Number.isNaN(valor.getTime()) ? '' : formatearDateEnUruguay(valor, true);
+  }
+
+  if (typeof valor === 'number') {
+    const fechaDesdeNumero = new Date(valor);
+    return Number.isNaN(fechaDesdeNumero.getTime()) ? '' : formatearDateEnUruguay(fechaDesdeNumero, true);
+  }
+
+  if (typeof valor === 'string') {
+    const texto = valor.trim();
+    if (!texto) {
+      return '';
+    }
+
+    const matchFecha = texto.match(/^(\d{4}-\d{2}-\d{2})(?:[T\s](\d{2}):(\d{2})(?::\d{2}(?:\.\d{1,3})?)?)?/);
+    if (matchFecha) {
+      const fecha = formatearFechaLatamDesdeIso(matchFecha[1]);
+      const horas = matchFecha[2];
+      const minutos = matchFecha[3];
+      const tieneZonaHoraria = /(Z|[+-]\d{2}:?\d{2})$/i.test(texto);
+
+      if (!tieneZonaHoraria) {
+        if (!fecha) {
+          return '';
+        }
+        return horas && minutos ? `${fecha} ${horas}:${minutos}` : fecha;
+      }
+    }
+
+    const candidatoIso = texto.includes(' ') ? texto.replace(' ', 'T') : texto;
+    const fechaDesdeTexto = new Date(candidatoIso);
+    return Number.isNaN(fechaDesdeTexto.getTime()) ? '' : formatearDateEnUruguay(fechaDesdeTexto, true);
+  }
+
+  if (typeof valor === 'object') {
+    if (typeof valor.time === 'number') {
+      return normalizarFecha(valor.time);
+    }
+    if (valor.$date !== undefined) {
+      return normalizarFecha(valor.$date);
+    }
+  }
+
+  return '';
 }
 
 function normalizarFacturas(items) {
   return (items || []).map((factura) => {
-    const fechaEmision = normalizarFecha(factura.fechaEmision || factura.fecha_emision);
-    const fechaCreacion = normalizarFecha(factura.fechaCreacion || factura.fecha_creacion);
+    const fechaEmision = normalizarFecha(
+      factura.fechaEmision
+      ?? factura.fecha_emision
+      ?? factura.documento?.fechaEmision
+      ?? factura.documento?.fecha_emision,
+    );
+
+    const fechaCreacion = normalizarFecha(
+      factura.fechaCreacion
+      ?? factura.fecha_creacion
+      ?? factura.documento?.fechaCreacion
+      ?? factura.documento?.fecha_creacion,
+    );
+
     const fechaReferencia = fechaEmision || fechaCreacion;
-    const etiquetaFecha = fechaEmision ? 'Fecha Emision' : 'Fecha de Carga';
+    const etiquetaFecha = fechaEmision
+      ? 'Fecha Emision'
+      : (fechaCreacion ? 'Fecha de Carga' : 'Fecha');
 
     const detallesRaw = factura.detallesFactura || factura.detalles || factura.detalleFactura || [];
     const detalles = detallesRaw.map((detalle) => ({
