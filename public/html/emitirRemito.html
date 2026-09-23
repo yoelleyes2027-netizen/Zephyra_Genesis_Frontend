@@ -15,11 +15,11 @@
 <body>
   <main class="dashboard-container container remito-page">
     <header class="dashboard-header d-flex align-items-center justify-content-between">
-      <div class="logo" aria-hidden="true">G</div>
+      <button id="btn-volver" class="logo border-0" type="button" aria-label="Volver a Facturas">G</button>
       <h1 class="mb-0">Emitir remito</h1>
     </header>
 
-    <section id="filtro-serie" class="dashboard-section mb-3" aria-label="Buscar por número de serie">
+    <section id="filtro-serie" class="dashboard-section mb-4" aria-label="Buscar por número de serie">
       <h2 class="mb-3">Buscar factura por número de serie</h2>
       <div class="remito-opcion mb-2">
         <div class="remito-opcion-botones" role="group" aria-label="Buscar por serie">
@@ -40,7 +40,7 @@
       </div>
     </section>
 
-    <section id="seccion-proveedor" class="dashboard-section mb-3" aria-label="Seleccionar proveedor">
+    <section id="seccion-proveedor" class="dashboard-section mb-4" aria-label="Seleccionar proveedor">
       <h2 class="mb-3">Seleccionar proveedor</h2>
       <div class="row g-2">
         <div class="col-md-7">
@@ -52,7 +52,7 @@
       </div>
     </section>
 
-    <section id="seccion-fecha" class="dashboard-section mb-3" aria-label="Buscar por fecha">
+    <section id="seccion-fecha" class="dashboard-section mb-4" aria-label="Buscar por fecha">
       <h2 class="mb-3">Buscar por fecha</h2>
       <div class="row g-2">
         <div class="col-md-4">
@@ -67,12 +67,12 @@
       </div>
     </section>
 
-    <section class="dashboard-section mb-3" aria-label="Facturas encontradas">
+    <section class="dashboard-section mb-4" aria-label="Facturas encontradas">
       <h2 class="mb-3">Facturas encontradas</h2>
       <div id="facturas-listado" class="list-group remito-lista" aria-live="polite"></div>
     </section>
 
-    <section id="seccion-productos" class="dashboard-section mb-3" aria-label="Seleccionar productos">
+    <section id="seccion-productos" class="dashboard-section mb-4" aria-label="Seleccionar productos">
       <h2 class="mb-1">Seleccionar productos</h2>
       <p id="factura-resumen" class="text-muted mb-3">Selecciona una factura para ver su detalle.</p>
       <div class="table-responsive">
@@ -91,7 +91,7 @@
       </div>
     </section>
 
-    <section id="seccion-remito" class="dashboard-section" aria-label="Remito">
+    <section id="seccion-remito" class="dashboard-section mb-4" aria-label="Remito">
       <h2 class="mb-1">Remito</h2>
       <p class="text-muted mb-3">Aquí se cargan los productos seleccionados en el área 4.</p>
       <div class="table-responsive">
@@ -106,17 +106,14 @@
           <tbody id="remito-body"></tbody>
         </table>
       </div>
-      <div class="d-flex justify-content-end mt-3">
-        <button id="btn-emitir-remito" class="btn btn-primary" type="button" disabled>
-          <i class="fas fa-truck-ramp-box" aria-hidden="true"></i> Emitir remito
-        </button>
-      </div>
     </section>
 
-    <p id="mensaje" class="mt-3 mb-0" role="alert" aria-live="polite"></p>
+    <p id="mensaje" class="mb-3" role="alert" aria-live="polite"></p>
 
-    <footer class="dashboard-footer">
-      <button id="btn-volver" class="btn dashboard-logout" type="button">
+    <footer class="dashboard-footer d-flex gap-2">
+      <button id="btn-volver-atras" class="btn btn-outline-secondary" type="button"><i class="fas fa-arrow-left" aria-hidden="true"></i> Volver atras</button>
+      <button id="btn-emitir-remito" class="btn btn-primary" type="button" disabled><i class="fas fa-truck-ramp-box" aria-hidden="true"></i> Emitir remito</button>
+      <button id="btn-volver-footer" class="btn btn-outline-secondary" type="button">
         <i class="fas fa-arrow-left" aria-hidden="true"></i> Volver
       </button>
     </footer>

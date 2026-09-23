@@ -28,7 +28,7 @@ function escapeHtml(valor) {
 
 function mostrarMensaje(texto = '', tipo = '') {
   mensaje.textContent = texto;
-  mensaje.className = 'mt-3 mb-0';
+  mensaje.className = 'mb-3';
   if (tipo === 'error') {
     mensaje.classList.add('text-danger');
   } else if (tipo === 'success') {
@@ -357,7 +357,15 @@ btnEmitirRemito.addEventListener('click', async () => {
 
 document.getElementById('btn-buscar-fecha').addEventListener('click', buscarFacturas);
 document.getElementById('btn-buscar-serie').addEventListener('click', buscarFacturas);
-document.getElementById('btn-volver').addEventListener('click', () => window.history.back());
+document.getElementById('btn-volver').addEventListener('click', () => window.location.href = './facturas.html');
+document.getElementById('btn-volver-atras').addEventListener('click', () => {
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+  window.location.href = './facturas.html';
+});
+document.getElementById('btn-volver-footer').addEventListener('click', () => window.location.href = './facturas.html');
 buscarSerieSiBtn.addEventListener('click', () => seleccionarBuscarPorSerie(true));
 buscarSerieNoBtn.addEventListener('click', () => seleccionarBuscarPorSerie(false));
 

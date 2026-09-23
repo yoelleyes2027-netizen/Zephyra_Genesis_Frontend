@@ -21,6 +21,7 @@
 
 .remito-page .dashboard-footer {
   padding-top: 0.5rem;
+  justify-content: center;
 }
 
 .remito-opcion {
@@ -81,6 +82,10 @@
   font-size: 0.88rem;
 }
 
+#mensaje {
+  min-height: 1.2rem;
+}
+
 #mensaje.text-danger,
 #mensaje.text-success {
   font-weight: 600;
@@ -109,6 +114,10 @@
   margin-bottom: 0;
 }
 
+.dashboard-footer .btn {
+  min-height: 40px;
+}
+
 @media (max-width: 768px) {
   .cantidad-remito {
     max-width: 100%;
@@ -126,7 +135,7 @@
     justify-content: stretch;
   }
 
-  .remito-page .dashboard-footer .dashboard-logout {
+  .remito-page .dashboard-footer .btn {
     width: 100%;
     justify-content: center;
   }
