@@ -265,6 +265,62 @@ html[data-theme="dark"] .table-hover tbody tr:hover > *:first-child {
   }
 }
 
+@media (max-width: 991px) {
+  .container,
+  .dashboard-container {
+    width: min(100% - 1rem, 1320px);
+  }
+
+  .table-responsive,
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 640px;
+  }
+
+  .dashboard-footer,
+  .acciones,
+  .cash-footer-actions {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 575px) {
+  body {
+    font-size: 15px;
+  }
+
+  .dashboard-header {
+    padding: 0.85rem 0.95rem;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.05rem;
+  }
+
+  .logo {
+    width: 46px;
+    height: 46px;
+    font-size: 1.45rem;
+  }
+
+  .dashboard-footer .btn,
+  .acciones button,
+  .cash-footer-actions button {
+    width: 100%;
+  }
+
+  .form-control,
+  .form-select,
+  input,
+  select {
+    min-height: 40px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

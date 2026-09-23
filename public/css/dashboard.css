@@ -279,13 +279,47 @@ html[data-theme="dark"] .ticket-tab.active {
 }
 
 @media (max-width: 767px) {
+  body {
+    background-attachment: scroll;
+  }
+
+  .dashboard-container {
+    padding: 1rem 0 2rem;
+  }
+
   .dashboard-header {
     align-items: center !important;
+    padding: 0.9rem 1rem;
   }
 
   .dashboard-header h1 {
     font-size: 1.1rem;
     text-align: right;
+  }
+
+  .dashboard-header .logo {
+    width: 46px;
+    height: 46px;
+    font-size: 1.5rem;
+  }
+
+  .dashboard-section {
+    padding: 1rem;
+  }
+
+  .dashboard-section::before {
+    right: 1rem;
+    left: 1rem;
+  }
+
+  .dashboard-footer {
+    flex-wrap: wrap;
+    justify-content: stretch;
+    gap: 0.6rem;
+  }
+
+  .dashboard-footer .btn {
+    width: 100%;
   }
 
   .ticket-tabs {
@@ -294,5 +328,30 @@ html[data-theme="dark"] .ticket-tab.active {
 
   .ticket-frame {
     min-height: 820px;
+  }
+}
+
+@media (max-width: 991px) {
+  .dashboard-menu button {
+    min-height: 64px;
+  }
+
+  .dashboard-menu button i {
+    width: 34px;
+    height: 34px;
+  }
+
+  .ticket-tab {
+    min-height: 88px;
+  }
+
+  .dashboard-section .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 1400px) {
+  .dashboard-container {
+    max-width: 1320px;
   }
 }

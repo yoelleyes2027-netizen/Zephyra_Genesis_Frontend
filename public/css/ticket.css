@@ -50,3 +50,27 @@ h1 {
   background-color: var(--color4);
   transform: scale(1.05);
 }
+
+@media (max-width: 767px) {
+  body {
+    padding: 0.8rem;
+    min-height: 100svh;
+    height: auto;
+    align-items: flex-start;
+  }
+
+  .contenedor {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  h1 {
+    margin-bottom: 1rem;
+    font-size: 1.45rem;
+  }
+
+  .botones button {
+    font-size: 1rem;
+    padding: 0.85rem;
+  }
+}

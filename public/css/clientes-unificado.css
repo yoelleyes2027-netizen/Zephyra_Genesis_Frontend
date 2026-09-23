@@ -196,3 +196,41 @@ thead {
 #agregar-cliente-boton:hover {
     background-color: #16d700 !important
 }
+
+@media (max-width: 991px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .dashboard-section {
+        padding: 1.25rem;
+    }
+
+    table {
+        min-width: 680px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 575px) {
+    .dashboard-header {
+        padding: 0.9rem 1rem;
+    }
+
+    .logo {
+        font-size: 1.7rem;
+        padding: 0.35rem 0.8rem;
+    }
+
+    #tabla-cliente td {
+        font-size: 16px;
+    }
+
+    button {
+        width: 100%;
+        justify-content: center !important;
+    }
+}

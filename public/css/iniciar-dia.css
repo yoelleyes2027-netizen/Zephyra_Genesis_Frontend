@@ -71,3 +71,22 @@ body {
   .oculto {
     display: none;
   }
+
+    @media (max-width: 575px) {
+      body {
+        padding: 0.75rem;
+        min-height: 100svh;
+        height: auto;
+        align-items: flex-start;
+      }
+
+      .contenedor {
+        width: 100%;
+        max-width: none;
+        padding: 1rem;
+      }
+
+      button {
+        width: 100%;
+      }
+    }

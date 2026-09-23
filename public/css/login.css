@@ -501,6 +501,10 @@ html[data-theme="dark"] .login-success__message strong {
 }
 
 @media (max-width: 575px) {
+  .login-page {
+    background-attachment: scroll;
+  }
+
   .login-page__content {
     width: min(calc(100% - 1.25rem), 440px);
     padding-top: 4.25rem;
@@ -520,6 +524,12 @@ html[data-theme="dark"] .login-success__message strong {
 
   .login-card {
     border-radius: 16px;
+  }
+
+  .login-page__footer {
+    padding-top: 0.65rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.05rem;
   }
 }
 

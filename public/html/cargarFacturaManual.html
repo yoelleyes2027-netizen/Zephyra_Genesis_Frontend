@@ -11,25 +11,30 @@
   <link rel="stylesheet" href="../css/dashboard.css">
   <style>
     .factura-opcion {
-      min-height: 42px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.45rem;
+      min-width: 0;
     }
 
     .factura-opcion .form-label {
       margin: 0;
-      white-space: nowrap;
+      line-height: 1.1;
     }
 
     .factura-opcion-botones {
       display: inline-flex;
+      flex-wrap: wrap;
       gap: 0.45rem;
     }
 
     .factura-opcion-botones .btn {
-      min-width: 56px;
+      min-width: 72px;
+      min-height: 40px;
+      padding: 0.4rem 0.9rem;
+      font-weight: 600;
+      border-radius: 0.55rem;
     }
 
     .factura-opcion-botones .btn.active {
@@ -44,8 +49,26 @@
       border-radius: var(--radio-control);
     }
 
+    .factura-toggle-col {
+      display: flex;
+      align-items: flex-end;
+    }
+
+    #serie-field,
+    #fecha-emision-field {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    #serie-field .form-label,
+    #fecha-emision-field .form-label {
+      margin-bottom: 0.35rem;
+    }
+
     #editar-dialog,
-    #cantidad-dialog {
+    #cantidad-dialog,
+    #aviso-dialog {
       width: min(460px, calc(100% - 1.5rem));
       margin: auto;
       padding: 0;
@@ -57,29 +80,34 @@
     }
 
     #editar-dialog::backdrop,
-    #cantidad-dialog::backdrop {
+    #cantidad-dialog::backdrop,
+    #aviso-dialog::backdrop {
       background: rgba(8, 13, 28, 0.62);
       backdrop-filter: blur(2px);
     }
 
     #editar-dialog form,
-    #cantidad-dialog form {
+    #cantidad-dialog form,
+    #aviso-dialog form {
       margin: 0;
       padding: 1.1rem 1.15rem 1rem;
     }
 
     #editar-dialog .btn-close,
-    #cantidad-dialog .btn-close {
+    #cantidad-dialog .btn-close,
+    #aviso-dialog .btn-close {
       opacity: 0.72;
     }
 
     #editar-dialog .btn-close:hover,
-    #cantidad-dialog .btn-close:hover {
+    #cantidad-dialog .btn-close:hover,
+    #aviso-dialog .btn-close:hover {
       opacity: 1;
     }
 
     html[data-theme="dark"] #editar-dialog,
-    html[data-theme="dark"] #cantidad-dialog {
+    html[data-theme="dark"] #cantidad-dialog,
+    html[data-theme="dark"] #aviso-dialog {
       border-color: rgba(105, 147, 201, 0.28);
       background: rgba(23, 34, 49, 0.98);
       box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45);
@@ -87,6 +115,75 @@
 
     #cantidad-error {
       min-height: 1.2rem;
+    }
+
+    #aviso-detalle {
+      margin: 0;
+      padding-left: 1rem;
+    }
+
+    @media (max-width: 992px) {
+      .factura-toggle-col {
+        align-items: stretch;
+      }
+
+      .factura-opcion-botones .btn {
+        min-width: 64px;
+      }
+
+      #serie-field,
+      #fecha-emision-field {
+        margin-top: 0.1rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .dashboard-header {
+        gap: 0.6rem;
+      }
+
+      .dashboard-header h1 {
+        font-size: 1.05rem;
+      }
+
+      .factura-opcion-botones {
+        width: 100%;
+      }
+
+      .factura-opcion-botones .btn {
+        flex: 1 1 0;
+      }
+
+      #resultados .list-group-item {
+        align-items: flex-start !important;
+      }
+
+      #resultados .list-group-item .btn {
+        width: 100%;
+      }
+
+      .table-responsive {
+        overflow-x: auto;
+      }
+
+      .table th,
+      .table td {
+        white-space: nowrap;
+      }
+    }
+
+    @media (max-width: 575px) {
+      #aviso-dialog,
+      #cantidad-dialog,
+      #editar-dialog {
+        width: calc(100% - 1rem);
+      }
+
+      #aviso-dialog form,
+      #cantidad-dialog form,
+      #editar-dialog form {
+        padding: 1rem;
+      }
     }
   </style>
 </head>
@@ -100,21 +197,21 @@
 
     <section class="dashboard-section mb-4" aria-label="Datos de factura">
       <h2 class="mb-3">Datos de factura</h2>
-      <div class="row g-3">
-        <div class="col-md-5">
+      <div class="row g-3 align-items-end">
+        <div class="col-lg-5 col-md-6">
           <label for="proveedor" class="form-label">Proveedor</label>
           <select id="proveedor" class="form-select" required>
             <option value="">Selecciona un proveedor</option>
           </select>
         </div>
-        <div class="col-md-2">
+        <div class="col-lg-2 col-md-3">
           <label for="moneda" class="form-label">Moneda</label>
           <select id="moneda" class="form-select" required>
             <option value="UYU">UYU</option>
             <option value="USD">USD</option>
           </select>
         </div>
-        <div class="col-md-2">
+        <div class="col-lg-2 col-md-3 factura-toggle-col">
           <div class="factura-opcion">
             <label class="form-label" for="serie-si">Numero de serie</label>
             <div class="factura-opcion-botones" role="group" aria-label="Numero de serie">
@@ -123,13 +220,13 @@
             </div>
           </div>
         </div>
-        <div id="serie-field" class="col-md-3" hidden>
+        <div id="serie-field" class="col-lg-3 col-md-12" hidden>
           <label for="nro-serie" class="form-label">Numero de serie</label>
           <input id="nro-serie" class="form-control" type="text" maxlength="255">
         </div>
       </div>
-      <div class="row g-3 mt-1">
-        <div class="col-md-5">
+      <div class="row g-3 mt-1 align-items-end">
+        <div class="col-lg-5 col-md-6 factura-toggle-col">
           <div class="factura-opcion">
             <label class="form-label" for="fecha-emision-si">Fecha de emision</label>
             <div class="factura-opcion-botones" role="group" aria-label="Fecha de emision">
@@ -138,7 +235,7 @@
             </div>
           </div>
         </div>
-        <div id="fecha-emision-field" class="col-md-4" hidden>
+        <div id="fecha-emision-field" class="col-lg-4 col-md-6" hidden>
           <label for="fecha-emision" class="form-label">Fecha de emision</label>
           <input id="fecha-emision" class="form-control" type="date">
         </div>
@@ -281,6 +378,20 @@
       <div class="d-flex justify-content-end gap-2">
         <button id="btn-cancelar-cantidad" class="btn btn-light" type="button">Cancelar</button>
         <button class="btn btn-primary" type="submit">Agregar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="aviso-dialog">
+    <form id="aviso-form" method="dialog">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="h5 mb-0">Campos faltantes</h2>
+        <button id="btn-cerrar-aviso" class="btn-close" type="button" aria-label="Cerrar"></button>
+      </div>
+      <p class="text-muted mb-2">Completa estos datos para continuar:</p>
+      <ul id="aviso-detalle" class="text-danger fw-semibold mb-3"></ul>
+      <div class="d-flex justify-content-end">
+        <button id="btn-aceptar-aviso" class="btn btn-primary" type="button">Aceptar</button>
       </div>
     </form>
   </dialog>

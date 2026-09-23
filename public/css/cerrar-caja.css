@@ -78,3 +78,19 @@ button {
 .oculto {
   display: none;
 }
+
+@media (max-width: 575px) {
+  body {
+    padding: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .contenedor {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .acciones button {
+    width: 100%;
+  }
+}

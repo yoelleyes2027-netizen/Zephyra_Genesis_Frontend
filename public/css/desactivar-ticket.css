@@ -223,4 +223,27 @@ button {
   body.ticket-return { padding: 0.5rem; }
   .ticket-return .container { padding: 1rem; }
   .ticket-return input[type="number"] { max-width: 100%; margin-right: 0; }
+  .ticket-return #articulos li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+  .ticket-return .tabla-articulos th,
+  .ticket-return .tabla-articulos td {
+    white-space: nowrap;
+  }
+  .ticket-return button,
+  .ticket-return #btn-anular {
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .ticket-return .container {
+    padding: 1rem;
+  }
+
+  .ticket-return h1 {
+    font-size: 1.35rem;
+  }
 }

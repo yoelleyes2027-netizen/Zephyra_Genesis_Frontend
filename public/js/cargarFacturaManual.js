@@ -14,6 +14,8 @@ const fechaEmisionSiBtn = document.getElementById('fecha-emision-si');
 const fechaEmisionNoBtn = document.getElementById('fecha-emision-no');
 const fechaEmisionField = document.getElementById('fecha-emision-field');
 const fechaEmisionInput = document.getElementById('fecha-emision');
+const avisoDialog = document.getElementById('aviso-dialog');
+const avisoDetalle = document.getElementById('aviso-detalle');
 const editarDialog = document.getElementById('editar-dialog');
 const editarForm = document.getElementById('editar-form');
 const editarCantidad = document.getElementById('editar-cantidad');
@@ -37,6 +39,7 @@ let busquedaPendiente;
 let proveedoresCache = [];
 let tieneSerieSeleccion = null;
 let tieneFechaEmisionSeleccion = null;
+let campoPendienteDeFoco = null;
 
 function escapeHtml(valor) {
   return String(valor ?? '')
@@ -108,6 +111,34 @@ function validarCamposFactura() {
   }
 
   return faltantes;
+}
+
+function mostrarAvisoCamposFaltantes(faltantes) {
+  avisoDetalle.replaceChildren();
+  for (const item of faltantes) {
+    const li = document.createElement('li');
+    li.textContent = item.replace(/^-\s*/, '');
+    avisoDetalle.append(li);
+  }
+
+  if (typeof avisoDialog.showModal === 'function') {
+    if (!avisoDialog.open) {
+      avisoDialog.showModal();
+    }
+    return;
+  }
+
+  mostrarMensaje(`Campos faltantes: ${faltantes.join(' | ')}`, 'error');
+}
+
+function cerrarAvisoCamposFaltantes() {
+  if (avisoDialog.open) {
+    avisoDialog.close();
+  }
+  if (campoPendienteDeFoco) {
+    campoPendienteDeFoco.focus();
+    campoPendienteDeFoco = null;
+  }
 }
 
 async function leerRespuesta(response) {
@@ -414,24 +445,18 @@ monedaSelect.addEventListener('change', renderizarDetalle);
 btnCargar.addEventListener('click', async () => {
   const faltantes = validarCamposFactura();
   if (faltantes.length > 0) {
-    window.alert(`Campos faltantes:\n\n${faltantes.join('\n')}`);
+    campoPendienteDeFoco = proveedorSelect;
     if (tieneSerieSeleccion === null) {
-      serieSiBtn.focus();
-      return;
+      campoPendienteDeFoco = serieSiBtn;
+    } else if (tieneSerieSeleccion === true && !nroSerie.value.trim()) {
+      campoPendienteDeFoco = nroSerie;
+    } else if (tieneFechaEmisionSeleccion === null) {
+      campoPendienteDeFoco = fechaEmisionSiBtn;
+    } else if (tieneFechaEmisionSeleccion === true && !fechaEmisionInput.value) {
+      campoPendienteDeFoco = fechaEmisionInput;
     }
-    if (tieneSerieSeleccion === true && !nroSerie.value.trim()) {
-      nroSerie.focus();
-      return;
-    }
-    if (tieneFechaEmisionSeleccion === null) {
-      fechaEmisionSiBtn.focus();
-      return;
-    }
-    if (tieneFechaEmisionSeleccion === true && !fechaEmisionInput.value) {
-      fechaEmisionInput.focus();
-      return;
-    }
-    proveedorSelect.focus();
+
+    mostrarAvisoCamposFaltantes(faltantes);
     return;
   }
   btnCargar.disabled = true;
@@ -488,6 +513,12 @@ document.getElementById('btn-volver-atras').addEventListener('click', () => {
 btnNuevoProducto.addEventListener('click', abrirAltaProducto);
 nuevoCancelar.addEventListener('click', cerrarAltaProducto);
 nuevoProductoForm.addEventListener('submit', crearProductoDesdeFactura);
+document.getElementById('btn-cerrar-aviso').addEventListener('click', cerrarAvisoCamposFaltantes);
+document.getElementById('btn-aceptar-aviso').addEventListener('click', cerrarAvisoCamposFaltantes);
+avisoDialog.addEventListener('cancel', (event) => {
+  event.preventDefault();
+  cerrarAvisoCamposFaltantes();
+});
 
 validarRol();
 cargarProveedores();

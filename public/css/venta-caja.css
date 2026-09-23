@@ -519,4 +519,32 @@ body.cash-register {
   .cash-register #producto-form { grid-template-columns: 1fr; }
   .cash-register #producto-form button { width: 100%; }
   .cash-register .cash-inline-form { grid-template-columns: 1fr; }
+  .cash-footer-actions button { width: 100%; }
+  .cash-register #tabla-productos th,
+  .cash-register #tabla-productos td { white-space: nowrap; }
+}
+
+@media (max-width: 900px) {
+  .ticket-container {
+    width: calc(100% - 1rem);
+    padding: 1rem;
+  }
+
+  .ticket-header {
+    padding: 0.9rem 1rem;
+  }
+
+  .ticket-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .ticket-form input,
+  .ticket-form select {
+    min-width: 0;
+  }
+
+  .ticket-table th,
+  .ticket-table td {
+    white-space: nowrap;
+  }
 }
