@@ -20,9 +20,12 @@
     </header>
 
     <section id="filtro-serie" class="dashboard-section mb-3" aria-label="Buscar por número de serie">
-      <div class="form-check remito-check">
-        <input class="form-check-input" type="checkbox" id="buscar-por-serie">
-        <label class="form-check-label" for="buscar-por-serie">Buscar factura por número de serie</label>
+      <h2 class="mb-3">Buscar factura por número de serie</h2>
+      <div class="remito-opcion mb-2">
+        <div class="remito-opcion-botones" role="group" aria-label="Buscar por serie">
+          <button id="buscar-serie-si" class="btn btn-outline-secondary btn-sm" type="button">Si</button>
+          <button id="buscar-serie-no" class="btn btn-outline-secondary btn-sm active" type="button">No</button>
+        </div>
       </div>
       <div id="serie-busqueda" class="row g-2 mt-2" hidden>
         <div class="col-md-6">
@@ -38,7 +41,7 @@
     </section>
 
     <section id="seccion-proveedor" class="dashboard-section mb-3" aria-label="Seleccionar proveedor">
-      <h2 class="mb-3">1. Seleccionar proveedor</h2>
+      <h2 class="mb-3">Seleccionar proveedor</h2>
       <div class="row g-2">
         <div class="col-md-7">
           <label for="proveedor" class="form-label">Proveedor</label>
@@ -50,7 +53,7 @@
     </section>
 
     <section id="seccion-fecha" class="dashboard-section mb-3" aria-label="Buscar por fecha">
-      <h2 class="mb-3">3. Buscar por fecha</h2>
+      <h2 class="mb-3">Buscar por fecha</h2>
       <div class="row g-2">
         <div class="col-md-4">
           <label for="fecha" class="form-label">Fecha</label>
@@ -70,7 +73,7 @@
     </section>
 
     <section id="seccion-productos" class="dashboard-section mb-3" aria-label="Seleccionar productos">
-      <h2 class="mb-1">4. Seleccionar productos</h2>
+      <h2 class="mb-1">Seleccionar productos</h2>
       <p id="factura-resumen" class="text-muted mb-3">Selecciona una factura para ver su detalle.</p>
       <div class="table-responsive">
         <table class="table table-hover align-middle">
@@ -89,7 +92,7 @@
     </section>
 
     <section id="seccion-remito" class="dashboard-section" aria-label="Remito">
-      <h2 class="mb-1">5. Remito</h2>
+      <h2 class="mb-1">Remito</h2>
       <p class="text-muted mb-3">Aquí se cargan los productos seleccionados en el área 4.</p>
       <div class="table-responsive">
         <table class="table table-hover align-middle">

@@ -1,6 +1,7 @@
 const proveedorSelect = document.getElementById('proveedor');
 const fechaInput = document.getElementById('fecha');
-const buscarPorSerie = document.getElementById('buscar-por-serie');
+const buscarSerieSiBtn = document.getElementById('buscar-serie-si');
+const buscarSerieNoBtn = document.getElementById('buscar-serie-no');
 const serieBusqueda = document.getElementById('serie-busqueda');
 const nroSerieInput = document.getElementById('nro-serie');
 const facturasListado = document.getElementById('facturas-listado');
@@ -14,6 +15,7 @@ let proveedoresCache = [];
 let facturasCache = [];
 let facturaSeleccionada = null;
 let remitoSeleccion = [];
+let buscarPorSerieSeleccion = false;
 
 function escapeHtml(valor) {
   return String(valor ?? '')
@@ -32,6 +34,11 @@ function mostrarMensaje(texto = '', tipo = '') {
   } else if (tipo === 'success') {
     mensaje.classList.add('text-success');
   }
+}
+
+function actualizarBotonesSiNo(siBtn, noBtn, valor) {
+  siBtn.classList.toggle('active', valor === true);
+  noBtn.classList.toggle('active', valor === false);
 }
 
 function normalizarFecha(valor) {
@@ -104,7 +111,7 @@ async function cargarProveedores() {
 function construirQueryFacturas() {
   const query = new URLSearchParams();
 
-  if (buscarPorSerie.checked) {
+  if (buscarPorSerieSeleccion) {
     const serie = nroSerieInput.value.trim();
     if (!serie) {
       throw new Error('Ingresa un número de serie para buscar.');
@@ -257,7 +264,7 @@ function seleccionarFactura(facturaId) {
 }
 
 function alternarModoBusqueda() {
-  const porSerie = buscarPorSerie.checked;
+  const porSerie = buscarPorSerieSeleccion;
 
   serieBusqueda.hidden = !porSerie;
   document.getElementById('seccion-proveedor').hidden = porSerie;
@@ -277,6 +284,12 @@ function alternarModoBusqueda() {
   renderizarDetalleFactura();
   renderizarRemito();
   mostrarMensaje('');
+}
+
+function seleccionarBuscarPorSerie(valor) {
+  buscarPorSerieSeleccion = valor;
+  actualizarBotonesSiNo(buscarSerieSiBtn, buscarSerieNoBtn, valor);
+  alternarModoBusqueda();
 }
 
 async function buscarFacturas() {
@@ -345,11 +358,13 @@ btnEmitirRemito.addEventListener('click', async () => {
 document.getElementById('btn-buscar-fecha').addEventListener('click', buscarFacturas);
 document.getElementById('btn-buscar-serie').addEventListener('click', buscarFacturas);
 document.getElementById('btn-volver').addEventListener('click', () => window.history.back());
-buscarPorSerie.addEventListener('change', alternarModoBusqueda);
+buscarSerieSiBtn.addEventListener('click', () => seleccionarBuscarPorSerie(true));
+buscarSerieNoBtn.addEventListener('click', () => seleccionarBuscarPorSerie(false));
 
 async function init() {
   await validarRol();
   await cargarProveedores();
+  seleccionarBuscarPorSerie(false);
   renderizarFacturas();
   renderizarDetalleFactura();
   renderizarRemito();
