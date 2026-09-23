@@ -10,31 +10,36 @@
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/dashboard.css">
   <style>
-    .factura-serie-check {
+    .factura-opcion {
       min-height: 42px;
-      margin-bottom: 0;
-      padding-left: 0;
       display: flex;
       align-items: center;
-      gap: 0.55rem;
+      justify-content: space-between;
+      gap: 0.75rem;
     }
 
-    .factura-serie-check .form-check-input {
-      float: none;
-      margin: 0;
-      min-height: 1.1rem;
-      width: 1.1rem;
-      height: 1.1rem;
-      border-radius: 0.2rem;
-      flex-shrink: 0;
-    }
-
-    .factura-serie-check .form-check-label {
+    .factura-opcion .form-label {
       margin: 0;
       white-space: nowrap;
     }
 
-    #serie-field .form-control {
+    .factura-opcion-botones {
+      display: inline-flex;
+      gap: 0.45rem;
+    }
+
+    .factura-opcion-botones .btn {
+      min-width: 56px;
+    }
+
+    .factura-opcion-botones .btn.active {
+      color: #fff;
+      background: var(--color-primario);
+      border-color: var(--color-primario);
+    }
+
+    #serie-field .form-control,
+    #fecha-emision-field .form-control {
       min-height: 42px;
       border-radius: var(--radio-control);
     }
@@ -109,15 +114,33 @@
             <option value="USD">USD</option>
           </select>
         </div>
-        <div class="col-md-2 d-flex align-items-end">
-          <div class="form-check factura-serie-check">
-            <input id="tiene-serie" class="form-check-input" type="checkbox">
-            <label class="form-check-label" for="tiene-serie">Tiene numero de serie</label>
+        <div class="col-md-2">
+          <div class="factura-opcion">
+            <label class="form-label" for="serie-si">Numero de serie</label>
+            <div class="factura-opcion-botones" role="group" aria-label="Numero de serie">
+              <button id="serie-si" class="btn btn-outline-secondary btn-sm" type="button">Si</button>
+              <button id="serie-no" class="btn btn-outline-secondary btn-sm" type="button">No</button>
+            </div>
           </div>
         </div>
         <div id="serie-field" class="col-md-3" hidden>
           <label for="nro-serie" class="form-label">Numero de serie</label>
           <input id="nro-serie" class="form-control" type="text" maxlength="255">
+        </div>
+      </div>
+      <div class="row g-3 mt-1">
+        <div class="col-md-5">
+          <div class="factura-opcion">
+            <label class="form-label" for="fecha-emision-si">Fecha de emision</label>
+            <div class="factura-opcion-botones" role="group" aria-label="Fecha de emision">
+              <button id="fecha-emision-si" class="btn btn-outline-secondary btn-sm" type="button">Si</button>
+              <button id="fecha-emision-no" class="btn btn-outline-secondary btn-sm" type="button">No</button>
+            </div>
+          </div>
+        </div>
+        <div id="fecha-emision-field" class="col-md-4" hidden>
+          <label for="fecha-emision" class="form-label">Fecha de emision</label>
+          <input id="fecha-emision" class="form-control" type="date">
         </div>
       </div>
     </section>

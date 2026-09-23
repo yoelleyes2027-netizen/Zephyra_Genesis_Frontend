@@ -6,9 +6,14 @@ const detalleBody = document.getElementById('detalle-body');
 const totalElemento = document.getElementById('total');
 const mensaje = document.getElementById('mensaje');
 const btnCargar = document.getElementById('btn-cargar');
-const tieneSerie = document.getElementById('tiene-serie');
+const serieSiBtn = document.getElementById('serie-si');
+const serieNoBtn = document.getElementById('serie-no');
 const serieField = document.getElementById('serie-field');
 const nroSerie = document.getElementById('nro-serie');
+const fechaEmisionSiBtn = document.getElementById('fecha-emision-si');
+const fechaEmisionNoBtn = document.getElementById('fecha-emision-no');
+const fechaEmisionField = document.getElementById('fecha-emision-field');
+const fechaEmisionInput = document.getElementById('fecha-emision');
 const editarDialog = document.getElementById('editar-dialog');
 const editarForm = document.getElementById('editar-form');
 const editarCantidad = document.getElementById('editar-cantidad');
@@ -30,6 +35,8 @@ let productoEnEdicionId = null;
 let productoPendienteAgregar = null;
 let busquedaPendiente;
 let proveedoresCache = [];
+let tieneSerieSeleccion = null;
+let tieneFechaEmisionSeleccion = null;
 
 function escapeHtml(valor) {
   return String(valor ?? '')
@@ -52,6 +59,55 @@ function mostrarMensaje(texto = '', tipo = '') {
   } else if (tipo === 'success') {
     mensaje.classList.add('text-success', 'fw-semibold');
   }
+}
+
+function actualizarBotonesSiNo(siBtn, noBtn, valor) {
+  siBtn.classList.toggle('active', valor === true);
+  noBtn.classList.toggle('active', valor === false);
+}
+
+function seleccionarTieneSerie(valor) {
+  tieneSerieSeleccion = valor;
+  actualizarBotonesSiNo(serieSiBtn, serieNoBtn, valor);
+  serieField.hidden = valor !== true;
+  if (valor !== true) {
+    nroSerie.value = '';
+  }
+}
+
+function seleccionarFechaEmision(valor) {
+  tieneFechaEmisionSeleccion = valor;
+  actualizarBotonesSiNo(fechaEmisionSiBtn, fechaEmisionNoBtn, valor);
+  fechaEmisionField.hidden = valor !== true;
+  if (valor !== true) {
+    fechaEmisionInput.value = '';
+  }
+}
+
+function validarCamposFactura() {
+  const faltantes = [];
+
+  if (!proveedorSelect.value) {
+    faltantes.push('- Proveedor');
+  }
+
+  if (!monedaSelect.value) {
+    faltantes.push('- Moneda');
+  }
+
+  if (tieneSerieSeleccion === null) {
+    faltantes.push('- Seleccionar Si o No en Numero de serie');
+  } else if (tieneSerieSeleccion === true && !nroSerie.value.trim()) {
+    faltantes.push('- Ingresar Numero de serie');
+  }
+
+  if (tieneFechaEmisionSeleccion === null) {
+    faltantes.push('- Seleccionar Si o No en Fecha de emision');
+  } else if (tieneFechaEmisionSeleccion === true && !fechaEmisionInput.value) {
+    faltantes.push('- Ingresar Fecha de emision');
+  }
+
+  return faltantes;
 }
 
 async function leerRespuesta(response) {
@@ -333,10 +389,10 @@ cantidadDialog.addEventListener('cancel', () => {
   cantidadError.textContent = '';
 });
 
-tieneSerie.addEventListener('change', () => {
-  serieField.hidden = !tieneSerie.checked;
-  if (!tieneSerie.checked) nroSerie.value = '';
-});
+serieSiBtn.addEventListener('click', () => seleccionarTieneSerie(true));
+serieNoBtn.addEventListener('click', () => seleccionarTieneSerie(false));
+fechaEmisionSiBtn.addEventListener('click', () => seleccionarFechaEmision(true));
+fechaEmisionNoBtn.addEventListener('click', () => seleccionarFechaEmision(false));
 
 proveedorSelect.addEventListener('change', () => {
   busquedaInput.disabled = !proveedorSelect.value;
@@ -356,9 +412,26 @@ busquedaInput.addEventListener('input', () => {
 monedaSelect.addEventListener('change', renderizarDetalle);
 
 btnCargar.addEventListener('click', async () => {
-  if (tieneSerie.checked && !nroSerie.value.trim()) {
-    mostrarMensaje('Ingresa el numero de serie de la factura.', 'error');
-    nroSerie.focus();
+  const faltantes = validarCamposFactura();
+  if (faltantes.length > 0) {
+    window.alert(`Campos faltantes:\n\n${faltantes.join('\n')}`);
+    if (tieneSerieSeleccion === null) {
+      serieSiBtn.focus();
+      return;
+    }
+    if (tieneSerieSeleccion === true && !nroSerie.value.trim()) {
+      nroSerie.focus();
+      return;
+    }
+    if (tieneFechaEmisionSeleccion === null) {
+      fechaEmisionSiBtn.focus();
+      return;
+    }
+    if (tieneFechaEmisionSeleccion === true && !fechaEmisionInput.value) {
+      fechaEmisionInput.focus();
+      return;
+    }
+    proveedorSelect.focus();
     return;
   }
   btnCargar.disabled = true;
@@ -371,7 +444,8 @@ btnCargar.addEventListener('click', async () => {
       body: JSON.stringify({
         proveedorId: Number(proveedorSelect.value),
         tipoMoneda: monedaSelect.value,
-        nroSerie: tieneSerie.checked ? nroSerie.value.trim() : null,
+        nroSerie: tieneSerieSeleccion === true ? nroSerie.value.trim() : null,
+        fechaEmision: tieneFechaEmisionSeleccion === true ? fechaEmisionInput.value : null,
         detalles: productosSeleccionados.map((producto) => ({
           productoId: producto.id,
           cantidad: producto.cantidad,
@@ -389,9 +463,8 @@ btnCargar.addEventListener('click', async () => {
     productosSeleccionados = [];
     renderizarDetalle();
     resultados.replaceChildren();
-    tieneSerie.checked = false;
-    serieField.hidden = true;
-    nroSerie.value = '';
+    seleccionarTieneSerie(null);
+    seleccionarFechaEmision(null);
   } catch (error) {
     mostrarMensaje(error.message, 'error');
   } finally {
@@ -419,3 +492,5 @@ nuevoProductoForm.addEventListener('submit', crearProductoDesdeFactura);
 validarRol();
 cargarProveedores();
 renderizarDetalle();
+seleccionarTieneSerie(null);
+seleccionarFechaEmision(null);
