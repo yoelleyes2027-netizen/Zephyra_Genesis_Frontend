@@ -47,7 +47,7 @@ function formatearFechaDesdeIso(fechaIso) {
     return '';
   }
   const [, anio, mes, dia] = match;
-  return `${anio}/${mes}/${dia}`;
+  return `${dia}/${mes}/${anio}`;
 }
 
 function formatearFechaDesdeSlash(fechaSlash) {
@@ -63,11 +63,11 @@ function formatearFechaDesdeSlash(fechaSlash) {
     return '';
   }
 
-  // Si viene en MM/DD/YYYY (caso reportado), lo normalizamos a YYYY/MM/DD.
+  // Si viene en MM/DD/YYYY (caso reportado), lo normalizamos a DD/MM/YYYY.
   // Si el primer bloque supera 12, asumimos DD/MM/YYYY.
   const mes = a > 12 ? String(b).padStart(2, '0') : String(a).padStart(2, '0');
   const dia = a > 12 ? String(a).padStart(2, '0') : String(b).padStart(2, '0');
-  return `${anio}/${mes}/${dia}`;
+  return `${dia}/${mes}/${anio}`;
 }
 
 function extraerPartesFechaEnUruguay(date) {
@@ -92,7 +92,7 @@ function extraerPartesFechaEnUruguay(date) {
   }
 
   return {
-    fecha: `${anio}/${mes}/${dia}`,
+    fecha: `${dia}/${mes}/${anio}`,
     hora: `${hora}:${minuto}`,
   };
 }
